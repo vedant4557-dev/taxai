@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — TaxSmart India</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a1a18;--ink2:#5c5a54;--bg:#faf9f6;--card:#ffffff;--accent:#2d6a4f;--border:#e2ddd6;--al:#f0faf3;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  .header{background:var(--accent);color:#fff;padding:48px 0 40px;text-align:center;}
+  .header h1{font-size:32px;font-weight:700;margin-bottom:8px;}
+  .header p{opacity:.8;font-size:14px;}
+  .container{max-width:720px;margin:0 auto;padding:48px 24px;}
+  .back{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-weight:600;font-size:13px;text-decoration:none;margin-bottom:32px;}
+  .back:hover{text-decoration:underline;}
+  .section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:20px;}
+  .section h2{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .section p,.section li{font-size:14px;color:var(--ink2);margin-bottom:8px;}
+  .section ul{padding-left:20px;}
+  .highlight{background:var(--al);border:1.5px solid var(--accent);border-radius:12px;padding:20px 24px;margin-bottom:24px;}
+  .highlight p{color:var(--accent);font-weight:600;font-size:14px;margin:0;}
+  .badge{display:inline-block;background:var(--al);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid var(--accent);margin-right:6px;}
+  .footer{text-align:center;padding:32px 24px;font-size:12px;color:var(--ink2);}
+  a{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🔒 Privacy Policy</h1>
+  <p>TaxSmart India · Last updated: February 2026</p>
+</div>
+
+<div class="container">
+  <a href="index.html" class="back">← Back to TaxSmart</a>
+
+  <div class="highlight">
+    <p>✅ Short version: We never store your documents or personal financial data. Everything is processed in memory and deleted immediately. We don't sell data. We don't have ads.</p>
+  </div>
+
+  <div class="section">
+    <h2>📄 What data do we collect?</h2>
+    <p>When you upload documents for auto-extraction:</p>
+    <ul>
+      <li><strong>Your PDF files</strong> (Form 16, Form 26AS, AIS) are sent to our secure server for processing.</li>
+      <li><strong>Extracted data</strong> (salary, TDS, deductions) is returned to your browser and never saved on our end.</li>
+      <li><strong>No account required</strong> — we don't collect your name, email, or phone number.</li>
+    </ul>
+    <p style="margin-top:12px;">When you use the manual calculator (without uploading documents), <strong>no data ever leaves your browser.</strong> All calculations happen locally.</p>
+  </div>
+
+  <div class="section">
+    <h2>🗑️ Data deletion — immediate and automatic</h2>
+    <p>Your uploaded PDFs are held in server memory <strong>only during processing</strong> (typically 5–15 seconds). They are:</p>
+    <ul>
+      <li>Never written to disk or any database</li>
+      <li>Never logged or saved in any form</li>
+      <li>Automatically deleted from memory as soon as extraction completes</li>
+      <li>Never shared with any third party except Anthropic's API for extraction</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🤖 Anthropic Claude API</h2>
+    <p>We use <a href="https://www.anthropic.com" target="_blank">Anthropic's Claude AI</a> to read your PDF documents and extract tax data. When you upload a document:</p>
+    <ul>
+      <li>Your PDF is sent to Anthropic's API over an encrypted HTTPS connection</li>
+      <li>Anthropic processes it and returns structured data (JSON)</li>
+      <li>Anthropic's own <a href="https://www.anthropic.com/privacy" target="_blank">privacy policy</a> applies to this processing</li>
+      <li>We use Anthropic's API-tier, which does not use your data to train their models</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🍪 Cookies and tracking</h2>
+    <p>We use <strong>no tracking cookies, no analytics, no ads</strong>. TaxSmart is a clean tool built for you, not to monetize your attention.</p>
+    <p>Your browser may store form values temporarily in session memory so you don't lose your work if you accidentally navigate away — this data never leaves your device.</p>
+  </div>
+
+  <div class="section">
+    <h2>🔐 Security</h2>
+    <ul>
+      <li><span class="badge">HTTPS</span> All data in transit is encrypted via TLS/HTTPS</li>
+      <li><span class="badge">No storage</span> Zero persistent storage of financial documents</li>
+      <li><span class="badge">Rate limited</span> Our API limits requests to prevent abuse</li>
+      <li><span class="badge">No accounts</span> No passwords, no personal accounts to breach</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>⚖️ Legal disclaimer</h2>
+    <p>TaxSmart is a planning and estimation tool only. It is <strong>not a substitute for professional CA advice</strong>. Tax calculations are based on publicly available rules for FY 2025–26 and may not account for all individual circumstances.</p>
+    <p>Always verify your final tax liability with a qualified Chartered Accountant before filing your ITR.</p>
+  </div>
+
+  <div class="section">
+    <h2>📬 Contact</h2>
+    <p>Questions about privacy? Reach out at <strong>taxsmart.india@gmail.com</strong> (placeholder — update with your actual email).</p>
+    <p>This policy may be updated periodically. The date at the top reflects the most recent revision.</p>
+  </div>
+</div>
+
+<div class="footer">
+  TaxSmart India · Built for Indian taxpayers · Not affiliated with Income Tax Department of India
+</div>
+
+</body>
+</html>
