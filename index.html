@@ -295,31 +295,31 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <!-- Upload zones -->
   <div class="upload-grid">
-    <div class="upload-zone" id="zone-f16" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'f16')">
+    <div class="upload-zone" id="zone-f16" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'f16')" onclick="document.getElementById('inp-f16').click()">
       <span class="uz-icon">📄</span>
       <div class="uz-title">Form 16</div>
       <div class="uz-sub">Part A + Part B<br>PDF from employer</div>
       <div class="uz-badge">✓ UPLOADED</div>
       <div class="uz-filename" id="fn-f16"></div>
-      <input type="file" accept=".pdf" onchange="handleFile(this,'f16')">
     </div>
-    <div class="upload-zone" id="zone-26as" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'26as')">
+    <div class="upload-zone" id="zone-26as" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'26as')" onclick="document.getElementById('inp-26as').click()">
       <span class="uz-icon">📊</span>
       <div class="uz-title">Form 26AS</div>
       <div class="uz-sub">TDS / tax credit<br>statement PDF</div>
       <div class="uz-badge">✓ UPLOADED</div>
       <div class="uz-filename" id="fn-26as"></div>
-      <input type="file" accept=".pdf" onchange="handleFile(this,'26as')">
     </div>
-    <div class="upload-zone" id="zone-ais" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'ais')">
+    <div class="upload-zone" id="zone-ais" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'ais')" onclick="document.getElementById('inp-ais').click()">
       <span class="uz-icon">📑</span>
       <div class="uz-title">AIS</div>
       <div class="uz-sub">Annual Information<br>Statement PDF</div>
       <div class="uz-badge">✓ UPLOADED</div>
       <div class="uz-filename" id="fn-ais"></div>
-      <input type="file" accept=".pdf" onchange="handleFile(this,'ais')">
     </div>
   </div>
+  <input type="file" accept=".pdf" id="inp-f16" style="display:none" onchange="handleFile(this,'f16')">
+  <input type="file" accept=".pdf" id="inp-26as" style="display:none" onchange="handleFile(this,'26as')">
+  <input type="file" accept=".pdf" id="inp-ais" style="display:none" onchange="handleFile(this,'ais')">
 
   <button class="extract-btn" id="extract-btn" onclick="runExtraction()" disabled>
     <span id="extract-btn-label">⬆ Upload at least one document to extract</span>
@@ -823,7 +823,7 @@ function showStep(n){
 function restart(){cur=1;_extractedData={};_errors=[];showUpload();}
 function setTog(el,fld,val){el.parentElement.querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById(fld).value=val;}
 function showCond(id,show){const el=document.getElementById(id);if(show)el.classList.add('show');else el.classList.remove('show');}
-function skipToStep1(){cur=1;showStep(1);}
+function skipToStep1(){document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));cur=1;showStep(1);}
 
 // ═══════════════════════════════════════════════════════
 // FILE UPLOAD
