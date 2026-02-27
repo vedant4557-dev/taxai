@@ -6,134 +6,238 @@
 <title>TaxSmart — Your Personal Tax Advisor</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#f7f5f0; --white:#ffffff; --ink:#1a1814; --ink2:#3d3a34; --muted:#8c8880;
-  --border:#e2ddd6; --accent:#1a472a; --accent-light:#e8f5ec; --accent2:#c17f24;
-  --accent2-light:#fdf3e3; --shadow:0 2px 12px rgba(26,24,20,0.08); --shadow-lg:0 8px 40px rgba(26,24,20,0.12);
+:root{
+  --bg:#f7f5f0;--white:#fff;--ink:#1a1814;--ink2:#3d3a34;--muted:#8c8880;
+  --border:#e2ddd6;--accent:#1a472a;--al:#e8f5ec;--a2:#c17f24;--a2l:#fdf3e3;
+  --red:#c0392b;--redl:#fdf0ee;--blue:#1a3a72;--bluel:#e8eef8;
+  --sh:0 2px 12px rgba(26,24,20,.08);--shl:0 8px 40px rgba(26,24,20,.12);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--ink);font-family:'Sora',sans-serif;min-height:100vh;font-size:15px;}
-.app{max-width:680px;margin:0 auto;padding:32px 20px 80px;}
-.header{text-align:center;margin-bottom:40px;}
-.logo{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;}
+.app{max-width:700px;margin:0 auto;padding:28px 18px 80px;}
+
+/* Header */
+.header{text-align:center;margin-bottom:36px;}
+.logo{display:inline-flex;align-items:center;gap:8px;margin-bottom:10px;}
 .logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
-.logo-text{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-0.5px;}
+.logo-text{font-size:22px;font-weight:800;letter-spacing:-.5px;}
 .logo-text span{color:var(--accent);}
-.header-tagline{font-family:'Crimson Pro',serif;font-size:17px;color:var(--muted);font-style:italic;}
-.progress-wrap{background:var(--white);border-radius:16px;padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.progress-steps{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:relative;}
-.progress-steps::before{content:'';position:absolute;top:14px;left:14px;right:14px;height:2px;background:var(--border);z-index:0;}
-.progress-fill{position:absolute;top:14px;left:14px;height:2px;background:var(--accent);z-index:1;transition:width 0.4s ease;}
-.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);position:relative;z-index:2;transition:all 0.3s;cursor:pointer;}
-.step-dot.done{background:var(--accent);border-color:var(--accent);color:white;}
-.step-dot.active{background:var(--accent);border-color:var(--accent);color:white;box-shadow:0 0 0 4px rgba(26,71,42,0.15);}
-.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
-.progress-current{font-size:12px;font-weight:600;color:var(--accent);}
-.step-card{background:var(--white);border-radius:20px;padding:32px;box-shadow:var(--shadow-lg);border:1px solid var(--border);display:none;animation:fadeIn 0.3s ease;}
-.step-card.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.step-eyebrow{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
-.step-title{font-family:'Crimson Pro',serif;font-size:28px;font-weight:600;color:var(--ink);margin-bottom:6px;line-height:1.2;}
-.step-desc{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;}
-.field{margin-bottom:22px;}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.tagline{font-family:'Crimson Pro',serif;font-size:17px;color:var(--muted);font-style:italic;}
+
+/* Progress */
+.prog-wrap{background:var(--white);border-radius:16px;padding:18px 22px;margin-bottom:22px;box-shadow:var(--sh);border:1px solid var(--border);}
+.prog-steps{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:relative;}
+.prog-steps::before{content:'';position:absolute;top:14px;left:14px;right:14px;height:2px;background:var(--border);z-index:0;}
+.prog-fill{position:absolute;top:14px;left:14px;height:2px;background:var(--accent);z-index:1;transition:width .4s ease;}
+.sdot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);position:relative;z-index:2;transition:all .3s;cursor:pointer;}
+.sdot.done{background:var(--accent);border-color:var(--accent);color:#fff;}
+.sdot.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 4px rgba(26,71,42,.15);}
+.sdot.upload-dot{background:var(--a2);border-color:var(--a2);color:#fff;}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+.prog-cur{font-size:12px;font-weight:600;color:var(--accent);}
+
+/* Cards */
+.card{background:var(--white);border-radius:20px;padding:30px;box-shadow:var(--shl);border:1px solid var(--border);display:none;animation:fadeIn .3s ease;}
+.card.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+.card-title{font-family:'Crimson Pro',serif;font-size:26px;font-weight:600;line-height:1.2;margin-bottom:6px;}
+.card-desc{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;}
+
+/* ── STEP 0: Upload ── */
+#step-0{border:2px dashed var(--border);}
+#step-0.has-files{border-color:var(--accent);border-style:solid;}
+.api-key-row{display:flex;gap:10px;align-items:center;margin-bottom:24px;}
+.api-key-row input{flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);background:var(--bg);outline:none;transition:border-color .2s;}
+.api-key-row input:focus{border-color:var(--accent);background:var(--white);}
+.api-key-row input::placeholder{color:var(--muted);}
+.key-hint{font-size:11px;color:var(--muted);margin-top:5px;}
+.key-hint a{color:var(--accent);}
+.upload-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;}
+@media(max-width:500px){.upload-grid{grid-template-columns:1fr;}}
+.upload-zone{border:1.5px dashed var(--border);border-radius:14px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg);position:relative;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--al);}
+.upload-zone.uploaded{border-color:var(--accent);border-style:solid;background:var(--al);}
+.upload-zone.uploaded .uz-icon{font-size:24px;}
+.uz-icon{font-size:28px;margin-bottom:8px;display:block;}
+.uz-title{font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:3px;}
+.uz-sub{font-size:10px;color:var(--muted);line-height:1.4;}
+.uz-badge{display:none;position:absolute;top:-8px;right:-8px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;padding:3px 7px;border-radius:100px;letter-spacing:.5px;}
+.upload-zone.uploaded .uz-badge{display:block;}
+.uz-filename{font-size:10px;color:var(--accent);font-weight:600;margin-top:6px;word-break:break-all;}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.doc-info{background:var(--bluel);border:1px solid rgba(26,58,114,.15);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--blue);line-height:1.6;margin-bottom:20px;}
+.doc-info strong{font-weight:700;}
+.extract-btn{width:100%;padding:14px;background:var(--a2);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.extract-btn:hover{background:#a06a1a;transform:translateY(-1px);box-shadow:0 4px 16px rgba(193,127,36,.3);}
+.extract-btn:disabled{background:var(--muted);cursor:not-allowed;transform:none;box-shadow:none;}
+.skip-btn{width:100%;padding:12px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;transition:all .2s;}
+.skip-btn:hover{border-color:var(--ink2);color:var(--ink2);}
+
+/* Extraction progress */
+.extract-progress{display:none;margin-top:18px;}
+.extract-progress.show{display:block;}
+.ep-step{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(226,221,214,.4);}
+.ep-step:last-child{border-bottom:none;}
+.ep-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.ep-icon.wait{background:var(--border);color:var(--muted);}
+.ep-icon.spin{background:var(--a2l);animation:spin .8s linear infinite;}
+.ep-icon.done{background:var(--al);color:var(--accent);}
+.ep-icon.err{background:var(--redl);color:var(--red);}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.ep-label{font-size:13px;font-weight:600;color:var(--ink2);}
+.ep-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+
+/* Fields */
+.field{margin-bottom:20px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 @media(max-width:480px){.field-row{grid-template-columns:1fr;}}
-.label-wrap{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+.lbl-wrap{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
 label{font-size:13px;font-weight:600;color:var(--ink2);}
-.label-sub{font-size:11px;font-weight:400;color:var(--muted);}
-.tooltip-wrap{position:relative;display:inline-flex;}
-.tip-btn{width:18px;height:18px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;font-family:'Sora',sans-serif;}
-.tip-btn:hover{background:var(--accent);border-color:var(--accent);color:white;}
-.tooltip-box{display:none;position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);background:var(--ink);color:white;border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;width:240px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,0.2);font-weight:400;}
-.tooltip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink);}
-.tooltip-wrap:hover .tooltip-box,.tooltip-wrap.active .tooltip-box{display:block;animation:fadeIn 0.15s ease;}
-.example-chip{display:inline-block;background:rgba(255,255,255,0.15);border-radius:4px;padding:2px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;margin-top:6px;}
-.amount-field{position:relative;}
-.amount-prefix{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--muted);pointer-events:none;z-index:1;}
-.amount-display{width:100%;padding:11px 12px 11px 26px;border:1.5px solid var(--border);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--ink);background:var(--bg);outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;}
-.amount-display:focus{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px rgba(26,71,42,0.1);}
-.amount-words{font-size:11px;color:var(--accent);margin-top:4px;font-weight:600;min-height:16px;}
-select{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;color:var(--ink);background:var(--bg);outline:none;cursor:pointer;transition:border-color 0.2s,box-shadow 0.2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238c8880' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
-select:focus{border-color:var(--accent);background-color:var(--white);box-shadow:0 0 0 3px rgba(26,71,42,0.1);}
-input[type="text"]{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;color:var(--ink);background:var(--bg);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
-input[type="text"]:focus{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px rgba(26,71,42,0.1);}
-.info-pill{background:var(--accent-light);border:1px solid rgba(26,71,42,0.15);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--accent);margin-bottom:20px;line-height:1.6;display:flex;gap:10px;}
-.info-pill.amber{background:var(--accent2-light);border-color:rgba(193,127,36,0.2);color:#7a5010;}
+.lbl-sub{font-size:11px;font-weight:400;color:var(--muted);}
+/* Autofill badge */
+.af-badge{display:inline-flex;align-items:center;gap:3px;background:var(--al);color:var(--accent);font-size:9px;font-weight:800;padding:2px 7px;border-radius:100px;letter-spacing:.5px;text-transform:uppercase;}
+/* Tooltip */
+.tip-wrap{position:relative;display:inline-flex;}
+.tip-btn{width:18px;height:18px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.tip-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+.tip-box{display:none;position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;width:240px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.2);font-weight:400;}
+.tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink);}
+.tip-wrap:hover .tip-box{display:block;animation:fadeIn .15s ease;}
+.ex-chip{display:inline-block;background:rgba(255,255,255,.15);border-radius:4px;padding:2px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;margin-top:6px;}
+/* Amount */
+.amt-wrap{position:relative;}
+.amt-pfx{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--muted);pointer-events:none;z-index:1;}
+.amt-inp{width:100%;padding:11px 12px 11px 26px;border:1.5px solid var(--border);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--ink);background:var(--bg);outline:none;transition:border-color .2s,box-shadow .2s,background .2s;}
+.amt-inp:focus{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px rgba(26,71,42,.1);}
+.amt-inp.autofilled{border-color:var(--accent);background:#f0faf3;}
+.amt-words{font-size:11px;color:var(--accent);margin-top:4px;font-weight:600;min-height:16px;}
+select{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;color:var(--ink);background:var(--bg);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238c8880' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;transition:border-color .2s;}
+select:focus{border-color:var(--accent);background-color:var(--white);box-shadow:0 0 0 3px rgba(26,71,42,.1);}
+input[type=text]{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;color:var(--ink);background:var(--bg);outline:none;transition:border-color .2s;}
+input[type=text]:focus{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px rgba(26,71,42,.1);}
+.info-pill{border-radius:10px;padding:12px 16px;font-size:12px;margin-bottom:18px;line-height:1.6;display:flex;gap:10px;}
+.info-pill.green{background:var(--al);border:1px solid rgba(26,71,42,.15);color:var(--accent);}
+.info-pill.amber{background:var(--a2l);border:1px solid rgba(193,127,36,.2);color:#7a5010;}
+.info-pill.blue{background:var(--bluel);border:1px solid rgba(26,58,114,.15);color:var(--blue);}
 .toggle-group{display:flex;gap:8px;flex-wrap:wrap;}
-.toggle-btn{padding:8px 18px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;background:var(--bg);color:var(--ink2);font-family:'Sora',sans-serif;}
-.toggle-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
-.conditional{display:none;}
-.conditional.show{display:block;animation:fadeIn 0.3s ease;}
-.nav-row{display:flex;gap:12px;margin-top:28px;align-items:center;}
-.btn-back{padding:12px 24px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);transition:all 0.2s;}
+.tog-btn{padding:8px 18px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;background:var(--bg);color:var(--ink2);font-family:'Sora',sans-serif;}
+.tog-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.cond{display:none;}.cond.show{display:block;animation:fadeIn .3s ease;}
+.nav-row{display:flex;gap:12px;margin-top:24px;align-items:center;}
+.btn-back{padding:12px 22px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);transition:all .2s;}
 .btn-back:hover{border-color:var(--ink2);}
-.btn-next{flex:1;padding:14px;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;background:var(--accent);color:white;transition:all 0.2s;}
-.btn-next:hover{background:#153921;box-shadow:0 4px 16px rgba(26,71,42,0.3);transform:translateY(-1px);}
-#results{display:none;animation:fadeIn 0.5s ease;}
-.result-header{border-radius:20px;padding:32px;color:white;margin-bottom:20px;position:relative;overflow:hidden;}
-.result-header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.06);}
-.rh-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:0.65;margin-bottom:8px;font-weight:600;}
-.rh-name{font-size:15px;font-weight:600;margin-bottom:4px;opacity:0.85;}
-.rh-regime{font-family:'Crimson Pro',serif;font-size:52px;font-weight:600;letter-spacing:-2px;line-height:1;margin-bottom:8px;}
-.rh-saving{font-size:17px;font-weight:700;background:rgba(255,255,255,0.15);display:inline-block;padding:8px 18px;border-radius:8px;margin-bottom:20px;}
-.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-.stat-box{background:rgba(255,255,255,0.12);border-radius:12px;padding:14px 16px;}
-.stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;opacity:0.65;margin-bottom:6px;}
-.stat-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;}
-.stat-sub{font-size:11px;opacity:0.6;margin-top:2px;}
-.action-row{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
-.btn-download{flex:1;padding:14px;background:var(--accent);color:white;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;min-width:150px;}
-.btn-download:hover{background:#153921;transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,71,42,0.3);}
-.btn-restart{padding:14px 20px;border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);transition:all 0.2s;}
-.regime-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-@media(max-width:480px){.regime-cards{grid-template-columns:1fr;}}
-.regime-card{background:var(--white);border:2px solid var(--border);border-radius:16px;padding:22px;box-shadow:var(--shadow);position:relative;}
-.regime-card.winner{border-color:var(--accent);background:var(--accent-light);}
-.rc-badge{position:absolute;top:-1px;right:16px;background:var(--accent);color:white;font-size:9px;font-weight:800;padding:4px 10px;border-radius:0 0 8px 8px;letter-spacing:1.5px;text-transform:uppercase;}
-.rc-regime{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:700;}
-.rc-tax{font-family:'JetBrains Mono',monospace;font-size:28px;color:var(--ink);margin-bottom:4px;}
-.regime-card.winner .rc-tax{color:var(--accent);}
-.rc-eff{font-size:12px;color:var(--muted);}
-.section-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:var(--shadow);}
-.section-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;font-weight:700;padding-bottom:12px;border-bottom:1px solid var(--border);}
-.ded-row{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(226,221,214,0.5);gap:16px;}
+.btn-next{flex:1;padding:13px;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:all .2s;}
+.btn-next:hover{background:#153921;box-shadow:0 4px 16px rgba(26,71,42,.3);transform:translateY(-1px);}
+
+/* ── RESULTS ── */
+#results{display:none;animation:fadeIn .5s ease;}
+.res-header{border-radius:20px;padding:30px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden;}
+.res-header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06);}
+.rh-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:.65;margin-bottom:6px;font-weight:600;}
+.rh-name{font-size:14px;font-weight:600;opacity:.85;margin-bottom:4px;}
+.rh-regime{font-family:'Crimson Pro',serif;font-size:50px;font-weight:600;letter-spacing:-2px;line-height:1;margin-bottom:8px;}
+.rh-saving{font-size:16px;font-weight:700;background:rgba(255,255,255,.15);display:inline-block;padding:7px 16px;border-radius:8px;margin-bottom:18px;}
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.stat-box{background:rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;}
+.stat-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.65;margin-bottom:4px;}
+.stat-v{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:500;}
+.stat-s{font-size:10px;opacity:.6;margin-top:2px;}
+.act-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.btn-dl{flex:1;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;min-width:140px;}
+.btn-dl:hover{background:#153921;transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,71,42,.3);}
+.btn-restart{padding:13px 18px;border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);}
+.reg-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+@media(max-width:480px){.reg-cards{grid-template-columns:1fr;}}
+.reg-card{background:var(--white);border:2px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--sh);position:relative;}
+.reg-card.winner{border-color:var(--accent);background:var(--al);}
+.rc-badge{position:absolute;top:-1px;right:14px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;padding:3px 9px;border-radius:0 0 8px 8px;letter-spacing:1px;text-transform:uppercase;}
+.rc-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;}
+.rc-tax{font-family:'JetBrains Mono',monospace;font-size:26px;color:var(--ink);margin-bottom:3px;}
+.reg-card.winner .rc-tax{color:var(--accent);}
+.rc-eff{font-size:11px;color:var(--muted);}
+.sec-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:14px;box-shadow:var(--sh);}
+.sec-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:700;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+/* ── ERROR PANEL ── */
+.error-panel{background:var(--white);border:1.5px solid var(--red);border-radius:16px;padding:22px;margin-bottom:14px;box-shadow:var(--sh);}
+.error-panel.warn{border-color:var(--a2);}
+.error-panel.ok{border-color:var(--accent);}
+.ep-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.ep-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.ep-dot.red{background:var(--red);}
+.ep-dot.amber{background:var(--a2);}
+.ep-dot.green{background:var(--accent);}
+.ep-heading{font-size:14px;font-weight:700;color:var(--ink);}
+.ep-count{font-size:11px;color:var(--muted);margin-left:auto;font-weight:600;}
+.error-item{display:flex;gap:12px;padding:12px;border-radius:10px;margin-bottom:8px;}
+.error-item:last-child{margin-bottom:0;}
+.error-item.crit{background:var(--redl);}
+.error-item.warn{background:var(--a2l);}
+.error-item.info{background:var(--bluel);}
+.err-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.err-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.err-desc{font-size:12px;color:var(--ink2);line-height:1.5;}
+.err-action{font-size:11px;font-weight:700;margin-top:5px;}
+.err-action.red{color:var(--red);}
+.err-action.amber{color:var(--a2);}
+.err-action.blue{color:var(--blue);}
+
+/* Deductions */
+.ded-row{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 0;border-bottom:1px solid rgba(226,221,214,.5);gap:14px;}
 .ded-row:last-child{border-bottom:none;}
 .ded-name{font-size:13px;color:var(--ink2);font-weight:600;}
-.ded-section{font-size:10px;color:var(--accent);margin-top:2px;font-weight:700;letter-spacing:0.5px;}
-.ded-explain{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4;}
+.ded-sec{font-size:10px;color:var(--accent);margin-top:2px;font-weight:700;}
+.ded-exp{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
 .ded-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--accent);white-space:nowrap;flex-shrink:0;}
-.slab-item{margin-bottom:16px;}
-.slab-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
-.slab-name{font-size:12px;color:var(--ink2);font-weight:500;}
-.slab-amount{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);font-weight:600;}
-.slab-track{height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
-.slab-fill{height:100%;background:var(--accent);border-radius:4px;transition:width 0.8s ease;}
-.slab-rate{font-size:10px;color:var(--muted);margin-top:3px;}
-.tip-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(226,221,214,0.4);}
+
+/* Slabs */
+.slab-item{margin-bottom:14px;}
+.slab-head{display:flex;justify-content:space-between;margin-bottom:4px;}
+.slab-nm{font-size:12px;color:var(--ink2);font-weight:500;}
+.slab-amt{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);font-weight:600;}
+.slab-tr{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.slab-fl{height:100%;background:var(--accent);border-radius:3px;transition:width .8s ease;}
+.slab-rt{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* Tips */
+.tip-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(226,221,214,.4);}
 .tip-item:last-child{border-bottom:none;}
-.tip-icon{width:38px;height:38px;border-radius:10px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.tip-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;}
-.tip-desc{font-size:12px;color:var(--muted);line-height:1.55;}
-.tip-chip{display:inline-block;background:var(--accent-light);color:var(--accent);font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;margin-top:6px;}
-.insight-box{background:linear-gradient(135deg,#1a472a 0%,#0f2d1a 100%);border-radius:16px;padding:24px;color:white;margin-bottom:16px;}
-.insight-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:0.6;margin-bottom:12px;font-weight:700;display:flex;align-items:center;gap:8px;}
-.ai-pulse{width:7px;height:7px;background:#4af096;border-radius:50%;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
-#ai-text{font-size:14px;line-height:1.8;opacity:0.92;}
-#ai-text .hl{color:#c8f04a;font-weight:600;}
-.api-row{display:flex;gap:10px;margin-top:16px;align-items:center;}
-.api-row input{flex:1;padding:10px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:8px;background:rgba(255,255,255,0.1);color:white;font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;}
-.api-row input::placeholder{color:rgba(255,255,255,0.4);}
-.btn-ai{padding:10px 16px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:white;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
-.potential-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(226,221,214,0.4);}
-.potential-row:last-child{border-bottom:none;}
-.pot-bar-wrap{flex:1;}
-.pot-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px;}
-.pot-bar-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.tip-ico{width:36px;height:36px;border-radius:10px;background:var(--al);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.tip-title{font-size:13px;font-weight:700;margin-bottom:3px;}
+.tip-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.tip-chip{display:inline-block;background:var(--al);color:var(--accent);font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;margin-top:5px;}
+
+/* Utilisation bars */
+.pot-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(226,221,214,.4);}
+.pot-row:last-child{border-bottom:none;}
+.pot-ico{font-size:18px;width:28px;text-align:center;flex-shrink:0;}
+.pot-lbl{font-size:12px;font-weight:600;color:var(--ink2);min-width:90px;}
+.pot-bar{flex:1;}
+.pot-bar-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px;}
+.pot-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
 .pot-used{height:100%;background:var(--accent);border-radius:3px;}
-.pot-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0;}
-.pot-label{font-size:12px;font-weight:600;color:var(--ink2);min-width:80px;}
-.disclaimer{font-size:11px;color:var(--muted);text-align:center;line-height:1.7;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);}
+
+/* Insight */
+.insight-box{background:linear-gradient(135deg,#1a472a,#0f2d1a);border-radius:16px;padding:22px;color:#fff;margin-bottom:14px;}
+.ins-lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:.6;margin-bottom:10px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.ai-pulse{width:7px;height:7px;background:#4af096;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+#ai-text{font-size:14px;line-height:1.8;opacity:.92;}
+#ai-text .hl{color:#c8f04a;font-weight:600;}
+.api-row{display:flex;gap:10px;margin-top:14px;align-items:center;}
+.api-row input{flex:1;padding:10px 13px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;}
+.api-row input::placeholder{color:rgba(255,255,255,.4);}
+.btn-ai{padding:10px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:8px;color:#fff;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+
+.disclaimer{font-size:11px;color:var(--muted);text-align:center;line-height:1.7;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);}
+
+/* Comp table */
+.comp-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.comp-tbl th{text-align:left;padding:7px 0;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.comp-tbl th:not(:first-child){text-align:right;}
+.comp-tbl td{padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);font-size:12px;}
+.comp-tbl td:not(:first-child){text-align:right;font-family:'JetBrains Mono',monospace;}
 </style>
 </head>
 <body>
@@ -141,633 +245,519 @@ input[type="text"]:focus{border-color:var(--accent);background:var(--white);box-
 
 <div class="header">
   <div class="logo"><div class="logo-icon">🧾</div><span class="logo-text">Tax<span>Smart</span></span></div>
-  <div class="header-tagline">Your personal CA — free, in 5 minutes</div>
+  <div class="tagline">Your personal CA — free, in 5 minutes</div>
 </div>
 
-<div class="progress-wrap" id="progress-wrap">
-  <div class="progress-steps">
-    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-    <div class="step-dot active" id="dot-1" onclick="jumpTo(1)">1</div>
-    <div class="step-dot" id="dot-2" onclick="jumpTo(2)">2</div>
-    <div class="step-dot" id="dot-3" onclick="jumpTo(3)">3</div>
-    <div class="step-dot" id="dot-4" onclick="jumpTo(4)">4</div>
-    <div class="step-dot" id="dot-5" onclick="jumpTo(5)">5</div>
-    <div class="step-dot" id="dot-6" onclick="jumpTo(6)">6</div>
+<!-- Progress -->
+<div class="prog-wrap" id="prog-wrap">
+  <div class="prog-steps">
+    <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+    <div class="sdot upload-dot" id="dot-0" onclick="jumpTo(0)" title="Upload Documents">📄</div>
+    <div class="sdot active" id="dot-1" onclick="jumpTo(1)">1</div>
+    <div class="sdot" id="dot-2" onclick="jumpTo(2)">2</div>
+    <div class="sdot" id="dot-3" onclick="jumpTo(3)">3</div>
+    <div class="sdot" id="dot-4" onclick="jumpTo(4)">4</div>
+    <div class="sdot" id="dot-5" onclick="jumpTo(5)">5</div>
+    <div class="sdot" id="dot-6" onclick="jumpTo(6)">6</div>
   </div>
-  <div class="progress-label">
+  <div class="prog-label">
     <span id="step-label">Step 1 of 6</span>
-    <span class="progress-current" id="step-name">Basic Info</span>
+    <span class="prog-cur" id="step-name">Basic Info</span>
   </div>
 </div>
 
-<!-- STEP 1 -->
-<div class="step-card active" id="step-1">
-  <div class="step-eyebrow">Step 1 of 6</div>
-  <div class="step-title">Let's start with you</div>
-  <div class="step-desc">A few basics to personalize your tax report.</div>
+<!-- ═══════════ STEP 0: UPLOAD ═══════════ -->
+<div class="card active" id="step-0">
+  <div class="eyebrow">Optional · Auto-fill from documents</div>
+  <div class="card-title">Upload your tax documents</div>
+  <div class="card-desc">We'll read your Form 16, 26AS, and AIS using AI — and fill the entire form automatically. Also checks for errors and mismatches.</div>
+
+  <div class="doc-info blue">
+    <strong>📋 Where to get these:</strong><br>
+    <strong>Form 16</strong> — from your employer's HR/payroll portal or email (usually sent in June)<br>
+    <strong>Form 26AS</strong> — login to incometax.gov.in → e-File → Income Tax Returns → View Form 26AS<br>
+    <strong>AIS</strong> — same portal → Services → Annual Information Statement
+  </div>
+
+  <!-- API Key -->
   <div class="field">
-    <div class="label-wrap"><label>Your Name</label></div>
+    <div class="lbl-wrap">
+      <label>Anthropic API Key</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div>
+        <div class="tip-box">We use Claude AI to read your PDFs. Your documents are sent directly to Anthropic's servers — we never store them. Get a free API key at console.anthropic.com. Free tier is sufficient for this.<div class="ex-chip">sk-ant-api03-...</div></div>
+      </div>
+    </div>
+    <div class="api-key-row">
+      <input type="password" id="api-key-upload" placeholder="sk-ant-api03-xxxx  (required for AI extraction)">
+    </div>
+    <div class="key-hint">Get yours free at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> — no credit card needed for basic use</div>
+  </div>
+
+  <!-- Upload zones -->
+  <div class="upload-grid">
+    <div class="upload-zone" id="zone-f16" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'f16')">
+      <span class="uz-icon">📄</span>
+      <div class="uz-title">Form 16</div>
+      <div class="uz-sub">Part A + Part B<br>PDF from employer</div>
+      <div class="uz-badge">✓ UPLOADED</div>
+      <div class="uz-filename" id="fn-f16"></div>
+      <input type="file" accept=".pdf" onchange="handleFile(this,'f16')">
+    </div>
+    <div class="upload-zone" id="zone-26as" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'26as')">
+      <span class="uz-icon">📊</span>
+      <div class="uz-title">Form 26AS</div>
+      <div class="uz-sub">TDS / tax credit<br>statement PDF</div>
+      <div class="uz-badge">✓ UPLOADED</div>
+      <div class="uz-filename" id="fn-26as"></div>
+      <input type="file" accept=".pdf" onchange="handleFile(this,'26as')">
+    </div>
+    <div class="upload-zone" id="zone-ais" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'ais')">
+      <span class="uz-icon">📑</span>
+      <div class="uz-title">AIS</div>
+      <div class="uz-sub">Annual Information<br>Statement PDF</div>
+      <div class="uz-badge">✓ UPLOADED</div>
+      <div class="uz-filename" id="fn-ais"></div>
+      <input type="file" accept=".pdf" onchange="handleFile(this,'ais')">
+    </div>
+  </div>
+
+  <button class="extract-btn" id="extract-btn" onclick="runExtraction()" disabled>
+    <span id="extract-btn-label">⬆ Upload at least one document to extract</span>
+  </button>
+  <button class="skip-btn" onclick="skipToStep1()">Skip — I'll fill manually →</button>
+
+  <!-- Extraction progress UI -->
+  <div class="extract-progress" id="extract-progress">
+    <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:12px;margin-top:16px;">Extracting data from your documents…</div>
+    <div class="ep-step" id="ep-f16">
+      <div class="ep-icon wait" id="ep-f16-icon">📄</div>
+      <div><div class="ep-label">Reading Form 16</div><div class="ep-sub" id="ep-f16-sub">Salary, deductions, TDS paid</div></div>
+    </div>
+    <div class="ep-step" id="ep-26as">
+      <div class="ep-icon wait" id="ep-26as-icon">📊</div>
+      <div><div class="ep-label">Reading Form 26AS</div><div class="ep-sub" id="ep-26as-sub">TDS credits, advance tax</div></div>
+    </div>
+    <div class="ep-step" id="ep-ais">
+      <div class="ep-icon wait" id="ep-ais-icon">📑</div>
+      <div><div class="ep-label">Reading AIS</div><div class="ep-sub" id="ep-ais-sub">Interest, dividends, capital gains</div></div>
+    </div>
+    <div class="ep-step" id="ep-cross">
+      <div class="ep-icon wait" id="ep-cross-icon">🔍</div>
+      <div><div class="ep-label">Cross-checking for errors</div><div class="ep-sub" id="ep-cross-sub">Mismatches, missing PAN, undeclared income</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STEP 1 ═══════════ -->
+<div class="card" id="step-1">
+  <div class="eyebrow">Step 1 of 6</div>
+  <div class="card-title">Let's start with you</div>
+  <div class="card-desc">A few basics to personalize your tax report.</div>
+  <div class="info-pill green" id="autofill-banner-1" style="display:none">✅ Fields auto-filled from your documents. Review and correct if needed.</div>
+  <div class="field">
+    <div class="lbl-wrap"><label>Your Name</label></div>
     <input type="text" id="name" placeholder="e.g. Rahul Sharma">
   </div>
   <div class="field-row">
     <div class="field">
-      <div class="label-wrap">
-        <label>Age</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Citizens above 60 (Senior) and 80 (Super Senior) get higher exemption limits under the old regime — ₹3L and ₹5L respectively instead of ₹2.5L.</div>
-        </div>
+      <div class="lbl-wrap"><label>Age</label>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Citizens above 60 (Senior) and 80 (Super Senior) get higher exemption limits under the old regime — ₹3L and ₹5L respectively.</div></div>
       </div>
       <input type="text" id="age" placeholder="28" style="font-family:'JetBrains Mono',monospace;">
     </div>
     <div class="field">
-      <div class="label-wrap"><label>Financial Year</label></div>
+      <div class="lbl-wrap"><label>Financial Year</label></div>
       <select id="fy"><option value="2025-26" selected>FY 2025–26 (Current)</option><option value="2024-25">FY 2024–25</option></select>
     </div>
   </div>
   <div class="field">
-    <div class="label-wrap">
-      <label>City Type</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">Affects your HRA exemption. Metro cities get 50% of Basic as HRA-exempt. Non-metro gets 40%.<div class="example-chip">Metro = Mumbai, Delhi, Chennai, Kolkata</div></div>
-      </div>
+    <div class="lbl-wrap"><label>City Type</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Metro = 50% of Basic as HRA-exempt. Non-metro = 40%.<div class="ex-chip">Metro: Mumbai, Delhi, Chennai, Kolkata</div></div></div>
     </div>
     <div class="toggle-group">
-      <div class="toggle-btn active" onclick="selectToggle(this,'city','metro')">🏙 Metro City</div>
-      <div class="toggle-btn" onclick="selectToggle(this,'city','non_metro')">🏘 Non-Metro</div>
+      <div class="tog-btn active" onclick="setTog(this,'city','metro')">🏙 Metro City</div>
+      <div class="tog-btn" onclick="setTog(this,'city','non_metro')">🏘 Non-Metro</div>
     </div>
   </div>
   <input type="hidden" id="city" value="metro">
-  <div class="nav-row"><button class="btn-next" onclick="nextStep(1)">Continue → Income Details</button></div>
+  <div class="nav-row"><button class="btn-next" onclick="ns(1)">Continue → Income Details</button></div>
 </div>
 
-<!-- STEP 2 -->
-<div class="step-card" id="step-2">
-  <div class="step-eyebrow">Step 2 of 6</div>
-  <div class="step-title">Your Income</div>
-  <div class="step-desc">Enter annual figures. Check your salary slip or Form 16.</div>
-  <div class="info-pill">💡 All amounts are <strong>annual</strong>. Monthly salary × 12 = annual.</div>
+<!-- ═══════════ STEP 2 ═══════════ -->
+<div class="card" id="step-2">
+  <div class="eyebrow">Step 2 of 6</div>
+  <div class="card-title">Your Income</div>
+  <div class="card-desc">Enter annual figures. Check your salary slip or Form 16.</div>
+  <div class="info-pill amber" id="autofill-banner-2" style="display:none">✅ Auto-filled from Form 16. Green fields were extracted automatically — review for accuracy.</div>
+  <div class="info-pill green">💡 All amounts are <strong>annual</strong>. Monthly salary × 12 = annual.</div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Gross Annual Salary (CTC)</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">Total amount your employer pays for you per year, before any deductions. Check your offer letter or Form 16.<div class="example-chip">Monthly ₹1,00,000 → Enter ₹12,00,000</div></div>
-      </div>
+    <div class="lbl-wrap"><label>Gross Annual Salary (CTC)</label><span id="af-gross" class="af-badge" style="display:none">✓ auto</span>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Total amount employer spends on you per year, before any deductions.<div class="ex-chip">Monthly ₹1,00,000 → Enter ₹12,00,000</div></div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="gross_d" placeholder="12,00,000" oninput="fa(this,'gross')">
-      <input type="hidden" id="gross">
-    </div>
-    <div class="amount-words" id="gross_w"></div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="gross_d" placeholder="12,00,000" oninput="fa(this,'gross')"><input type="hidden" id="gross"></div>
+    <div class="amt-words" id="gross_w"></div>
   </div>
 
   <div class="field-row">
     <div class="field">
-      <div class="label-wrap">
-        <label>Basic Salary (Annual)</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Fixed base component. Usually 40–50% of CTC. HRA, EPF, gratuity are calculated on this.<div class="example-chip">CTC ₹12L → Basic ~₹4.8–6L</div></div>
-        </div>
+      <div class="lbl-wrap"><label>Basic Salary (Annual)</label><span id="af-basic" class="af-badge" style="display:none">✓ auto</span>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Fixed base component. Usually 40–50% of CTC. HRA, EPF, gratuity are calculated on this.</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="basic_d" placeholder="4,80,000" oninput="fa(this,'basic')">
-        <input type="hidden" id="basic">
-      </div>
-      <div class="amount-words" id="basic_w"></div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="basic_d" placeholder="4,80,000" oninput="fa(this,'basic')"><input type="hidden" id="basic"></div>
+      <div class="amt-words" id="basic_w"></div>
     </div>
     <div class="field">
-      <div class="label-wrap">
-        <label>DA (Dearness Allowance)</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Paid mostly to government employees to offset inflation. Private sector employees usually have ₹0 DA.</div>
-        </div>
+      <div class="lbl-wrap"><label>DA (Dearness Allowance)</label>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Paid mostly to government employees. Private sector = ₹0 usually.</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="da_d" placeholder="0" oninput="fa(this,'da')">
-        <input type="hidden" id="da">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="da_d" placeholder="0" oninput="fa(this,'da')"><input type="hidden" id="da"></div>
     </div>
   </div>
 
   <div class="field-row">
     <div class="field">
-      <div class="label-wrap">
-        <label>HRA Received (Annual)</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">House Rent Allowance from your employer. Appears on salary slip as "HRA". If you pay rent, part of this becomes tax-free in the old regime.</div>
-        </div>
+      <div class="lbl-wrap"><label>HRA Received</label><span id="af-hra_received" class="af-badge" style="display:none">✓ auto</span>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">House Rent Allowance from employer. Appears on salary slip as "HRA". If you pay rent, part is tax-free in old regime.</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="hra_received_d" placeholder="2,40,000" oninput="fa(this,'hra_received')">
-        <input type="hidden" id="hra_received">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="hra_received_d" placeholder="2,40,000" oninput="fa(this,'hra_received')"><input type="hidden" id="hra_received"></div>
     </div>
     <div class="field">
-      <div class="label-wrap">
-        <label>Rent Paid (Annual)</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Actual rent paid to your landlord per year. Enter ₹0 if you own your home or live with parents rent-free. Higher rent = more HRA exemption (up to a limit).</div>
-        </div>
+      <div class="lbl-wrap"><label>Rent Paid (Annual)</label>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Actual rent you pay to your landlord per year. Enter ₹0 if you own your home or live with parents.</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="rent_paid_d" placeholder="1,80,000" oninput="fa(this,'rent_paid')">
-        <input type="hidden" id="rent_paid">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="rent_paid_d" placeholder="1,80,000" oninput="fa(this,'rent_paid')"><input type="hidden" id="rent_paid"></div>
     </div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Professional Tax Paid</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">Small state government tax auto-deducted from salary. Most employees pay ₹200/month = ₹2,400/year. Fully deductible in old regime. Check your payslip.</div>
-      </div>
+    <div class="lbl-wrap"><label>Professional Tax Paid</label><span id="af-prof_tax" class="af-badge" style="display:none">✓ auto</span>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">State tax auto-deducted. ~₹200/month = ₹2,400/year. Deductible in old regime.</div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="prof_tax_d" placeholder="2,400" oninput="fa(this,'prof_tax')">
-      <input type="hidden" id="prof_tax">
-    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="prof_tax_d" placeholder="2,400" oninput="fa(this,'prof_tax')"><input type="hidden" id="prof_tax"></div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Do you receive LTA?</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">Leave Travel Allowance — employer pays for your travel during leave. Actual domestic travel ticket cost is tax-free (old regime only). Claimable twice in a 4-year block.</div>
-      </div>
+    <div class="lbl-wrap"><label>Do you receive LTA?</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Leave Travel Allowance. Actual domestic travel cost is tax-free in old regime. Claimable twice in a 4-year block.</div></div>
     </div>
     <div class="toggle-group">
-      <div class="toggle-btn active" onclick="selectToggle(this,'has_lta','no');toggleSection('lta-sec',false)">No LTA</div>
-      <div class="toggle-btn" onclick="selectToggle(this,'has_lta','yes');toggleSection('lta-sec',true)">Yes, I get LTA</div>
+      <div class="tog-btn active" onclick="setTog(this,'has_lta','no');showCond('lta-sec',false)">No LTA</div>
+      <div class="tog-btn" onclick="setTog(this,'has_lta','yes');showCond('lta-sec',true)">Yes, I get LTA</div>
     </div>
   </div>
   <input type="hidden" id="has_lta" value="no">
-  <div class="conditional" id="lta-sec">
+  <div class="cond" id="lta-sec">
     <div class="field-row">
-      <div class="field">
-        <div class="label-wrap"><label>LTA Received (Annual)</label></div>
-        <div class="amount-field"><span class="amount-prefix">₹</span>
-          <input class="amount-display" id="lta_received_d" placeholder="50,000" oninput="fa(this,'lta_received')">
-          <input type="hidden" id="lta_received">
-        </div>
-      </div>
-      <div class="field">
-        <div class="label-wrap">
-          <label>Actual Travel Cost</label>
-          <div class="tooltip-wrap"><div class="tip-btn">?</div>
-            <div class="tooltip-box">Amount actually spent on travel tickets. Exemption = minimum of LTA received or actual travel cost. Keep tickets as proof.</div>
-          </div>
-        </div>
-        <div class="amount-field"><span class="amount-prefix">₹</span>
-          <input class="amount-display" id="lta_claimed_d" placeholder="40,000" oninput="fa(this,'lta_claimed')">
-          <input type="hidden" id="lta_claimed">
-        </div>
-      </div>
+      <div class="field"><div class="lbl-wrap"><label>LTA Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="lta_received_d" placeholder="50,000" oninput="fa(this,'lta_received')"><input type="hidden" id="lta_received"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>Actual Travel Cost</label><div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Amount spent on tickets. Exemption = min(LTA received, travel cost).</div></div></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="lta_claimed_d" placeholder="40,000" oninput="fa(this,'lta_claimed')"><input type="hidden" id="lta_claimed"></div></div>
     </div>
-    <div class="info-pill amber">✈️ Only domestic economy travel qualifies. Keep tickets as proof. Old regime only.</div>
+    <div class="info-pill amber">✈️ Only domestic economy travel qualifies. Keep tickets as proof.</div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Children Education Allowance?</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">If employer pays CEA, ₹100/month per child (max 2) is tax-free. Hostel allowance ₹300/month per child also exempt. Old regime only.</div>
-      </div>
+    <div class="lbl-wrap"><label>Children Education Allowance?</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">₹100/month per child (max 2) CEA + ₹300/month hostel allowance is tax-free. Old regime only.</div></div>
     </div>
     <div class="toggle-group">
-      <div class="toggle-btn active" onclick="selectToggle(this,'has_cea','no');toggleSection('cea-sec',false)">Not applicable</div>
-      <div class="toggle-btn" onclick="selectToggle(this,'has_cea','yes');toggleSection('cea-sec',true)">Yes, I have children</div>
+      <div class="tog-btn active" onclick="setTog(this,'has_cea','no');showCond('cea-sec',false)">Not applicable</div>
+      <div class="tog-btn" onclick="setTog(this,'has_cea','yes');showCond('cea-sec',true)">Yes, I have children</div>
     </div>
   </div>
   <input type="hidden" id="has_cea" value="no">
-  <div class="conditional" id="cea-sec">
+  <div class="cond" id="cea-sec">
     <div class="field-row">
-      <div class="field">
-        <div class="label-wrap"><label>CEA Received (Annual)</label></div>
-        <div class="amount-field"><span class="amount-prefix">₹</span>
-          <input class="amount-display" id="cea_d" placeholder="2,400" oninput="fa(this,'cea')">
-          <input type="hidden" id="cea">
-        </div>
-      </div>
-      <div class="field">
-        <div class="label-wrap"><label>Hostel Allowance Received</label></div>
-        <div class="amount-field"><span class="amount-prefix">₹</span>
-          <input class="amount-display" id="hostel_d" placeholder="7,200" oninput="fa(this,'hostel_allowance')">
-          <input type="hidden" id="hostel_allowance">
-        </div>
-      </div>
+      <div class="field"><div class="lbl-wrap"><label>CEA Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="cea_d" placeholder="2,400" oninput="fa(this,'cea')"><input type="hidden" id="cea"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>Hostel Allowance</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="hostel_d" placeholder="7,200" oninput="fa(this,'hostel_allowance')"><input type="hidden" id="hostel_allowance"></div></div>
     </div>
-    <div class="info-pill">📚 Max exempt: ₹2,400/year CEA + ₹7,200/year hostel (for up to 2 children).</div>
+    <div class="info-pill green">📚 Max exempt: ₹2,400 CEA + ₹7,200 hostel per family (2 children).</div>
   </div>
 
-  <div class="nav-row">
-    <button class="btn-back" onclick="prevStep(2)">← Back</button>
-    <button class="btn-next" onclick="nextStep(2)">Continue → Investments</button>
-  </div>
+  <div class="nav-row"><button class="btn-back" onclick="ps(2)">← Back</button><button class="btn-next" onclick="ns(2)">Continue → Investments</button></div>
 </div>
 
-<!-- STEP 3 -->
-<div class="step-card" id="step-3">
-  <div class="step-eyebrow">Step 3 of 6</div>
-  <div class="step-title">Investments & Savings</div>
-  <div class="step-desc">These reduce your taxable income in the old regime. Enter only what you've actually invested.</div>
+<!-- ═══════════ STEP 3 ═══════════ -->
+<div class="card" id="step-3">
+  <div class="eyebrow">Step 3 of 6</div>
+  <div class="card-title">Investments & Savings</div>
+  <div class="card-desc">These reduce taxable income in old regime. Enter only what you've actually invested.</div>
+  <div class="info-pill amber" id="autofill-banner-3" style="display:none">✅ Auto-filled from Form 16 Part B. Review for accuracy.</div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>80C Investments</label><span class="label-sub">Max ₹1,50,000</span>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">The most popular deduction. Add together: PPF + ELSS funds + LIC premium + your EPF contribution + NSC + tax-saving FD + children's school tuition fees. Cap is ₹1.5 lakh.<div class="example-chip">PPF ₹50K + ELSS ₹50K + LIC ₹30K = ₹1.3L</div></div>
-      </div>
+    <div class="lbl-wrap"><label>80C Investments</label><span class="lbl-sub">Max ₹1,50,000</span><span id="af-sec80c" class="af-badge" style="display:none">✓ auto</span>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Add together: PPF + ELSS + LIC premium + your EPF contribution + NSC + tax-saving FD + children's tuition fees. Cap ₹1.5L.<div class="ex-chip">PPF ₹50K + ELSS ₹50K + LIC ₹30K = ₹1.3L</div></div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="sec80c_d" placeholder="1,50,000" oninput="fa(this,'sec80c')">
-      <input type="hidden" id="sec80c">
-    </div>
-    <div class="amount-words" id="sec80c_w"></div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80c_d" placeholder="1,50,000" oninput="fa(this,'sec80c')"><input type="hidden" id="sec80c"></div>
+    <div class="amt-words" id="sec80c_w"></div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>NPS Contribution</label><span class="label-sub">Extra ₹50,000 over 80C</span>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">National Pension System gives you ₹50,000 EXTRA deduction completely separate from your ₹1.5L 80C. Highly underused! Open NPS Tier 1 through your bank or NSDL.<div class="example-chip">80C ₹1.5L + NPS ₹50K = ₹2L total!</div></div>
-      </div>
+    <div class="lbl-wrap"><label>NPS Contribution</label><span class="lbl-sub">Extra ₹50,000 over 80C</span><span id="af-nps" class="af-badge" style="display:none">✓ auto</span>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">NPS Tier 1 gives EXTRA ₹50K deduction separate from 80C. Open at your bank or nsdl.co.in.<div class="ex-chip">80C ₹1.5L + NPS ₹50K = ₹2L total!</div></div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="nps_d" placeholder="50,000" oninput="fa(this,'nps')">
-      <input type="hidden" id="nps">
-    </div>
-    <div class="amount-words" id="nps_w"></div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="nps_d" placeholder="50,000" oninput="fa(this,'nps')"><input type="hidden" id="nps"></div>
+    <div class="amt-words" id="nps_w"></div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Employer's NPS Contribution</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">If your employer contributes to your NPS, this is deductible under 80CCD(2). Big advantage: works in BOTH old and new regime! Ask HR to restructure CTC. Up to 10% of Basic+DA.<div class="example-chip">✅ Works in New Regime too!</div></div>
-      </div>
+    <div class="lbl-wrap"><label>Employer NPS Contribution</label><span id="af-employer_nps" class="af-badge" style="display:none">✓ auto</span>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Employer's NPS contribution up to 10% of Basic+DA. Deductible in BOTH regimes under 80CCD(2)!<div class="ex-chip">✅ Works in New Regime too!</div></div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="employer_nps_d" placeholder="0" oninput="fa(this,'employer_nps')">
-      <input type="hidden" id="employer_nps">
-    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="employer_nps_d" placeholder="0" oninput="fa(this,'employer_nps')"><input type="hidden" id="employer_nps"></div>
   </div>
 
   <div class="field-row">
     <div class="field">
-      <div class="label-wrap">
-        <label>Health Insurance — Self</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Premium for health insurance covering you, spouse, and children. Up to ₹25,000 deductible (₹50K if you're a senior citizen). Preventive health checkup ₹5,000 also included.</div>
-        </div>
+      <div class="lbl-wrap"><label>80D — Self & Family</label><span id="af-sec80d_self" class="af-badge" style="display:none">✓ auto</span>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Health insurance premium for you, spouse, children. Max ₹25,000 deductible (₹50K if senior citizen).</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="sec80d_self_d" placeholder="25,000" oninput="fa(this,'sec80d_self')">
-        <input type="hidden" id="sec80d_self">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80d_self_d" placeholder="25,000" oninput="fa(this,'sec80d_self')"><input type="hidden" id="sec80d_self"></div>
     </div>
     <div class="field">
-      <div class="label-wrap">
-        <label>Health Insurance — Parents</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Additional ₹25,000 deduction for parents' insurance (₹50K if parents are senior citizens). This is OVER AND ABOVE your own ₹25K. Many people miss this!</div>
-        </div>
+      <div class="lbl-wrap"><label>80D — Parents</label>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Additional ₹25,000 for parents' insurance (₹50K if parents are senior citizens). Over and above your own ₹25K!</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="sec80d_parents_d" placeholder="0" oninput="fa(this,'sec80d_parents')">
-        <input type="hidden" id="sec80d_parents">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80d_parents_d" placeholder="0" oninput="fa(this,'sec80d_parents')"><input type="hidden" id="sec80d_parents"></div>
     </div>
   </div>
 
-  <div class="nav-row">
-    <button class="btn-back" onclick="prevStep(3)">← Back</button>
-    <button class="btn-next" onclick="nextStep(3)">Continue → Loans & More</button>
-  </div>
+  <div class="nav-row"><button class="btn-back" onclick="ps(3)">← Back</button><button class="btn-next" onclick="ns(3)">Continue → Loans & More</button></div>
 </div>
 
-<!-- STEP 4 -->
-<div class="step-card" id="step-4">
-  <div class="step-eyebrow">Step 4 of 6</div>
-  <div class="step-title">Loans & Other Deductions</div>
-  <div class="step-desc">Many people leave thousands on the table here. Take a minute — worth it.</div>
+<!-- ═══════════ STEP 4 ═══════════ -->
+<div class="card" id="step-4">
+  <div class="eyebrow">Step 4 of 6</div>
+  <div class="card-title">Loans & Other Deductions</div>
+  <div class="card-desc">Many people miss thousands here. Check your bank interest certificates.</div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Home Loan Interest</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">The interest portion of your home loan EMI is deductible under Section 24(b). Max ₹2,00,000 for self-occupied. Get "Interest Certificate" from your bank to know the split.<div class="example-chip">EMI ₹30K/month → interest ~₹20K = ₹2.4L/year</div></div>
-      </div>
+    <div class="lbl-wrap"><label>Home Loan Interest</label><span id="af-home_loan_interest" class="af-badge" style="display:none">✓ auto</span>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Interest portion of home loan EMI. Max ₹2L for self-occupied. Get "Interest Certificate" from bank.<div class="ex-chip">EMI ₹30K/month → interest ~₹20K/month</div></div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="home_loan_interest_d" placeholder="0" oninput="fa(this,'home_loan_interest')">
-      <input type="hidden" id="home_loan_interest">
-    </div>
-    <div class="amount-words" id="home_loan_interest_w"></div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="home_loan_interest_d" placeholder="0" oninput="fa(this,'home_loan_interest')"><input type="hidden" id="home_loan_interest"></div>
+    <div class="amt-words" id="home_loan_interest_w"></div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Home Loan Principal Repayment</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">The principal part of your EMI counts towards your 80C limit of ₹1.5L. Check your bank's interest certificate for the principal vs interest split.</div>
-      </div>
+    <div class="lbl-wrap"><label>Home Loan Principal Repayment</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Principal part of EMI counts towards 80C ₹1.5L limit. Check your bank's interest certificate for the split.</div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="home_loan_principal_d" placeholder="0" oninput="fa(this,'home_loan_principal')">
-      <input type="hidden" id="home_loan_principal">
-    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="home_loan_principal_d" placeholder="0" oninput="fa(this,'home_loan_principal')"><input type="hidden" id="home_loan_principal"></div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Education Loan Interest</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">Interest on education loan for self, spouse, or children is 100% deductible — with NO upper limit! Applies for 8 years from repayment start. Very underused!<div class="example-chip">No maximum — full interest is deductible</div></div>
-      </div>
+    <div class="lbl-wrap"><label>Education Loan Interest</label><span id="af-sec80e" class="af-badge" style="display:none">✓ auto</span>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">100% deductible — no upper limit! For 8 years from repayment start. Very underused!<div class="ex-chip">No maximum limit</div></div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="sec80e_d" placeholder="0" oninput="fa(this,'sec80e')">
-      <input type="hidden" id="sec80e">
-    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80e_d" placeholder="0" oninput="fa(this,'sec80e')"><input type="hidden" id="sec80e"></div>
   </div>
 
   <div class="field-row">
     <div class="field">
-      <div class="label-wrap">
-        <label>Savings A/c Interest</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Interest earned in savings bank account — ₹10,000/year is tax-free under 80TTA. Senior citizens get ₹50,000 under 80TTB (also covers FD interest). Check your bank statement.</div>
-        </div>
+      <div class="lbl-wrap"><label>Savings A/c Interest</label>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Interest earned in savings bank account — ₹10,000/year tax-free under 80TTA. ₹50K for senior citizens (80TTB).</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="sec80tta_d" placeholder="0" oninput="fa(this,'sec80tta')">
-        <input type="hidden" id="sec80tta">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80tta_d" placeholder="0" oninput="fa(this,'sec80tta')"><input type="hidden" id="sec80tta"></div>
     </div>
     <div class="field">
-      <div class="label-wrap">
-        <label>Donations (80G)</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Donations to approved charities — 50% to 100% deductible. Always get receipt with the 80G registration number. We calculate 50% conservatively.</div>
-        </div>
+      <div class="lbl-wrap"><label>Donations (80G)</label>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">50–100% of donations to approved charities deductible. Keep receipt with 80G number. We calculate 50% conservatively.</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="sec80g_d" placeholder="0" oninput="fa(this,'sec80g')">
-        <input type="hidden" id="sec80g">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80g_d" placeholder="0" oninput="fa(this,'sec80g')"><input type="hidden" id="sec80g"></div>
     </div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Disability (80U / 80DD)</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">If you have a certified disability (40%+), claim ₹75,000 under 80U (₹1.25L for severe). 80DD applies if you have a disabled dependent. Medical certificate required.</div>
-      </div>
+    <div class="lbl-wrap"><label>Disability (80U / 80DD)</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">₹75K for self with disability (40%+), ₹1.25L for severe. 80DD for disabled dependent. Medical certificate needed.</div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="sec80u_d" placeholder="0" oninput="fa(this,'sec80u')">
-      <input type="hidden" id="sec80u">
-    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80u_d" placeholder="0" oninput="fa(this,'sec80u')"><input type="hidden" id="sec80u"></div>
   </div>
 
-  <div class="nav-row">
-    <button class="btn-back" onclick="prevStep(4)">← Back</button>
-    <button class="btn-next" onclick="nextStep(4)">Continue → EPF & Gratuity</button>
-  </div>
+  <div class="nav-row"><button class="btn-back" onclick="ps(4)">← Back</button><button class="btn-next" onclick="ns(4)">Continue → EPF & Gratuity</button></div>
 </div>
 
-<!-- STEP 5 -->
-<div class="step-card" id="step-5">
-  <div class="step-eyebrow">Step 5 of 6</div>
-  <div class="step-title">EPF & Gratuity</div>
-  <div class="step-desc">Usually automatic — let's make sure they're counted correctly.</div>
-  <div class="info-pill">🏦 Your EPF and gratuity have built-in tax protections. We calculate exempt portions automatically.</div>
+<!-- ═══════════ STEP 5 ═══════════ -->
+<div class="card" id="step-5">
+  <div class="eyebrow">Step 5 of 6</div>
+  <div class="card-title">EPF & Gratuity</div>
+  <div class="card-desc">Usually automatic — let's make sure they're counted correctly.</div>
+  <div class="info-pill green" id="autofill-banner-5" style="display:none">✅ Auto-filled from Form 16 and 26AS.</div>
+  <div class="info-pill blue">🏦 EPF and gratuity have built-in tax protections. We calculate exempt portions automatically.</div>
 
   <div class="field-row">
     <div class="field">
-      <div class="label-wrap">
-        <label>EPF — Your Contribution</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">12% of basic salary auto-deducted monthly into your EPF account. This counts towards 80C (₹1.5L limit). Check payslip for "PF deduction".<div class="example-chip">Basic ₹40K/month → EPF ₹4,800/month = ₹57,600/year</div></div>
-        </div>
+      <div class="lbl-wrap"><label>EPF — Your Contribution</label><span id="af-epf_employee" class="af-badge" style="display:none">✓ auto</span>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">12% of basic salary auto-deducted monthly. Counts towards 80C limit. Check payslip.<div class="ex-chip">Basic ₹40K/month → EPF ₹57,600/year</div></div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="epf_employee_d" placeholder="57,600" oninput="fa(this,'epf_employee')">
-        <input type="hidden" id="epf_employee">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="epf_employee_d" placeholder="57,600" oninput="fa(this,'epf_employee')"><input type="hidden" id="epf_employee"></div>
     </div>
     <div class="field">
-      <div class="label-wrap">
-        <label>EPF — Employer Contribution</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Your employer also contributes 12% of your basic to EPF. Tax-free up to ₹7.5L/year combined with employer NPS and superannuation. Does NOT count in your 80C.</div>
-        </div>
+      <div class="lbl-wrap"><label>EPF — Employer Contribution</label>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Employer's 12% of basic to EPF. Tax-free up to ₹7.5L/year combined (EPF+NPS+Superannuation). Not in your 80C.</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="epf_employer_d" placeholder="57,600" oninput="fa(this,'epf_employer')">
-        <input type="hidden" id="epf_employer">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="epf_employer_d" placeholder="57,600" oninput="fa(this,'epf_employer')"><input type="hidden" id="epf_employer"></div>
     </div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Did you receive Gratuity this year?</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">Lump sum paid by employer when you leave after 5+ years. Up to ₹20,00,000 is completely tax-free for covered employees.</div>
-      </div>
+    <div class="lbl-wrap"><label>Gratuity this year?</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Lump sum on leaving after 5+ years. Up to ₹20,00,000 completely tax-free.</div></div>
     </div>
     <div class="toggle-group">
-      <div class="toggle-btn active" onclick="selectToggle(this,'has_gratuity','no');toggleSection('gratuity-sec',false)">No</div>
-      <div class="toggle-btn" onclick="selectToggle(this,'has_gratuity','yes');toggleSection('gratuity-sec',true)">Yes</div>
+      <div class="tog-btn active" onclick="setTog(this,'has_gratuity','no');showCond('grat-sec',false)">No</div>
+      <div class="tog-btn" onclick="setTog(this,'has_gratuity','yes');showCond('grat-sec',true)">Yes</div>
     </div>
   </div>
   <input type="hidden" id="has_gratuity" value="no">
-  <div class="conditional" id="gratuity-sec">
-    <div class="field">
-      <div class="label-wrap"><label>Gratuity Amount Received</label></div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="gratuity_d" placeholder="5,00,000" oninput="fa(this,'gratuity')">
-        <input type="hidden" id="gratuity">
-      </div>
-      <div class="amount-words" id="gratuity_w"></div>
-    </div>
+  <div class="cond" id="grat-sec">
+    <div class="field"><div class="lbl-wrap"><label>Gratuity Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="gratuity_d" placeholder="5,00,000" oninput="fa(this,'gratuity')"><input type="hidden" id="gratuity"></div><div class="amt-words" id="gratuity_w"></div></div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Other Tax-Free Allowances</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">Other employer-paid allowances that are fully or partially exempt: uniform allowance, research allowance, conveyance (old regime). Check salary slip for "allowances".</div>
-      </div>
+    <div class="lbl-wrap"><label>Other Tax-Free Allowances</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Uniform allowance, research allowance, conveyance (old regime), etc. Check salary slip.</div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="other_exempt_d" placeholder="0" oninput="fa(this,'other_exempt')">
-      <input type="hidden" id="other_exempt">
-    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="other_exempt_d" placeholder="0" oninput="fa(this,'other_exempt')"><input type="hidden" id="other_exempt"></div>
   </div>
 
-  <div class="nav-row">
-    <button class="btn-back" onclick="prevStep(5)">← Back</button>
-    <button class="btn-next" onclick="nextStep(5)">Continue → Other Income</button>
-  </div>
+  <div class="nav-row"><button class="btn-back" onclick="ps(5)">← Back</button><button class="btn-next" onclick="ns(5)">Continue → Other Income</button></div>
 </div>
 
-<!-- STEP 6 -->
-<div class="step-card" id="step-6">
-  <div class="step-eyebrow">Step 6 of 6</div>
-  <div class="step-title">Other Income</div>
-  <div class="step-desc">Almost done! Any income beyond your salary? Enter ₹0 if not applicable.</div>
+<!-- ═══════════ STEP 6 ═══════════ -->
+<div class="card" id="step-6">
+  <div class="eyebrow">Step 6 of 6</div>
+  <div class="card-title">Other Income</div>
+  <div class="card-desc">Almost done! Any income beyond your salary? Enter ₹0 if not applicable.</div>
+  <div class="info-pill green" id="autofill-banner-6" style="display:none">✅ Auto-filled from 26AS and AIS. Cross-check these carefully.</div>
 
   <div class="field-row">
     <div class="field">
-      <div class="label-wrap">
-        <label>FD / Bond Interest</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Interest from Fixed Deposits, RDs, bonds, post office schemes. Fully taxable at your slab rate. Bank deducts TDS on FD interest above ₹40,000/year. Check Form 26AS.</div>
-        </div>
+      <div class="lbl-wrap"><label>FD / Bond Interest</label><span id="af-interest_income" class="af-badge" style="display:none">✓ auto</span>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Interest from FDs, RDs, bonds. Fully taxable. Bank deducts TDS above ₹40K/year. Check Form 26AS.</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="interest_income_d" placeholder="0" oninput="fa(this,'interest_income')">
-        <input type="hidden" id="interest_income">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="interest_income_d" placeholder="0" oninput="fa(this,'interest_income')"><input type="hidden" id="interest_income"></div>
     </div>
     <div class="field">
-      <div class="label-wrap">
-        <label>Rental Income (Annual)</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Rent from property you own. 30% standard deduction is automatically applied (for repairs etc.) — no bills needed. Enter the gross rent received.</div>
-        </div>
+      <div class="lbl-wrap"><label>Rental Income (Annual)</label><span id="af-rental_income" class="af-badge" style="display:none">✓ auto</span>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Gross rent received. 30% standard deduction applied automatically. Enter the full rent received.</div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="rental_income_d" placeholder="0" oninput="fa(this,'rental_income')">
-        <input type="hidden" id="rental_income">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="rental_income_d" placeholder="0" oninput="fa(this,'rental_income')"><input type="hidden" id="rental_income"></div>
     </div>
   </div>
 
   <div class="field-row">
     <div class="field">
-      <div class="label-wrap">
-        <label>Short-Term Capital Gains</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Profit from selling stocks or equity MFs held less than 1 year. Taxed at flat 20% (post Budget 2024). Separate from your salary income slabs.<div class="example-chip">Sold shares within 12 months → STCG</div></div>
-        </div>
+      <div class="lbl-wrap"><label>Short-Term Capital Gains</label><span id="af-stcg" class="af-badge" style="display:none">✓ auto</span>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Profit from stocks/equity MFs held less than 1 year. Taxed at flat 20%.<div class="ex-chip">Sold shares within 12 months → STCG</div></div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="stcg_d" placeholder="0" oninput="fa(this,'stcg')">
-        <input type="hidden" id="stcg">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="stcg_d" placeholder="0" oninput="fa(this,'stcg')"><input type="hidden" id="stcg"></div>
     </div>
     <div class="field">
-      <div class="label-wrap">
-        <label>Long-Term Capital Gains</label>
-        <div class="tooltip-wrap"><div class="tip-btn">?</div>
-          <div class="tooltip-box">Profit from stocks/equity MFs held 1+ year. First ₹1,25,000/year is COMPLETELY TAX-FREE! Beyond that, taxed at 12.5%.<div class="example-chip">First ₹1.25L gains = zero tax every year</div></div>
-        </div>
+      <div class="lbl-wrap"><label>Long-Term Capital Gains</label><span id="af-ltcg" class="af-badge" style="display:none">✓ auto</span>
+        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Profit from stocks/equity MFs held 1+ year. First ₹1,25,000 is tax-free every year!<div class="ex-chip">First ₹1.25L gains = zero tax</div></div></div>
       </div>
-      <div class="amount-field"><span class="amount-prefix">₹</span>
-        <input class="amount-display" id="ltcg_d" placeholder="0" oninput="fa(this,'ltcg')">
-        <input type="hidden" id="ltcg">
-      </div>
+      <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="ltcg_d" placeholder="0" oninput="fa(this,'ltcg')"><input type="hidden" id="ltcg"></div>
     </div>
   </div>
 
   <div class="field">
-    <div class="label-wrap">
-      <label>Freelance / Side Income</label>
-      <div class="tooltip-wrap"><div class="tip-btn">?</div>
-        <div class="tooltip-box">Income from freelancing, consulting, content creation, tuitions etc. Added to salary income and taxed at your slab rate. If significant (above ₹2.5L), you'll need ITR-3 instead of ITR-1.</div>
-      </div>
+    <div class="lbl-wrap"><label>Freelance / Side Income</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Income from freelancing, consulting, tuitions etc. Added to salary income, taxed at slab rate. May need ITR-3 if above ₹2.5L.</div></div>
     </div>
-    <div class="amount-field"><span class="amount-prefix">₹</span>
-      <input class="amount-display" id="freelance_d" placeholder="0" oninput="fa(this,'freelance')">
-      <input type="hidden" id="freelance">
-    </div>
-    <div class="amount-words" id="freelance_w"></div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="freelance_d" placeholder="0" oninput="fa(this,'freelance')"><input type="hidden" id="freelance"></div>
+    <div class="amt-words" id="freelance_w"></div>
   </div>
 
-  <div class="nav-row">
-    <button class="btn-back" onclick="prevStep(6)">← Back</button>
-    <button class="btn-next" onclick="calculate()" style="background:var(--accent2);">🧮 Generate My Tax Report</button>
+  <!-- TDS fields (from 26AS) -->
+  <div class="field">
+    <div class="lbl-wrap"><label>TDS Already Deducted (Total)</label><span id="af-tds_deducted" class="af-badge" style="display:none">✓ auto</span>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Total Tax Deducted at Source by all deductors (employer, bank etc.) as shown in Form 26AS. This reduces your final tax payable.</div></div>
+    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="tds_deducted_d" placeholder="0" oninput="fa(this,'tds_deducted')"><input type="hidden" id="tds_deducted"></div>
+    <div class="amt-words" id="tds_deducted_w"></div>
   </div>
+
+  <div class="nav-row"><button class="btn-back" onclick="ps(6)">← Back</button><button class="btn-next" onclick="calculate()" style="background:var(--a2);">🧮 Generate My Tax Report</button></div>
 </div>
 
-<!-- RESULTS -->
+<!-- ═══════════════ RESULTS ═══════════════ -->
 <div id="results">
-  <div class="result-header" id="result-header">
+  <div class="res-header" id="res-hdr">
     <div class="rh-eyebrow">TaxSmart Report · FY 2025–26</div>
     <div class="rh-name" id="rh-name"></div>
     <div class="rh-regime" id="rh-regime">New Regime</div>
     <div class="rh-saving" id="rh-saving">Saves ₹0</div>
     <div class="stat-row">
-      <div class="stat-box"><div class="stat-label">Tax Payable</div><div class="stat-val" id="stat-tax">₹0</div><div class="stat-sub">with cess</div></div>
-      <div class="stat-box"><div class="stat-label">Effective Rate</div><div class="stat-val" id="stat-eff">0%</div><div class="stat-sub">of gross income</div></div>
-      <div class="stat-box"><div class="stat-label">Monthly Tax</div><div class="stat-val" id="stat-monthly">₹0</div><div class="stat-sub">advance / TDS</div></div>
+      <div class="stat-box"><div class="stat-l">Tax Payable</div><div class="stat-v" id="st-tax">₹0</div><div class="stat-s">with cess</div></div>
+      <div class="stat-box"><div class="stat-l">Effective Rate</div><div class="stat-v" id="st-eff">0%</div><div class="stat-s">of gross</div></div>
+      <div class="stat-box"><div class="stat-l">TDS Balance</div><div class="stat-v" id="st-tds">₹0</div><div class="stat-s" id="st-tds-sub">refund / due</div></div>
     </div>
   </div>
 
-  <div class="action-row">
-    <button class="btn-download" onclick="downloadReport()">⬇ Download Report</button>
+  <div class="act-row">
+    <button class="btn-dl" onclick="downloadReport()">⬇ Download Report</button>
     <button class="btn-restart" onclick="restart()">↺ Start Over</button>
   </div>
 
-  <div class="regime-cards">
-    <div class="regime-card" id="old-card"><div class="rc-regime">Old Regime</div><div class="rc-tax" id="old-tax">₹0</div><div class="rc-eff" id="old-eff">Effective: 0%</div></div>
-    <div class="regime-card" id="new-card"><div class="rc-regime">New Regime</div><div class="rc-tax" id="new-tax">₹0</div><div class="rc-eff" id="new-eff">Effective: 0%</div></div>
+  <!-- Error / Mismatch Panel -->
+  <div id="error-panel"></div>
+
+  <div class="reg-cards">
+    <div class="reg-card" id="old-card"></div>
+    <div class="reg-card" id="new-card"></div>
   </div>
 
   <div class="insight-box">
-    <div class="insight-label"><div class="ai-pulse"></div>AI Advisory Insight</div>
-    <div id="ai-text">Generating your personalized insight...</div>
+    <div class="ins-lbl"><div class="ai-pulse"></div>AI Advisory Insight</div>
+    <div id="ai-text">Generating your personalized insight…</div>
     <div class="api-row">
-      <input type="password" id="api_key" placeholder="Enter Anthropic API key for richer AI insights (optional)">
+      <input type="password" id="api_key" placeholder="Anthropic API key for deeper AI insight (optional)">
       <button class="btn-ai" onclick="fetchAI()">Get AI Insight</button>
     </div>
   </div>
 
-  <div class="section-card">
-    <div class="section-title">📊 How Well You're Using Deductions</div>
-    <div id="utilization-bars"></div>
+  <div class="sec-card">
+    <div class="sec-title">📊 Deduction Utilization</div>
+    <div id="util-bars"></div>
   </div>
 
-  <div class="section-card">
-    <div class="section-title">🔢 Full Income & Tax Comparison</div>
-    <table style="width:100%;border-collapse:collapse;font-size:13px;" id="comp-table"></table>
+  <div class="sec-card">
+    <div class="sec-title">🔢 Income & Tax Comparison</div>
+    <table class="comp-tbl" id="comp-tbl"></table>
   </div>
 
-  <div class="section-card">
-    <div class="section-title">📈 Tax Slab Breakdown</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" id="slab-section"></div>
+  <div class="sec-card">
+    <div class="sec-title">📈 Tax Slab Breakdown</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px" id="slab-sec"></div>
   </div>
 
-  <div class="section-card">
-    <div class="section-title">✅ Your Deductions & Exemptions (Old Regime)</div>
+  <div class="sec-card">
+    <div class="sec-title">✅ Your Deductions & Exemptions (Old Regime)</div>
     <div id="ded-list"></div>
   </div>
 
-  <div class="section-card">
-    <div class="section-title">💡 Personalized Tax Saving Tips</div>
+  <div class="sec-card">
+    <div class="sec-title">💡 Personalized Tax Saving Tips</div>
     <div id="tips-list"></div>
   </div>
 
   <div class="disclaimer">
     TaxSmart India · FY 2025–26 · Based on Income Tax Act & Union Budget 2025<br>
     For planning purposes only. Consult a Chartered Accountant for actual filing.<br>
-    Includes standard deduction, rebate u/s 87A, surcharge & 4% health & education cess.
+    Document data is processed via Anthropic API and never stored by TaxSmart.
   </div>
 </div>
 
-</div>
+</div><!-- /app -->
+
 <script>
-// ── Indian Number Formatting ────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
+// FORMATTING UTILS
+// ═══════════════════════════════════════════════════════
 function toIN(n){
-  if(!n&&n!==0)return'';
-  n=Math.round(n);const s=n.toString();
-  if(s.length<=3)return s;
-  let r=s.slice(-3),rem=s.slice(0,-3);
+  if(!n&&n!==0)return'';n=Math.round(n);const s=n.toString();
+  if(s.length<=3)return s;let r=s.slice(-3),rem=s.slice(0,-3);
   while(rem.length>2){r=rem.slice(-2)+','+r;rem=rem.slice(0,-2);}
   return rem+','+r;
 }
@@ -787,44 +777,371 @@ function fa(el,hid){
   const w=document.getElementById(hid+'_w');
   if(w)w.textContent=num>0?'= ₹'+toWords(num):'';
 }
-function fmt(n){
-  n=Math.round(n);
-  if(n>=10000000)return'₹'+(n/10000000).toFixed(2)+' Cr';
-  if(n>=100000)return'₹'+(n/100000).toFixed(2)+' L';
-  return'₹'+toIN(n);
-}
+function fmt(n){n=Math.round(n);if(n>=10000000)return'₹'+(n/10000000).toFixed(2)+' Cr';if(n>=100000)return'₹'+(n/100000).toFixed(2)+' L';return'₹'+toIN(n);}
 function pct(n,b){return b>0?(n/b*100).toFixed(1)+'%':'0%';}
 
-// ── Navigation ──────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
 let cur=1;const TOT=6;
-const snames=['Basic Info','Income','Investments','Loans & More','EPF & Gratuity','Other Income'];
-function nextStep(f){cur=f+1;showStep(cur);}
-function prevStep(f){cur=f-1;showStep(cur);}
-function jumpTo(n){if(n<=cur){cur=n;showStep(n);}}
-function showStep(n){
-  document.querySelectorAll('.step-card').forEach(c=>c.classList.remove('active'));
-  document.getElementById('step-'+n).classList.add('active');
+const snames=['Upload Docs','Basic Info','Income','Investments','Loans','EPF & Gratuity','Other Income'];
+
+function ns(f){cur=f+1;showStep(cur);}
+function ps(f){cur=f-1;showStep(cur);}
+function jumpTo(n){
+  if(n===0){showUpload();return;}
+  if(n<=cur){cur=n;showStep(n);}
+}
+function showUpload(){
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('step-0').classList.add('active');
   document.getElementById('results').style.display='none';
-  document.getElementById('progress-wrap').style.display='block';
-  for(let i=1;i<=TOT;i++){const d=document.getElementById('dot-'+i);d.classList.remove('active','done');if(i<n){d.classList.add('done');d.textContent='✓';}else if(i===n){d.classList.add('active');d.textContent=i;}else d.textContent=i;}
-  document.getElementById('progress-fill').style.width=((n-1)/(TOT-1))*100+'%';
-  document.getElementById('step-label').textContent='Step '+n+' of '+TOT;
-  document.getElementById('step-name').textContent=snames[n-1];
+  document.getElementById('prog-wrap').style.display='block';
+  // reset progress dots for upload state
+  for(let i=1;i<=TOT;i++){const d=document.getElementById('dot-'+i);d.classList.remove('active','done');d.textContent=i;}
+  document.getElementById('prog-fill').style.width='0%';
+  document.getElementById('step-label').textContent='Optional Upload Step';
+  document.getElementById('step-name').textContent='Auto-fill from documents';
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function restart(){cur=1;showStep(1);document.getElementById('results').style.display='none';}
-function selectToggle(el,fld,val){el.parentElement.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById(fld).value=val;}
-function toggleSection(id,show){const el=document.getElementById(id);if(show)el.classList.add('show');else el.classList.remove('show');}
+function showStep(n){
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+  document.getElementById('results').style.display='none';
+  document.getElementById('prog-wrap').style.display='block';
+  for(let i=1;i<=TOT;i++){
+    const d=document.getElementById('dot-'+i);d.classList.remove('active','done');
+    if(i<n){d.classList.add('done');d.textContent='✓';}
+    else if(i===n){d.classList.add('active');d.textContent=i;}
+    else d.textContent=i;
+  }
+  document.getElementById('prog-fill').style.width=((n-1)/(TOT-1))*100+'%';
+  document.getElementById('step-label').textContent='Step '+n+' of '+TOT;
+  document.getElementById('step-name').textContent=snames[n];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function restart(){cur=1;_extractedData={};_errors=[];showUpload();}
+function setTog(el,fld,val){el.parentElement.querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById(fld).value=val;}
+function showCond(id,show){const el=document.getElementById(id);if(show)el.classList.add('show');else el.classList.remove('show');}
+function skipToStep1(){cur=1;showStep(1);}
 
-// ── Tax Engine ──────────────────────────────────────────────────────────────
-const NS=[
-  [300000,0,'Up to ₹3L'],[700000,0.05,'₹3L–₹7L'],[1000000,0.10,'₹7L–₹10L'],
-  [1200000,0.15,'₹10L–₹12L'],[1500000,0.20,'₹12L–₹15L'],[Infinity,0.30,'Above ₹15L']
-];
-const OS=[
-  [250000,0,'Up to ₹2.5L'],[500000,0.05,'₹2.5L–₹5L'],
-  [1000000,0.20,'₹5L–₹10L'],[Infinity,0.30,'Above ₹10L']
-];
+// ═══════════════════════════════════════════════════════
+// FILE UPLOAD
+// ═══════════════════════════════════════════════════════
+const _files={f16:null,'26as':null,ais:null};
+
+function handleFile(input,key){
+  const file=input.files[0];
+  if(!file)return;
+  _files[key]=file;
+  const zone=document.getElementById('zone-'+key);
+  zone.classList.add('uploaded');
+  document.getElementById('fn-'+key).textContent=file.name;
+  updateExtractBtn();
+}
+function handleDrop(ev,key){
+  ev.preventDefault();
+  const zone=document.getElementById('zone-'+key);
+  zone.classList.remove('drag');
+  const file=ev.dataTransfer.files[0];
+  if(!file||!file.name.endsWith('.pdf'))return;
+  _files[key]=file;
+  zone.classList.add('uploaded');
+  document.getElementById('fn-'+key).textContent=file.name;
+  updateExtractBtn();
+}
+function updateExtractBtn(){
+  const any=_files.f16||_files['26as']||_files.ais;
+  const btn=document.getElementById('extract-btn');
+  if(any){
+    btn.disabled=false;
+    const parts=[];
+    if(_files.f16)parts.push('Form 16');
+    if(_files['26as'])parts.push('26AS');
+    if(_files.ais)parts.push('AIS');
+    document.getElementById('extract-btn-label').textContent='🔍 Extract from '+parts.join(' + ');
+  } else {
+    btn.disabled=true;
+    document.getElementById('extract-btn-label').textContent='⬆ Upload at least one document to extract';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// EXTRACTION ENGINE
+// ═══════════════════════════════════════════════════════
+let _extractedData={};
+let _errors=[];
+
+async function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result.split(',')[1]);
+    r.onerror=()=>rej(new Error('Read failed'));
+    r.readAsDataURL(file);
+  });
+}
+
+function setEpState(id,state,sub){
+  const icon=document.getElementById('ep-'+id+'-icon');
+  const subEl=document.getElementById('ep-'+id+'-sub');
+  icon.className='ep-icon '+state;
+  if(state==='spin')icon.textContent='⟳';
+  else if(state==='done')icon.textContent='✓';
+  else if(state==='err')icon.textContent='✗';
+  if(sub)subEl.textContent=sub;
+}
+
+async function runExtraction(){
+  const apiKey=document.getElementById('api-key-upload').value.trim();
+  if(!apiKey){alert('Please enter your Anthropic API key to extract data from documents.');return;}
+
+  document.getElementById('extract-btn').disabled=true;
+  document.getElementById('extract-progress').classList.add('show');
+
+  const PROMPT_F16=`You are an expert Indian tax data extractor. Extract all data from this Form 16 and return ONLY a valid JSON object with these exact keys (use 0 for missing values, empty string for missing text):
+{
+  "name": "",
+  "pan": "",
+  "employer_name": "",
+  "gross_salary": 0,
+  "basic_salary": 0,
+  "hra_received": 0,
+  "special_allowance": 0,
+  "prof_tax": 0,
+  "epf_employee": 0,
+  "epf_employer": 0,
+  "sec80c": 0,
+  "nps": 0,
+  "employer_nps": 0,
+  "sec80d_self": 0,
+  "home_loan_interest": 0,
+  "sec80e": 0,
+  "standard_deduction": 0,
+  "tds_deducted_form16": 0,
+  "total_income_form16": 0,
+  "taxable_income_form16": 0
+}
+Return ONLY the JSON, no explanation.`;
+
+  const PROMPT_26AS=`You are an expert Indian tax data extractor. Extract all data from this Form 26AS and return ONLY a valid JSON object:
+{
+  "pan": "",
+  "tds_entries": [{"deductor":"","amount":0,"tds":0,"pan_deductor":""}],
+  "total_tds_26as": 0,
+  "advance_tax": 0,
+  "self_assessment_tax": 0,
+  "salary_income_26as": 0,
+  "interest_income_26as": 0
+}
+Return ONLY the JSON, no explanation.`;
+
+  const PROMPT_AIS=`You are an expert Indian tax data extractor. Extract all financial data from this Annual Information Statement (AIS) and return ONLY a valid JSON object:
+{
+  "pan": "",
+  "salary_ais": 0,
+  "interest_income_ais": 0,
+  "dividend_ais": 0,
+  "rental_income_ais": 0,
+  "ltcg_ais": 0,
+  "stcg_ais": 0,
+  "mf_transactions": 0,
+  "foreign_income": 0,
+  "tds_total_ais": 0
+}
+Return ONLY the JSON, no explanation.`;
+
+  async function callClaude(base64,prompt){
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-opus-4-6',max_tokens:1000,
+        messages:[{role:'user',content:[
+          {type:'document',source:{type:'base64',media_type:'application/pdf',data:base64}},
+          {type:'text',text:prompt}
+        ]}]
+      })
+    });
+    const data=await res.json();
+    if(!data.content?.[0]?.text)throw new Error('Empty response');
+    const txt=data.content[0].text.replace(/```json|```/g,'').trim();
+    return JSON.parse(txt);
+  }
+
+  let f16Data={}, as26Data={}, aisData={};
+
+  // Extract Form 16
+  if(_files.f16){
+    setEpState('f16','spin','Reading salary breakup and TDS…');
+    try{
+      const b64=await fileToBase64(_files.f16);
+      f16Data=await callClaude(b64,PROMPT_F16);
+      setEpState('f16','done','Extracted: salary, deductions, TDS paid');
+    }catch(e){setEpState('f16','err','Could not read — try manual entry');}
+  }
+
+  // Extract 26AS
+  if(_files['26as']){
+    setEpState('26as','spin','Reading TDS credits…');
+    try{
+      const b64=await fileToBase64(_files['26as']);
+      as26Data=await callClaude(b64,PROMPT_26AS);
+      setEpState('26as','done','Extracted: TDS from all deductors');
+    }catch(e){setEpState('26as','err','Could not read — try manual entry');}
+  }
+
+  // Extract AIS
+  if(_files.ais){
+    setEpState('ais','spin','Reading full income picture…');
+    try{
+      const b64=await fileToBase64(_files.ais);
+      aisData=await callClaude(b64,PROMPT_AIS);
+      setEpState('ais','done','Extracted: interest, capital gains, rental');
+    }catch(e){setEpState('ais','err','Could not read — try manual entry');}
+  }
+
+  // Cross-check
+  setEpState('cross','spin','Looking for errors and mismatches…');
+  _errors=runErrorChecks(f16Data,as26Data,aisData);
+  setEpState('cross','done',`Found ${_errors.length} item(s) to review`);
+
+  // Merge extracted data
+  _extractedData={...f16Data,...as26Data,...aisData};
+
+  // Store API key for later use
+  document.getElementById('api_key').value=apiKey;
+
+  // Auto-fill the form
+  setTimeout(()=>{
+    autoFillForm(_extractedData);
+    cur=1;showStep(1);
+    // Show banners on relevant steps
+    if(Object.keys(f16Data).length>2){
+      document.getElementById('autofill-banner-1').style.display='flex';
+      document.getElementById('autofill-banner-2').style.display='flex';
+      document.getElementById('autofill-banner-3').style.display='flex';
+      document.getElementById('autofill-banner-5').style.display='flex';
+    }
+    if(Object.keys(as26Data).length>2||Object.keys(aisData).length>2){
+      document.getElementById('autofill-banner-6').style.display='flex';
+    }
+  },600);
+}
+
+function runErrorChecks(f16,as26,ais){
+  const errors=[];
+  // 1. TDS Mismatch: Form 16 vs 26AS
+  if(f16.tds_deducted_form16>0&&as26.total_tds_26as>0){
+    const diff=Math.abs(f16.tds_deducted_form16-as26.total_tds_26as);
+    if(diff>1000){
+      errors.push({
+        type:'crit',icon:'⚠️',
+        title:'TDS Mismatch: Form 16 vs 26AS',
+        desc:`Form 16 shows TDS of ${fmt(f16.tds_deducted_form16)}, but Form 26AS shows ${fmt(as26.total_tds_26as)}. Difference of ${fmt(diff)}. This means your employer may NOT have deposited your TDS with the government.`,
+        action:'Immediately contact your employer's HR/payroll team and ask them to reconcile and deposit the TDS. You cannot claim credit for TDS not reflected in 26AS.',
+        severity:'red'
+      });
+    }
+  }
+  // 2. Income mismatch: Form 16 vs AIS
+  if(f16.gross_salary>0&&ais.salary_ais>0){
+    const diff=Math.abs(f16.gross_salary-ais.salary_ais);
+    if(diff>5000){
+      errors.push({
+        type:'warn',icon:'🔶',
+        title:'Salary Mismatch: Form 16 vs AIS',
+        desc:`Form 16 shows gross salary of ${fmt(f16.gross_salary)}, but AIS shows ${fmt(ais.salary_ais)}. Difference of ${fmt(diff)}. The Income Tax Department has flagged a discrepancy.`,
+        action:'Cross-check with your employer. AIS may include perquisites or arrears not in Form 16. Ensure you declare the correct income in your ITR.',
+        severity:'amber'
+      });
+    }
+  }
+  // 3. Missing PAN check
+  if(as26.tds_entries&&as26.tds_entries.length>0){
+    const missingPan=as26.tds_entries.filter(e=>!e.pan_deductor||e.pan_deductor==='PANNOTAVBL'||e.pan_deductor==='');
+    if(missingPan.length>0){
+      errors.push({
+        type:'warn',icon:'🪪',
+        title:`Missing PAN in ${missingPan.length} TDS Entr${missingPan.length>1?'ies':'y'}`,
+        desc:`${missingPan.length} deductor(s) in your 26AS have missing or invalid PAN. TDS credit for these entries may not be reflected in your account, and you cannot claim this as credit while filing.`,
+        action:'Contact the respective deductors and ask them to update their PAN details with the Income Tax Department (file TDS correction).',
+        severity:'amber'
+      });
+    }
+  }
+  // 4. Undeclared interest income
+  if(ais.interest_income_ais>0&&as26.interest_income_26as>0){
+    const aisInt=ais.interest_income_ais,asInt=as26.interest_income_26as;
+    const diff=Math.abs(aisInt-asInt);
+    if(diff>2000){
+      errors.push({
+        type:'warn',icon:'💰',
+        title:'Interest Income Discrepancy',
+        desc:`AIS shows ₹${fmt(aisInt)} interest income, but 26AS shows ${fmt(asInt)}. The higher AIS figure is what the Income Tax Department sees. Undeclared interest income is a common reason for tax notices.`,
+        action:'Use the higher of the two figures in your tax return to avoid a notice from the department.',
+        severity:'amber'
+      });
+    }
+  }
+  // 5. Capital gains in AIS
+  if((ais.ltcg_ais>0||ais.stcg_ais>0)&&ais.ltcg_ais+ais.stcg_ais>10000){
+    errors.push({
+      type:'info',icon:'📈',
+      title:'Capital Gains Found in AIS',
+      desc:`AIS shows capital gains of ${fmt((ais.ltcg_ais||0)+(ais.stcg_ais||0))} (LTCG: ${fmt(ais.ltcg_ais||0)}, STCG: ${fmt(ais.stcg_ais||0)}). These have been auto-filled. Verify against your broker's capital gains statement.`,
+      action:'Cross-check with your broker\'s P&L report or capital gains statement. Report only the net gains after indexation (for debt) or as shown for equity.',
+      severity:'blue'
+    });
+  }
+  // 6. Dividend income
+  if(ais.dividend_ais>5000){
+    errors.push({
+      type:'info',icon:'🏢',
+      title:'Dividend Income Detected in AIS',
+      desc:`AIS shows dividend income of ${fmt(ais.dividend_ais)}. Dividends from Indian companies are fully taxable at slab rate from FY 2020-21 onwards. This needs to be declared in your ITR.`,
+      action:'Report this under "Income from Other Sources" in your ITR. Check if TDS was deducted (10% above ₹5,000).',
+      severity:'blue'
+    });
+  }
+  return errors;
+}
+
+function autoFillForm(data){
+  const fieldMap={
+    gross_salary:'gross',basic_salary:'basic',hra_received:'hra_received',
+    prof_tax:'prof_tax',epf_employee:'epf_employee',epf_employer:'epf_employer',
+    sec80c:'sec80c',nps:'nps',employer_nps:'employer_nps',
+    sec80d_self:'sec80d_self',home_loan_interest:'home_loan_interest',
+    sec80e:'sec80e',interest_income_ais:'interest_income',
+    rental_income_ais:'rental_income',ltcg_ais:'ltcg',stcg_ais:'stcg',
+    total_tds_26as:'tds_deducted'
+  };
+  for(const[src,tgt]of Object.entries(fieldMap)){
+    const val=data[src];
+    if(val&&val>0){
+      const dispEl=document.getElementById(tgt+'_d');
+      const hidEl=document.getElementById(tgt);
+      if(dispEl&&hidEl){
+        dispEl.value=toIN(val);
+        hidEl.value=val;
+        dispEl.classList.add('autofilled');
+        const wEl=document.getElementById(tgt+'_w');
+        if(wEl)wEl.textContent='= ₹'+toWords(val);
+        // Show auto badge
+        const badge=document.getElementById('af-'+tgt);
+        if(badge)badge.style.display='inline-flex';
+      }
+    }
+  }
+  if(data.name){const n=document.getElementById('name');if(n)n.value=data.name;}
+}
+
+// ═══════════════════════════════════════════════════════
+// TAX ENGINE
+// ═══════════════════════════════════════════════════════
+const NS=[[300000,0,'Up to ₹3L'],[700000,.05,'₹3L–₹7L'],[1000000,.10,'₹7L–₹10L'],[1200000,.15,'₹10L–₹12L'],[1500000,.20,'₹12L–₹15L'],[Infinity,.30,'Above ₹15L']];
+const OS=[[250000,0,'Up to ₹2.5L'],[500000,.05,'₹2.5L–₹5L'],[1000000,.20,'₹5L–₹10L'],[Infinity,.30,'Above ₹10L']];
+
 function slabs(tax,sl){
   let t=0,prev=0,bd=[];
   for(const[lim,rate,lbl]of sl){
@@ -838,19 +1155,19 @@ function slabs(tax,sl){
 }
 function cess(tax,gross){
   let s=0;
-  if(gross>50000000)s=tax*0.37;else if(gross>20000000)s=tax*0.25;
-  else if(gross>10000000)s=tax*0.15;else if(gross>5000000)s=tax*0.10;
-  return{final:tax+s+(tax+s)*0.04};
+  if(gross>50000000)s=tax*.37;else if(gross>20000000)s=tax*.25;
+  else if(gross>10000000)s=tax*.15;else if(gross>5000000)s=tax*.10;
+  return tax+s+(tax+s)*.04;
 }
 function calcHRA(b,da,hr,rp,metro){
   if(rp<=0||hr<=0)return 0;
-  const bd=b+da;
-  return Math.max(0,Math.min(hr,rp-0.1*bd,(metro?0.5:0.4)*bd));
+  const bd=b+da;return Math.max(0,Math.min(hr,rp-.1*bd,(metro?.5:.4)*bd));
 }
 function gv(id){return parseFloat(document.getElementById(id).value)||0;}
 function gs(id){return document.getElementById(id).value;}
 
 let _o,_n,_i;
+
 function compOld(i){
   const{gross,basic,da,hra_received,rent_paid,is_metro,prof_tax,has_lta,lta_received,lta_claimed,has_cea,cea,hostel_allowance,sec80c,nps,employer_nps,sec80d_self,sec80d_parents,home_loan_interest,home_loan_principal,sec80e,sec80tta,sec80g,sec80u,epf_employee,has_gratuity,gratuity,other_exempt,interest_income,rental_income,stcg,ltcg,freelance}=i;
   const std=50000,hra=calcHRA(basic,da,hra_received,rent_paid,is_metro);
@@ -859,31 +1176,31 @@ function compOld(i){
   const hos=has_cea==='yes'?Math.min(hostel_allowance,7200):0;
   const grat=has_gratuity==='yes'?Math.min(gratuity,2000000):0;
   const c80c=Math.min(sec80c+epf_employee+home_loan_principal,150000);
-  const cnps=Math.min(nps,50000),cenps=Math.min(employer_nps,0.1*(basic+da));
+  const cnps=Math.min(nps,50000),cenps=Math.min(employer_nps,.1*(basic+da));
   const c80d=Math.min(sec80d_self,25000)+Math.min(sec80d_parents,50000);
-  const c24b=Math.min(home_loan_interest,200000),c80e=sec80e;
-  const c80tta=Math.min(sec80tta,10000),c80g=sec80g*0.5,c80u=sec80u;
+  const c24b=Math.min(home_loan_interest,200000),c80e_v=sec80e;
+  const c80tta=Math.min(sec80tta,10000),c80g_v=sec80g*.5,c80u_v=sec80u;
   const exempts=std+hra+lta+cea_ex+hos+prof_tax+other_exempt+grat;
-  const deds=c80c+cnps+cenps+c80d+c24b+c80e+c80tta+c80g+c80u;
-  const rnet=rental_income*0.7,ltcg_t=Math.max(0,ltcg-125000);
+  const deds=c80c+cnps+cenps+c80d+c24b+c80e_v+c80tta+c80g_v+c80u_v;
+  const rnet=rental_income*.7,ltcg_t=Math.max(0,ltcg-125000);
   const ti=Math.max(0,gross-exempts)+interest_income+rnet+freelance;
   const taxable=Math.max(0,ti-deds);
   const{tax:base,bd}=slabs(taxable,OS);
-  let tot=base+ltcg_t*0.125+stcg*0.2;
+  let tot=base+ltcg_t*.125+stcg*.2;
   if(taxable<=500000)tot=Math.max(0,tot-Math.min(base,12500));
-  const{final}=cess(tot,gross);
-  return{tax:Math.round(final),bd,taxable,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,c80c,cnps,cenps,c80d,c24b,c80e,c80tta,c80g,c80u,exempts,deds}};
+  const final=cess(tot,gross);
+  return{tax:Math.round(final),bd,taxable,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,c80c,cnps,cenps,c80d,c24b,c80e_v,c80tta,c80g_v,c80u_v,exempts,totalDed:deds}};
 }
 function compNew(i){
   const{gross,basic,da,employer_nps,interest_income,rental_income,stcg,ltcg,freelance}=i;
-  const std=75000,cenps=Math.min(employer_nps,0.1*(basic+da));
-  const rnet=rental_income*0.7,ltcg_t=Math.max(0,ltcg-125000);
+  const std=75000,cenps=Math.min(employer_nps,.1*(basic+da));
+  const rnet=rental_income*.7,ltcg_t=Math.max(0,ltcg-125000);
   const ti=gross+interest_income+rnet+freelance;
   const taxable=Math.max(0,ti-std-cenps);
   const{tax:base,bd}=slabs(taxable,NS);
-  let tot=base+ltcg_t*0.125+stcg*0.2;
+  let tot=base+ltcg_t*.125+stcg*.2;
   if(taxable<=1200000)tot=Math.max(0,tot-base);
-  const{final}=cess(tot,gross);
+  const final=cess(tot,gross);
   return{tax:Math.round(final),bd,taxable};
 }
 
@@ -902,53 +1219,133 @@ function calculate(){
     has_gratuity:gs('has_gratuity'),gratuity:gv('gratuity'),other_exempt:gv('other_exempt'),
     interest_income:gv('interest_income'),rental_income:gv('rental_income'),
     stcg:gv('stcg'),ltcg:gv('ltcg'),freelance:gv('freelance'),
+    tds_deducted:gv('tds_deducted'),
   };
   if(_i.gross===0){alert('Please enter your gross salary in Step 2.');showStep(2);return;}
   _o=compOld(_i);_n=compNew(_i);
   const win=_o.tax<=_n.tax?'old':'new',sav=Math.abs(_o.tax-_n.tax),best=Math.min(_o.tax,_n.tax);
   const name=document.getElementById('name').value||'Your';
+  const tdsBalance=_i.tds_deducted-best;
+
   document.getElementById('rh-name').textContent=name+"'s Tax Report";
   document.getElementById('rh-regime').textContent=win==='new'?'New Regime ✓':'Old Regime ✓';
   document.getElementById('rh-saving').textContent=sav>0?'Saves '+fmt(sav)+' vs other regime':'Both regimes equal';
-  document.getElementById('result-header').style.background=win==='new'
-    ?'linear-gradient(135deg,#1a472a 0%,#0f2d1a 100%)':'linear-gradient(135deg,#7a5010 0%,#4a2f08 100%)';
-  document.getElementById('stat-tax').textContent=fmt(best);
-  document.getElementById('stat-eff').textContent=pct(best,_i.gross);
-  document.getElementById('stat-monthly').textContent=fmt(Math.round(best/12));
-  document.getElementById('old-tax').textContent=fmt(_o.tax);
-  document.getElementById('old-eff').textContent='Effective: '+pct(_o.tax,_i.gross);
-  document.getElementById('new-tax').textContent=fmt(_n.tax);
-  document.getElementById('new-eff').textContent='Effective: '+pct(_n.tax,_i.gross);
+  document.getElementById('res-hdr').style.background=win==='new'
+    ?'linear-gradient(135deg,#1a472a,#0f2d1a)':'linear-gradient(135deg,#7a5010,#4a2f08)';
+  document.getElementById('st-tax').textContent=fmt(best);
+  document.getElementById('st-eff').textContent=pct(best,_i.gross);
+  document.getElementById('st-tds').textContent=fmt(Math.abs(tdsBalance));
+  document.getElementById('st-tds-sub').textContent=tdsBalance>=0?'refund due →':'balance due ↑';
+
   const oc=document.getElementById('old-card'),nc=document.getElementById('new-card');
   oc.classList.toggle('winner',win==='old');nc.classList.toggle('winner',win==='new');
-  oc.innerHTML=(win==='old'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-regime">Old Regime</div><div class="rc-tax">'+fmt(_o.tax)+'</div><div class="rc-eff">Effective: '+pct(_o.tax,_i.gross)+'</div>';
-  nc.innerHTML=(win==='new'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-regime">New Regime</div><div class="rc-tax">'+fmt(_n.tax)+'</div><div class="rc-eff">Effective: '+pct(_n.tax,_i.gross)+'</div>';
-  buildUtil();buildComp();buildSlabViz();buildDeds();buildTips(win);buildInsight(win,sav,name);
-  document.querySelectorAll('.step-card').forEach(c=>c.classList.remove('active'));
-  document.getElementById('progress-wrap').style.display='none';
+  oc.innerHTML=(win==='old'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">Old Regime</div><div class="rc-tax">'+fmt(_o.tax)+'</div><div class="rc-eff">Effective: '+pct(_o.tax,_i.gross)+'</div>';
+  nc.innerHTML=(win==='new'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">New Regime</div><div class="rc-tax">'+fmt(_n.tax)+'</div><div class="rc-eff">Effective: '+pct(_n.tax,_i.gross)+'</div>';
+
+  buildErrorPanel();
+  buildUtil();
+  buildComp();
+  buildSlabViz();
+  buildDeds();
+  buildTips(win);
+  buildInsight(win,sav,name,tdsBalance);
+
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('prog-wrap').style.display='none';
   document.getElementById('results').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// ═══════════════════════════════════════════════════════
+// ERROR PANEL
+// ═══════════════════════════════════════════════════════
+function buildErrorPanel(){
+  const container=document.getElementById('error-panel');
+  if(_errors.length===0){
+    // Also add a refund/due notification
+    const tds=_i.tds_deducted,best=Math.min(_o.tax,_n.tax),bal=tds-best;
+    if(tds>0){
+      const type=bal>=0?'ok':'warn';
+      container.innerHTML=`<div class="error-panel ${type}" style="margin-bottom:14px;">
+        <div class="ep-header">
+          <div class="ep-dot ${bal>=0?'green':'amber'}"></div>
+          <div class="ep-heading">${bal>=0?'You have a tax refund coming!':'Additional tax due on filing'}</div>
+        </div>
+        <div class="error-item ${bal>=0?'info':'warn'}">
+          <div class="err-icon">${bal>=0?'🎉':'📋'}</div>
+          <div>
+            <div class="err-title">${bal>=0?'Refund: '+fmt(bal):'Balance Tax Due: '+fmt(Math.abs(bal))}</div>
+            <div class="err-desc">TDS deducted: ${fmt(tds)} · Tax payable: ${fmt(best)} · ${bal>=0?'Claim this refund when you file your ITR. It gets deposited directly to your bank account.':'Pay this as Self-Assessment Tax before filing your ITR to avoid interest under Section 234B/C.'}</div>
+            <div class="err-action ${bal>=0?'blue':'amber'}">${bal>=0?'→ File ITR before July 31 to claim refund':'→ Pay via Challan 280 at incometax.gov.in before filing'}</div>
+          </div>
+        </div>
+      </div>`;
+    } else container.innerHTML='';
+    return;
+  }
+
+  const crits=_errors.filter(e=>e.type==='crit').length;
+  const warns=_errors.filter(e=>e.type==='warn').length;
+  const mainType=crits>0?'error-panel':warns>0?'error-panel warn':'error-panel ok';
+  const dot=crits>0?'red':warns>0?'amber':'green';
+  const heading=crits>0?`⚠️ ${crits} Critical Issue${crits>1?'s':''} Found`:`${warns+_errors.filter(e=>e.type==='info').length} Items Need Your Attention`;
+
+  container.innerHTML=`<div class="${mainType}" style="margin-bottom:14px;">
+    <div class="ep-header">
+      <div class="ep-dot ${dot}"></div>
+      <div class="ep-heading">${heading}</div>
+      <div class="ep-count">${_errors.length} item${_errors.length>1?'s':''}</div>
+    </div>
+    ${_errors.map(e=>`
+      <div class="error-item ${e.type==='crit'?'crit':e.type==='warn'?'warn':'info'}">
+        <div class="err-icon">${e.icon}</div>
+        <div>
+          <div class="err-title">${e.title}</div>
+          <div class="err-desc">${e.desc}</div>
+          <div class="err-action ${e.severity}">${e.action}</div>
+        </div>
+      </div>`).join('')}
+  </div>`;
+
+  // Also show TDS balance
+  const tds=_i.tds_deducted,best=Math.min(_o.tax,_n.tax),bal=tds-best;
+  if(tds>0){
+    container.innerHTML+=`<div class="error-panel ${bal>=0?'ok':'warn'}" style="margin-bottom:14px;">
+      <div class="ep-header"><div class="ep-dot ${bal>=0?'green':'amber'}"></div><div class="ep-heading">${bal>=0?'Refund: '+fmt(bal)+' due on filing':'Balance Tax Due: '+fmt(Math.abs(bal))}</div></div>
+      <div class="error-item ${bal>=0?'info':'warn'}">
+        <div class="err-icon">${bal>=0?'🎉':'📋'}</div>
+        <div><div class="err-title">TDS Reconciliation</div>
+        <div class="err-desc">TDS deducted: ${fmt(tds)} · Tax payable: ${fmt(best)} · Balance: ${fmt(Math.abs(bal))} ${bal>=0?'refund':'due'}</div>
+        <div class="err-action ${bal>=0?'blue':'amber'}">${bal>=0?'→ File ITR before July 31 to claim refund':'→ Pay Self-Assessment Tax before filing'}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// RESULT BUILDERS
+// ═══════════════════════════════════════════════════════
 function buildUtil(){
   const d=_o.deds;
   const bars=[
-    {icon:'💰',label:'80C',used:d.c80c,max:150000},
-    {icon:'🏦',label:'NPS (80CCD 1B)',used:d.cnps,max:50000},
-    {icon:'🏥',label:'80D Health',used:d.c80d,max:75000},
-    {icon:'🏠',label:'Home Loan (24b)',used:d.c24b,max:200000},
-    {icon:'🏡',label:'HRA Exemption',used:d.hra,max:_i.hra_received||1},
+    {ico:'💰',lbl:'80C',used:d.c80c,max:150000},
+    {ico:'🏦',lbl:'NPS (80CCD 1B)',used:d.cnps,max:50000},
+    {ico:'🏥',lbl:'80D Health',used:d.c80d,max:75000},
+    {ico:'🏠',lbl:'Home Loan 24b',used:d.c24b,max:200000},
+    {ico:'🏡',lbl:'HRA Exemption',used:d.hra,max:_i.hra_received||1},
   ];
-  document.getElementById('utilization-bars').innerHTML=bars.map(b=>{
+  document.getElementById('util-bars').innerHTML=bars.map(b=>{
     const p=b.max>0?Math.min(100,b.used/b.max*100):0,unused=Math.max(0,b.max-b.used);
-    return`<div class="potential-row">
-      <div class="pot-icon">${b.icon}</div>
-      <div class="pot-label">${b.label}</div>
-      <div class="pot-bar-wrap">
-        <div class="pot-bar-label"><span>${fmt(b.used)} used</span><span>${p.toFixed(0)}% of ${fmt(b.max)}</span></div>
-        <div class="pot-bar-track"><div class="pot-used" style="width:${p}%"></div></div>
-        ${unused>1000&&b.label!=='HRA Exemption'?`<div style="font-size:10px;color:var(--accent2);margin-top:3px;">↑ ${fmt(unused)} more available</div>`:''}
-      </div></div>`;
+    return`<div class="pot-row">
+      <div class="pot-ico">${b.ico}</div>
+      <div class="pot-lbl">${b.lbl}</div>
+      <div class="pot-bar">
+        <div class="pot-bar-lbl"><span>${fmt(b.used)}</span><span>${p.toFixed(0)}% of ${fmt(b.max)}</span></div>
+        <div class="pot-track"><div class="pot-used" style="width:${p}%"></div></div>
+        ${unused>1000&&b.lbl!=='HRA Exemption'?`<div style="font-size:10px;color:var(--a2);margin-top:2px;">↑ ${fmt(unused)} more available</div>`:''}
+      </div>
+    </div>`;
   }).join('');
 }
 
@@ -956,21 +1353,21 @@ function buildComp(){
   const d=_o.deds;
   const rows=[
     ['Gross Income',_i.gross,_i.gross,false],
-    ['Exemptions (HRA, LTA etc.)',d.hra+d.lta+d.cea_ex+d.hos+d.prof_tax+d.grat,0,false],
+    ['Exemptions (HRA,LTA etc.)',d.hra+d.lta+d.cea_ex+d.hos+d.prof_tax+d.grat,0,false],
     ['Standard Deduction',d.std,75000,false],
-    ['Chapter VI-A Deductions',d.c80c+d.cnps+d.c80d+d.c24b+d.c80e+d.c80tta+d.c80g+d.c80u,0,false],
+    ['Chapter VI-A Deductions',d.c80c+d.cnps+d.c80d+d.c24b+d.c80e_v+d.c80tta+d.c80g_v+d.c80u_v,0,false],
     ['Employer NPS [80CCD(2)]',d.cenps,d.cenps,false],
     ['Taxable Income',_o.taxable,_n.taxable,true],
-    ['Final Tax (incl. cess)',_o.tax,_n.tax,true],
+    ['Tax (incl. cess)',_o.tax,_n.tax,true],
+    ['TDS Deducted',_i.tds_deducted,_i.tds_deducted,false],
+    ['Balance (Refund/Due)',_o.tax-_i.tds_deducted,_n.tax-_i.tds_deducted,true],
   ];
-  document.getElementById('comp-table').innerHTML=
-    '<thead><tr>'+
-    ['Particulars','Old Regime','New Regime'].map((h,i)=>`<th style="text-align:${i===0?'left':'right'};padding:8px 0;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">${h}</th>`).join('')+
-    '</tr></thead><tbody>'+
+  document.getElementById('comp-tbl').innerHTML=
+    '<thead><tr><th>Particulars</th><th style="text-align:right">Old Regime</th><th style="text-align:right">New Regime</th></tr></thead><tbody>'+
     rows.map(r=>`<tr>
-      <td style="padding:10px 0;border-bottom:1px solid rgba(226,221,214,0.5);font-size:13px;font-weight:${r[3]?700:400}">${r[0]}</td>
-      <td style="text-align:right;padding:10px 0;border-bottom:1px solid rgba(226,221,214,0.5);font-family:'JetBrains Mono',monospace;font-size:12px;color:${r[3]?'var(--accent)':'var(--ink2)'};">${fmt(r[1])}</td>
-      <td style="text-align:right;padding:10px 0;border-bottom:1px solid rgba(226,221,214,0.5);font-family:'JetBrains Mono',monospace;font-size:12px;color:${r[3]?'var(--accent)':'var(--ink2)'};">${fmt(r[2])}</td>
+      <td style="color:${r[3]?'var(--ink)':'var(--ink2)'};font-weight:${r[3]?700:400}">${r[0]}</td>
+      <td style="color:${r[3]?'var(--accent)':'var(--ink2)'};font-weight:${r[3]?600:400}">${r[3]&&r[1]<0?'<span style="color:var(--accent)">'+fmt(Math.abs(r[1]))+' refund</span>':fmt(r[1])}</td>
+      <td style="color:${r[3]?'var(--accent)':'var(--ink2)'};font-weight:${r[3]?600:400}">${r[3]&&r[2]<0?'<span style="color:var(--accent)">'+fmt(Math.abs(r[2]))+' refund</span>':fmt(r[2])}</td>
     </tr>`).join('')+'</tbody>';
 }
 
@@ -978,43 +1375,43 @@ function buildSlabViz(){
   const make=({bd,taxable})=>{
     const mx=Math.max(...bd.map(b=>b.tax),1);
     return bd.map(b=>`<div class="slab-item">
-      <div class="slab-head"><span class="slab-name">${b.lbl}</span><span class="slab-amount">${fmt(b.tax)}</span></div>
-      <div class="slab-track"><div class="slab-fill" style="width:${Math.min(100,b.tax/mx*100)}%"></div></div>
-      <div class="slab-rate">${(b.rate*100).toFixed(0)}% on ${fmt(b.band||b.band)}</div>
-    </div>`).join('')+`<div style="border-top:1px solid var(--border);padding-top:10px;margin-top:6px;font-size:11px;color:var(--muted);">Taxable: <strong style="color:var(--accent)">${fmt(taxable)}</strong></div>`;
+      <div class="slab-head"><span class="slab-nm">${b.lbl}</span><span class="slab-amt">${fmt(b.tax)}</span></div>
+      <div class="slab-tr"><div class="slab-fl" style="width:${Math.min(100,b.tax/mx*100)}%"></div></div>
+      <div class="slab-rt">${(b.rate*100).toFixed(0)}% on ${fmt(b.band)}</div>
+    </div>`).join('')+`<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;font-size:11px;color:var(--muted)">Taxable: <strong style="color:var(--accent)">${fmt(taxable)}</strong></div>`;
   };
-  document.getElementById('slab-section').innerHTML=
-    `<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:700;">Old Regime</div>${make(_o)}</div>`+
-    `<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:700;">New Regime</div>${make(_n)}</div>`;
+  document.getElementById('slab-sec').innerHTML=
+    `<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">Old Regime</div>${make(_o)}</div>`+
+    `<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">New Regime</div>${make(_n)}</div>`;
 }
 
 function buildDeds(){
   const d=_o.deds;
   const rows=[
-    {n:'Standard Deduction',v:d.std,s:'Section 16(ia)',e:'Flat deduction every salaried person gets. No proof needed. ₹50K old / ₹75K new regime.'},
-    {n:'HRA Exemption',v:d.hra,s:'Section 10(13A)',e:'Tax-free part of HRA. Based on rent paid, HRA received & city. Old regime only.'},
+    {n:'Standard Deduction',v:d.std,s:'Section 16(ia)',e:'Flat deduction every salaried person gets automatically. ₹50K old / ₹75K new regime.'},
+    {n:'HRA Exemption',v:d.hra,s:'Section 10(13A)',e:'Tax-free portion of HRA based on rent paid, HRA received & city type. Old regime only.'},
     {n:'LTA Exemption',v:d.lta,s:'Section 10(5)',e:'Tax-free travel reimbursement from employer for domestic travel. Old regime only.'},
     {n:'CEA + Hostel Allowance',v:d.cea_ex+d.hos,s:'Section 10(14)',e:'₹100/month CEA + ₹300/month hostel per child, max 2 children. Old regime only.'},
-    {n:'Professional Tax',v:d.prof_tax,s:'Section 16(iii)',e:'State tax deducted from salary (~₹200/month). Fully deductible in old regime.'},
+    {n:'Professional Tax',v:d.prof_tax,s:'Section 16(iii)',e:'State tax deducted from salary. Fully deductible in old regime.'},
     {n:'Gratuity Exempt',v:d.grat,s:'Section 10(10)',e:'Tax-free gratuity when leaving after 5+ years. Up to ₹20 lakh completely exempt.'},
     {n:'80C Investments',v:d.c80c,s:'Section 80C',e:'PPF, ELSS, LIC, EPF contribution, NSC, home loan principal, tuition fees — cap ₹1.5L.'},
-    {n:'NPS Extra Deduction',v:d.cnps,s:'Section 80CCD(1B)',e:'Additional ₹50,000 deduction for NPS Tier 1. Completely separate from 80C.'},
-    {n:'Employer NPS',v:d.cenps,s:'Section 80CCD(2)',e:"Employer's NPS contribution up to 10% of Basic+DA. Works in BOTH regimes!"},
-    {n:'Health Insurance',v:d.c80d,s:'Section 80D',e:'Self/family ₹25K + parents ₹25K. Preventive health checkup ₹5K also included.'},
+    {n:'NPS Extra Deduction',v:d.cnps,s:'Section 80CCD(1B)',e:'Additional ₹50,000 deduction for NPS Tier 1 — completely separate from 80C.'},
+    {n:'Employer NPS',v:d.cenps,s:'Section 80CCD(2)',e:"Employer's NPS up to 10% of Basic+DA. Works in BOTH regimes!"},
+    {n:'Health Insurance',v:d.c80d,s:'Section 80D',e:'Self/family ₹25K + parents ₹25K. Preventive health checkup ₹5K included.'},
     {n:'Home Loan Interest',v:d.c24b,s:'Section 24(b)',e:'Interest on home loan. Max ₹2 lakh for self-occupied. Get interest certificate from bank.'},
-    {n:'Education Loan Interest',v:d.c80e,s:'Section 80E',e:'Full interest deductible — no upper limit! Applies for 8 years from repayment start.'},
-    {n:'Savings A/c Interest',v:d.c80tta,s:'Section 80TTA',e:'Interest earned in savings account — ₹10,000 tax-free. ₹50K for senior citizens (80TTB).'},
-    {n:'Donations (80G)',v:d.c80g,s:'Section 80G',e:"50–100% of donation to approved charities deductible. Keep receipt with 80G number."},
-    {n:'Disability Deduction',v:d.c80u,s:'Section 80U/DD',e:'₹75,000 for self with disability (40%+), ₹1.25L for severe. Medical certificate needed.'},
+    {n:'Education Loan Interest',v:d.c80e_v,s:'Section 80E',e:'Full interest deductible — no upper limit! Applies for 8 years from repayment start.'},
+    {n:'Savings A/c Interest',v:d.c80tta,s:'Section 80TTA',e:'Savings account interest — ₹10,000 tax-free. ₹50K for senior citizens (80TTB).'},
+    {n:'Donations (80G)',v:d.c80g_v,s:'Section 80G',e:'50–100% of donations to approved charities. Keep receipt with 80G number.'},
+    {n:'Disability Deduction',v:d.c80u_v,s:'Section 80U/DD',e:'₹75K for self with disability (40%+), ₹1.25L for severe. Medical certificate needed.'},
   ].filter(r=>r.v>0);
   const tot=rows.reduce((s,r)=>s+r.v,0);
   document.getElementById('ded-list').innerHTML=rows.map(r=>`
     <div class="ded-row">
-      <div><div class="ded-name">${r.n}</div><div class="ded-section">${r.s}</div><div class="ded-explain">${r.e}</div></div>
+      <div><div class="ded-name">${r.n}</div><div class="ded-sec">${r.s}</div><div class="ded-exp">${r.e}</div></div>
       <div class="ded-val">+${fmt(r.v)}</div>
     </div>`).join('')+
-    `<div style="display:flex;justify-content:space-between;align-items:center;background:var(--accent-light);border-radius:10px;padding:14px 16px;margin-top:8px;">
-      <div style="font-weight:700;color:var(--ink);font-size:14px;">Total Deductions & Exemptions</div>
+    `<div style="display:flex;justify-content:space-between;background:var(--al);border-radius:10px;padding:14px;margin-top:8px;">
+      <div style="font-weight:700;font-size:14px;">Total</div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);">+${fmt(tot)}</div>
     </div>`;
 }
@@ -1022,24 +1419,28 @@ function buildDeds(){
 function buildTips(win){
   const d=_o.deds,tips=[];
   const u80c=Math.max(0,150000-d.c80c);
-  if(u80c>5000)tips.push({icon:'💰',title:`Invest ${fmt(u80c)} more in 80C`,desc:`You have room left in your ₹1.5 lakh 80C limit. Best options: ELSS mutual fund (3-year lock-in, market returns) or PPF (safe, guaranteed, tax-free maturity). Both save equal tax.`,chip:`Save ~${fmt(u80c*0.20)} more in old regime`});
-  if(d.cnps<50000&&_i.nps<50000){const g=50000-_i.nps;tips.push({icon:'🏦',title:`Add ${fmt(g)} more to NPS`,desc:`Section 80CCD(1B) gives ₹50,000 EXTRA deduction separate from 80C. Open NPS Tier 1 on your bank's app or nps.gov.in. ₹50K NPS saves ₹10,000–15,000 in tax depending on your slab.`,chip:`Potential saving: ~${fmt(g*0.20)}`});}
-  if(_i.employer_nps===0)tips.push({icon:'💼',title:'Ask HR about Employer NPS (80CCD 2)',desc:`If employer contributes to your NPS, up to 10% of Basic is deductible in BOTH regimes. Ask HR to restructure CTC — it costs your company nothing extra but reduces your tax significantly.`,chip:'Works in New Regime too! ✅'});
-  if(d.c80d<50000)tips.push({icon:'🏥',title:'Get health insurance for you and parents',desc:`₹25,000 for self/family + ₹25,000 for parents = ₹50,000 total deduction. A good family floater costs ₹12,000–20,000/year and protects you from medical emergencies too.`,chip:`Save up to ${fmt((50000-d.c80d)*0.20)} in tax`});
-  if(win==='new')tips.push({icon:'📊',title:'What would flip you to Old Regime?',desc:`You're currently better in New Regime. To benefit from Old Regime, your deductions need to increase significantly. Try maxing 80C (₹1.5L) + NPS (₹50K) + 80D (₹50K) and recalculate.`,chip:'Recalculate after maxing deductions'});
-  tips.push({icon:'📅',title:'Tell HR your regime choice in April',desc:`Employer deducts TDS based on declared regime. New Regime is the default. If Old Regime is better, declare it to HR in April to get correct TDS from day 1 — avoids surprises at year end.`,chip:'Deadline: April of FY start'});
-  tips.push({icon:'📈',title:'Use your ₹1.25L LTCG exemption every year',desc:`Profit from equity MFs or stocks held 1+ year is tax-free up to ₹1.25 lakh per year. If gains are below this, "harvest" them — sell and rebuy to reset your cost price. Zero tax, free optimization.`,chip:'First ₹1.25L gains = zero tax'});
-  document.getElementById('tips-list').innerHTML=tips.map(t=>`<div class="tip-item"><div class="tip-icon">${t.icon}</div><div><div class="tip-title">${t.title}</div><div class="tip-desc">${t.desc}</div><div class="tip-chip">${t.chip}</div></div></div>`).join('');
+  if(u80c>5000)tips.push({ico:'💰',t:`Invest ${fmt(u80c)} more in 80C`,d:`You have unused 80C capacity. Best: ELSS (3-year lock-in, market returns) or PPF (safe, guaranteed, tax-free maturity).`,c:`Save ~${fmt(u80c*.20)} more in old regime`});
+  if(d.cnps<50000&&_i.nps<50000){const g=50000-_i.nps;tips.push({ico:'🏦',t:`Add ${fmt(g)} more to NPS`,d:`Section 80CCD(1B) gives ₹50K EXTRA deduction separate from 80C. Open NPS Tier 1 on your bank app.`,c:`Potential saving: ~${fmt(g*.20)}`});}
+  if(_i.employer_nps===0)tips.push({ico:'💼',t:'Ask HR about Employer NPS (80CCD 2)',d:`Employer NPS up to 10% of Basic is deductible in BOTH regimes. Ask HR to restructure your CTC.`,c:'Works in New Regime too! ✅'});
+  if(d.c80d<50000)tips.push({ico:'🏥',t:'Get health insurance for you and parents',d:`₹25K self + ₹25K parents = ₹50K total deduction. A family floater costs ₹12–20K/year.`,c:`Save up to ${fmt((50000-d.c80d)*.20)} in tax`});
+  if(win==='new')tips.push({ico:'📊',t:'What would flip you to Old Regime?',d:`Currently better in New Regime. Try maxing 80C (₹1.5L) + NPS (₹50K) + 80D (₹50K) and recalculate.`,c:'Recalculate after maxing deductions'});
+  tips.push({ico:'📅',t:'Tell HR your regime choice in April',d:`Employer TDS is based on declared regime. New Regime is default. Declare Old if better — avoids surprises at year end.`,c:'Deadline: April of FY start'});
+  tips.push({ico:'📈',t:'Use ₹1.25L LTCG exemption every year',d:`Profit from equity MFs/stocks held 1+ year is tax-free up to ₹1.25L. Sell and rebuy to reset cost price (tax harvesting).`,c:'First ₹1.25L gains = zero tax'});
+  document.getElementById('tips-list').innerHTML=tips.map(t=>`<div class="tip-item"><div class="tip-ico">${t.ico}</div><div><div class="tip-title">${t.t}</div><div class="tip-desc">${t.d}</div><div class="tip-chip">${t.c}</div></div></div>`).join('');
 }
 
-function buildInsight(win,sav,name){
+function buildInsight(win,sav,name,tdsBalance){
   const d=_o.deds,regime=win==='new'?'New Regime':'Old Regime';
   const eff=pct(Math.min(_o.tax,_n.tax),_i.gross);
-  const tot=d.c80c+d.cnps+d.c80d+d.c24b,unused=Math.max(0,150000-d.c80c)+Math.max(0,50000-d.cnps);
-  let t=`Based on a gross income of <span class="hl">${fmt(_i.gross)}</span>, the <span class="hl">${regime}</span> is better — saving <span class="hl">${fmt(sav)}</span> this year. Your effective tax rate is <span class="hl">${eff}</span> of gross income.`;
-  if(win==='new'){t+=` The New Regime wins because your deductions of <span class="hl">${fmt(tot)}</span> aren't enough to offset the lower slab rates.`;if(unused>10000)t+=` You have <span class="hl">${fmt(unused)}</span> of unused 80C/NPS capacity — maxing these could change the verdict.`;}
-  else{t+=` Your strong deductions of <span class="hl">${fmt(d.deds)}</span> plus HRA exemption of <span class="hl">${fmt(d.hra)}</span> make Old Regime the clear winner.`;}
-  t+=` Inform your employer of this regime choice in April for correct TDS throughout FY 2025–26.`;
+  const tot=d.c80c+d.cnps+d.c80d+d.c24b;
+  let t=`Based on a gross income of <span class="hl">${fmt(_i.gross)}</span>, the <span class="hl">${regime}</span> saves <span class="hl">${fmt(sav)}</span> this year. Your effective tax rate is <span class="hl">${eff}</span>.`;
+  if(win==='new'){t+=` Your deductions of <span class="hl">${fmt(tot)}</span> aren't sufficient to make old regime better.`;}
+  else{t+=` Your strong deductions including HRA <span class="hl">${fmt(d.hra)}</span> make Old Regime the winner.`;}
+  if(_i.tds_deducted>0){
+    if(tdsBalance>=0)t+=` You have a <span class="hl">refund of ${fmt(tdsBalance)}</span> — file your ITR before July 31 to claim it.`;
+    else t+=` You have <span class="hl">balance tax of ${fmt(Math.abs(tdsBalance))}</span> to pay before filing your ITR.`;
+  }
+  if(_errors.length>0)t+=` ⚠️ We found <span class="hl">${_errors.length} issue(s)</span> in your documents — review the error panel above.`;
   document.getElementById('ai-text').innerHTML=t;
 }
 
@@ -1047,18 +1448,18 @@ async function fetchAI(){
   const key=document.getElementById('api_key').value.trim();
   if(!key){alert('Please enter your Anthropic API key');return;}
   const el=document.getElementById('ai-text');
-  el.textContent='Generating personalized insight...';
+  el.textContent='Generating personalized insight…';
   const win=_o.tax<=_n.tax?'OLD':'NEW',sav=Math.abs(_o.tax-_n.tax);
   const name=document.getElementById('name').value||'the user';
-  const d=_o.deds;
-  const prompt=`You are an expert Indian CA advising ${name}. Give 4-5 sentence plain English tax insight.
-Income: ₹${_i.gross.toLocaleString()} gross, ₹${_i.basic.toLocaleString()} basic
-Deductions: 80C ₹${d.c80c.toLocaleString()}, NPS ₹${d.cnps.toLocaleString()}, Emp NPS ₹${d.cenps.toLocaleString()}, 80D ₹${d.c80d.toLocaleString()}, Home loan ₹${d.c24b.toLocaleString()}, HRA ₹${d.hra.toLocaleString()}
-Other: Interest ₹${_i.interest_income.toLocaleString()}, Rental ₹${_i.rental_income.toLocaleString()}, Freelance ₹${_i.freelance.toLocaleString()}
-Result: ${win} Regime better. Old: ₹${_o.tax.toLocaleString()} (${pct(_o.tax,_i.gross)}), New: ₹${_n.tax.toLocaleString()} (${pct(_n.tax,_i.gross)}). Saves ₹${sav.toLocaleString()}.
-Rules: cite section numbers, plain language, no bullet points, top 2 specific optimizations for this person.`;
+  const d=_o.deds,tds=_i.tds_deducted,best=Math.min(_o.tax,_n.tax),bal=tds-best;
+  const errSummary=_errors.length>0?`Errors found: ${_errors.map(e=>e.title).join('; ')}`:'No errors found.';
+  const prompt=`You are an expert Indian CA advising ${name}. Give 5 sentence plain English tax insight.
+Income: ₹${_i.gross.toLocaleString()} gross, 80C: ₹${d.c80c.toLocaleString()}, NPS: ₹${d.cnps.toLocaleString()}, HRA: ₹${d.hra.toLocaleString()}, 80D: ₹${d.c80d.toLocaleString()}
+Result: ${win} Regime better. Saves ₹${sav.toLocaleString()}. TDS deducted: ₹${tds.toLocaleString()}. Balance: ₹${Math.abs(bal).toLocaleString()} ${bal>=0?'refund':'due'}.
+Document check: ${errSummary}
+Rules: cite section numbers, plain language, no bullet points, top 2 specific optimizations, mention refund/due status, flag any critical issues.`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:450,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     if(data.content?.[0]?.text){el.innerHTML=data.content[0].text.replace(/(₹[\d,]+(?:\s?(?:lakh|crore|L|Cr))?|Section \d+[\w()\d]*|80[A-Z\d()]+|Old Regime|New Regime)/gi,'<span class="hl">$1</span>');}
     else el.textContent='Could not generate. Check API key.';
@@ -1068,76 +1469,66 @@ Rules: cite section numbers, plain language, no bullet points, top 2 specific op
 function downloadReport(){
   const name=document.getElementById('name').value||'Tax';
   const win=_o.tax<=_n.tax?'Old':'New';
-  const sav=Math.abs(_o.tax-_n.tax);const d=_o.deds;
-  const dedRows=[
-    ['Standard Deduction','16(ia)',d.std,'Flat deduction for all salaried'],
-    ['HRA Exemption','10(13A)',d.hra,'Tax-free portion of House Rent Allowance'],
-    ['LTA Exemption','10(5)',d.lta,'Domestic travel reimbursement'],
-    ['Professional Tax','16(iii)',d.prof_tax,'State tax deducted from salary'],
-    ['Gratuity Exempt','10(10)',d.grat,'Tax-free gratuity (max ₹20L)'],
-    ['80C Investments','80C',d.c80c,'PPF, ELSS, LIC, EPF, NSC'],
-    ['NPS Extra','80CCD(1B)',d.cnps,'Extra ₹50K over 80C limit'],
-    ['Employer NPS','80CCD(2)',d.cenps,'Works in both regimes'],
-    ['Health Insurance','80D',d.c80d,'Self ₹25K + parents ₹25K'],
-    ['Home Loan Interest','24(b)',d.c24b,'Max ₹2L on self-occupied property'],
-    ['Education Loan','80E',d.c80e,'No upper limit on interest'],
-    ['Savings Interest','80TTA',d.c80tta,'₹10,000 tax-free'],
-  ].filter(r=>r[2]>0);
-
+  const sav=Math.abs(_o.tax-_n.tax),d=_o.deds;
+  const tds=_i.tds_deducted,best=Math.min(_o.tax,_n.tax),bal=tds-best;
+  const errorHTML=_errors.length>0?`<div style="background:#fdf0ee;border:1.5px solid #c0392b;border-radius:12px;padding:20px;margin-bottom:20px;">
+    <h2 style="color:#c0392b;margin-bottom:12px;font-size:14px;">⚠️ ${_errors.length} Issue(s) Found in Your Documents</h2>
+    ${_errors.map(e=>`<div style="margin-bottom:10px;padding:12px;background:white;border-radius:8px;">
+      <strong>${e.icon} ${e.title}</strong><br>
+      <span style="font-size:12px;color:#555">${e.desc}</span><br>
+      <span style="font-size:11px;font-weight:700;color:#c0392b;margin-top:4px;display:block">${e.action}</span>
+    </div>`).join('')}
+  </div>`:''  ;
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>TaxSmart — ${name}</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>body{font-family:'Sora',sans-serif;max-width:720px;margin:0 auto;padding:40px 32px;color:#1a1814;}
-.hdr{background:${win==='New'?'#1a472a':'#7a5010'};color:white;padding:32px;border-radius:16px;margin-bottom:28px;}
-.hdr h1{font-size:30px;margin-bottom:6px;}.hdr .sub{opacity:.7;font-size:12px;margin-bottom:16px;}
-.verdict{background:rgba(255,255,255,.15);padding:10px 18px;border-radius:8px;font-size:17px;font-weight:700;display:inline-block;}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;}
-.stat{background:rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;}
-.sl{font-size:10px;opacity:.6;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
-.sv{font-size:18px;font-weight:600;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0;}
-.box{border:2px solid #e2ddd6;border-radius:12px;padding:20px;}
+<style>body{font-family:'Sora',sans-serif;max-width:720px;margin:0 auto;padding:40px 32px;color:#1a1814;font-size:14px;}
+.hdr{background:${win==='New'?'#1a472a':'#7a5010'};color:#fff;padding:30px;border-radius:16px;margin-bottom:24px;}
+.hdr h1{font-size:28px;margin-bottom:6px;}.hdr .sub{opacity:.7;font-size:12px;margin-bottom:14px;}
+.verdict{background:rgba(255,255,255,.15);padding:9px 16px;border-radius:8px;font-size:16px;font-weight:700;display:inline-block;margin-bottom:14px;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat{background:rgba(255,255,255,.12);border-radius:9px;padding:11px 13px;}
+.sl{font-size:9px;opacity:.6;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+.sv{font-size:17px;font-weight:600;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+.box{border:2px solid #e2ddd6;border-radius:12px;padding:18px;}
 .box.w{border-color:${win==='New'?'#1a472a':'#7a5010'};background:${win==='New'?'#e8f5ec':'#fdf3e3'};}
-.box label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8c8880;display:block;margin-bottom:8px;}
-.box .tx{font-family:'JetBrains Mono',monospace;font-size:26px;}
+.box label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8c8880;display:block;margin-bottom:7px;}
+.box .tx{font-family:'JetBrains Mono',monospace;font-size:24px;}
 .box.w .tx{color:${win==='New'?'#1a472a':'#7a5010'};}
-.box .ef{font-size:12px;color:#8c8880;margin-top:4px;}
-h2{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#8c8880;border-bottom:1px solid #e2ddd6;padding-bottom:8px;margin:24px 0 16px;}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th{text-align:left;padding:8px 0;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#8c8880;border-bottom:1.5px solid #e2ddd6;}
-th:last-child{text-align:right;}td{padding:10px 0;border-bottom:1px solid rgba(226,221,214,.5);vertical-align:top;}
-td:last-child{text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#1a472a;font-weight:600;}
-td:nth-child(2){font-size:11px;color:#1a472a;font-weight:600;width:120px;}
-.note{font-size:11px;color:#8c8880;display:block;margin-top:2px;}
-.footer{margin-top:40px;font-size:11px;color:#8c8880;text-align:center;border-top:1px solid #e2ddd6;padding-top:20px;line-height:1.8;}
+h2{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8c8880;border-bottom:1px solid #e2ddd6;padding-bottom:7px;margin:20px 0 14px;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{text-align:left;padding:7px 0;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#8c8880;border-bottom:1.5px solid #e2ddd6;}
+th:last-child,th:nth-child(2){text-align:right;}
+td{padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);vertical-align:top;}
+td:last-child,td:nth-child(2){text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;}
+.footer{margin-top:36px;font-size:10px;color:#8c8880;text-align:center;border-top:1px solid #e2ddd6;padding-top:16px;line-height:1.8;}
 </style></head><body>
 <div class="hdr">
   <div class="sub">TaxSmart India · FY 2025–26 · ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</div>
   <h1>${name}'s Tax Report</h1>
   <div class="verdict">✓ ${win} Regime — Saves ${fmt(sav)}</div>
   <div class="stats">
-    <div class="stat"><div class="sl">Tax Payable</div><div class="sv">${fmt(Math.min(_o.tax,_n.tax))}</div></div>
-    <div class="stat"><div class="sl">Effective Rate</div><div class="sv">${pct(Math.min(_o.tax,_n.tax),_i.gross)}</div></div>
-    <div class="stat"><div class="sl">Monthly Tax</div><div class="sv">${fmt(Math.round(Math.min(_o.tax,_n.tax)/12))}</div></div>
+    <div class="stat"><div class="sl">Tax Payable</div><div class="sv">${fmt(best)}</div></div>
+    <div class="stat"><div class="sl">Effective Rate</div><div class="sv">${pct(best,_i.gross)}</div></div>
+    <div class="stat"><div class="sl">${bal>=0?'Refund':'Tax Due'}</div><div class="sv">${fmt(Math.abs(bal))}</div></div>
   </div>
 </div>
+${errorHTML}
 <div class="grid">
-  <div class="box ${win==='Old'?'w':''}"><label>Old Regime</label><div class="tx">${fmt(_o.tax)}</div><div class="ef">Effective: ${pct(_o.tax,_i.gross)}</div>${win==='Old'?'<div style="font-size:11px;font-weight:800;color:#7a5010;margin-top:8px;">✓ RECOMMENDED</div>':''}</div>
-  <div class="box ${win==='New'?'w':''}"><label>New Regime</label><div class="tx">${fmt(_n.tax)}</div><div class="ef">Effective: ${pct(_n.tax,_i.gross)}</div>${win==='New'?'<div style="font-size:11px;font-weight:800;color:#1a472a;margin-top:8px;">✓ RECOMMENDED</div>':''}</div>
+  <div class="box ${win==='Old'?'w':''}"><label>Old Regime</label><div class="tx">${fmt(_o.tax)}</div><div style="font-size:11px;color:#8c8880;margin-top:3px">Effective: ${pct(_o.tax,_i.gross)}</div>${win==='Old'?'<div style="font-size:10px;font-weight:800;margin-top:7px;color:#7a5010">✓ RECOMMENDED</div>':''}</div>
+  <div class="box ${win==='New'?'w':''}"><label>New Regime</label><div class="tx">${fmt(_n.tax)}</div><div style="font-size:11px;color:#8c8880;margin-top:3px">Effective: ${pct(_n.tax,_i.gross)}</div>${win==='New'?'<div style="font-size:10px;font-weight:800;margin-top:7px;color:#1a472a">✓ RECOMMENDED</div>':''}</div>
 </div>
-<h2>Income Summary</h2>
+<h2>Income & Tax Summary</h2>
 <table><thead><tr><th>Particulars</th><th>Old Regime</th><th>New Regime</th></tr></thead><tbody>
-<tr><td>Gross Income</td><td>${fmt(_i.gross)}</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#1a472a;font-weight:600;">${fmt(_i.gross)}</td></tr>
-<tr><td>Total Exemptions</td><td>${fmt(d.exempts)}</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#1a472a;font-weight:600;">${fmt(75000)}</td></tr>
-<tr><td>Chapter VI-A</td><td>${fmt(d.deds)}</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#1a472a;font-weight:600;">₹0</td></tr>
-<tr><td><strong>Taxable Income</strong></td><td><strong>${fmt(_o.taxable)}</strong></td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#1a472a;font-weight:600;"><strong>${fmt(_n.taxable)}</strong></td></tr>
-<tr><td><strong>Final Tax</strong></td><td><strong>${fmt(_o.tax)}</strong></td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#1a472a;font-weight:600;"><strong>${fmt(_n.tax)}</strong></td></tr>
+<tr><td>Gross Income</td><td>${fmt(_i.gross)}</td><td>${fmt(_i.gross)}</td></tr>
+<tr><td>Total Exemptions</td><td>${fmt(d.exempts)}</td><td>${fmt(75000)}</td></tr>
+<tr><td>Chapter VI-A</td><td>${fmt(d.totalDed)}</td><td>₹0</td></tr>
+<tr><td><strong>Taxable Income</strong></td><td><strong>${fmt(_o.taxable)}</strong></td><td><strong>${fmt(_n.taxable)}</strong></td></tr>
+<tr><td><strong>Final Tax</strong></td><td><strong>${fmt(_o.tax)}</strong></td><td><strong>${fmt(_n.tax)}</strong></td></tr>
+<tr><td>TDS Deducted</td><td>${fmt(tds)}</td><td>${fmt(tds)}</td></tr>
+<tr><td><strong>${bal>=0?'Refund Due':'Balance Due'}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${fmt(Math.abs(_o.tax-tds))}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${fmt(Math.abs(_n.tax-tds))}</strong></td></tr>
 </tbody></table>
-<h2>Your Deductions & Exemptions</h2>
-<table><thead><tr><th>Deduction</th><th>Section</th><th>Amount</th></tr></thead><tbody>
-${dedRows.map(r=>`<tr><td>${r[0]}<span class="note">${r[3]}</span></td><td>${r[1]}</td><td>${fmt(r[2])}</td></tr>`).join('')}
-<tr><td><strong>Total</strong></td><td></td><td><strong>${fmt(dedRows.reduce((s,r)=>s+r[2],0))}</strong></td></tr>
-</tbody></table>
-<div class="footer">TaxSmart India · For planning purposes only · Consult a CA for actual filing<br>Based on Income Tax Act & Union Budget 2025 (FY 2025–26)</div>
+<div class="footer">TaxSmart India · For planning purposes only · Consult a CA for actual filing<br>Based on Income Tax Act & Union Budget 2025 · Documents processed via Anthropic API, never stored</div>
 </body></html>`;
   const blob=new Blob([html],{type:'text/html'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');
