@@ -723,9 +723,14 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <!-- ═══ INVESTMENT SIMULATOR ═══ -->
   <div class="sim-card" id="sim-card" style="display:none">
-    <div class="sim-title">🔮 What-If Simulator</div>
-    <div class="sim-heading">If You Invest ₹X More...</div>
-    <div class="sim-sub">See exactly how much tax you save and your effective return</div>
+    <div class="sim-title">🤖 AI-Suggested Next Best Move</div>
+    <div class="sim-heading" id="sim-heading">Analysing your tax profile...</div>
+    <div class="sim-sub" id="sim-sub"></div>
+
+    <div id="sim-ai-banner" style="display:none;background:rgba(200,240,74,.12);border:1.5px solid rgba(200,240,74,.3);border-radius:12px;padding:14px 16px;margin-bottom:18px;">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.6;margin-bottom:6px;">⚡ AI Recommendation</div>
+      <div id="sim-ai-text" style="font-size:13px;line-height:1.6;color:#c8f04a;font-weight:600;"></div>
+    </div>
 
     <div class="sim-tabs">
       <button class="sim-tab active" onclick="simSelect(this,'nps')" data-key="nps">NPS (80CCD 1B)</button>
@@ -1674,34 +1679,92 @@ function simApply() {
 function initSim() {
   if (!_o || !_n || !_i) return;
 
-  // Find the best opportunity automatically
+  const regime = _o.tax <= _n.tax ? 'old' : 'new';
+  const grossSalary = _i.gross_salary || 0;
+
+  // Analyse each opportunity with optimal investment amount
   const opportunities = Object.entries(SIM_CONFIG).map(([key, cfg]) => {
-    const testAmt = cfg.default;
-    const deduction = cfg.calcDeduction(testAmt, _i, _o.tax <= _n.tax ? 'old' : 'new');
+    let optimalAmt = cfg.default;
+    if (key === '80c') {
+      const used = Math.min((_i.sec80c||0)+(_i.epf_employee||0), 150000);
+      optimalAmt = Math.max(0, 150000 - used);
+    } else if (key === '80d') {
+      const used = (_i.sec80d_self||0)+(_i.sec80d_parents||0);
+      optimalAmt = Math.max(0, Math.min(25000, 75000 - used));
+    } else if (key === 'nps') {
+      optimalAmt = Math.max(0, 50000 - (_i.nps||0));
+    } else if (key === 'hloan') {
+      optimalAmt = Math.max(0, 200000 - (_i.home_loan_interest||0));
+    }
+
+    if (optimalAmt === 0) return { key, saved: 0, optimalAmt: 0, effReturn: 0 };
+
+    const deduction = cfg.calcDeduction(optimalAmt, _i, regime);
+    if (deduction === 0) return { key, saved: 0, optimalAmt, effReturn: 0 };
+
     const newInputs = {..._i};
-    if (key === 'nps') newInputs.nps = (_i.nps||0) + testAmt;
-    else if (key === '80c') newInputs.sec80c = (_i.sec80c||0) + testAmt;
-    else if (key === '80d') newInputs.sec80d_self = (_i.sec80d_self||0) + testAmt;
-    else if (key === 'hloan') newInputs.home_loan_interest = (_i.home_loan_interest||0) + testAmt;
+    if (key === 'nps') newInputs.nps = (_i.nps||0) + optimalAmt;
+    else if (key === '80c') newInputs.sec80c = (_i.sec80c||0) + optimalAmt;
+    else if (key === '80d') newInputs.sec80d_self = (_i.sec80d_self||0) + optimalAmt;
+    else if (key === 'hloan') newInputs.home_loan_interest = (_i.home_loan_interest||0) + optimalAmt;
+
     const newOld = compOld(newInputs);
     const newNew = compNew(newInputs);
     const oldBest = Math.min(_o.tax, _n.tax);
     const newBest = Math.min(newOld.tax, newNew.tax);
-    return { key, saved: Math.max(0, oldBest - newBest), deduction };
+    const saved = Math.max(0, oldBest - newBest);
+    const effReturn = optimalAmt > 0 ? (saved / optimalAmt * 100) : 0;
+    return { key, saved, optimalAmt, effReturn };
   });
 
-  // Auto-select the highest saving option
   opportunities.sort((a,b) => b.saved - a.saved);
-  const best = opportunities[0];
-  if (best && best.saved > 0) {
-    const tab = document.querySelector(`.sim-tab[data-key="${best.key}"]`);
-    if (tab) simSelect(tab, best.key);
-  } else {
+  const ranked = opportunities.filter(o => o.saved > 0);
+  const best = ranked[0];
+
+  const banner = document.getElementById('sim-ai-banner');
+  const aiText = document.getElementById('sim-ai-text');
+  const heading = document.getElementById('sim-heading');
+  const sub = document.getElementById('sim-sub');
+
+  if (!best || best.saved === 0) {
+    heading.textContent = regime === 'new' ? 'New Regime Optimised' : 'All Deductions Maxed!';
+    sub.textContent = regime === 'new'
+      ? "Deductions don't apply in New Regime — you're already on the best path."
+      : "You've fully utilised all major deduction limits. Well done!";
+    banner.style.display = 'none';
     updateSim();
+  } else {
+    const cfg = SIM_CONFIG[best.key];
+    heading.textContent = 'Your Best Tax Move Right Now';
+    sub.textContent = 'Based on your income and current deductions — ' + ranked.length + ' options analysed';
+
+    let aiMsg = '';
+    if (best.key === 'nps') {
+      aiMsg = `Invest ₹${toIN(best.optimalAmt)} in NPS → save ₹${toIN(best.saved)} tax instantly. That's a ${best.effReturn.toFixed(1)}% guaranteed return before any market gains.`;
+    } else if (best.key === '80c') {
+      const used = Math.min((_i.sec80c||0)+(_i.epf_employee||0), 150000);
+      aiMsg = `You've used ₹${toIN(used)} of your ₹1,50,000 80C limit. Invest ₹${toIN(best.optimalAmt)} more in PPF/ELSS → save ₹${toIN(best.saved)} tax (${best.effReturn.toFixed(1)}% instant return).`;
+    } else if (best.key === '80d') {
+      aiMsg = `Buy ₹${toIN(best.optimalAmt)}/yr health insurance → save ₹${toIN(best.saved)} tax. Net cost after tax savings: just ₹${toIN(best.optimalAmt - best.saved)}.`;
+    } else if (best.key === 'hloan') {
+      aiMsg = `₹${toIN(best.optimalAmt)} unused home loan deduction room. Using it saves ₹${toIN(best.saved)} in tax.`;
+    }
+
+    aiText.textContent = aiMsg;
+    banner.style.display = 'block';
+
+    const tab = document.querySelector('.sim-tab[data-key="' + best.key + '"]');
+    if (tab) {
+      simSelect(tab, best.key);
+      const slider = document.getElementById('sim-slider');
+      slider.value = Math.min(best.optimalAmt, parseInt(slider.max));
+      updateSim();
+    }
   }
 
   document.getElementById('sim-card').style.display = 'block';
 }
+
 
 </script>
 </body>
