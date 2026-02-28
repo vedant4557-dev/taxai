@@ -1127,7 +1127,8 @@ function autoFillForm(data){
 // =====================================================================================================================================================================
 // TAX ENGINE
 // =====================================================================================================================================================================
-const NS=[[300000,0,'Up to ₹3L'],[700000,.05,'₹3L–₹7L'],[1000000,.10,'₹7L–₹10L'],[1200000,.15,'₹10L–₹12L'],[1500000,.20,'₹12L–₹15L'],[Infinity,.30,'Above ₹15L']];
+// FY 2025-26 New Regime Slabs (Budget 2025)
+const NS=[[400000,0,'Up to ₹4L'],[800000,.05,'₹4L–₹8L'],[1200000,.10,'₹8L–₹12L'],[1600000,.15,'₹12L–₹16L'],[2000000,.20,'₹16L–₹20L'],[2400000,.25,'₹20L–₹24L'],[Infinity,.30,'Above ₹24L']];
 // Old regime slabs are age-dependent
 function getOS(age){
   if(age>=80)return[[500000,0,'Up to ₹5L'],[1000000,.20,'₹5L–₹10L'],[Infinity,.30,'Above ₹10L']];
@@ -1194,9 +1195,20 @@ function compNew(i){
   const taxable=Math.max(0,ti-std-cenps);
   const{tax:base,bd}=slabs(taxable,NS);
   let tot=base+ltcg_t*.125+stcg*.2;
-  if(taxable<=1200000)tot=Math.max(0,tot-base);
+
+  // FY 2025-26: 87A rebate — zero tax if total income <= ₹12L
+  // Marginal relief: if income slightly above 12L, tax capped at (income - 12L)
+  // FY 2025-26: Rebate based on TAXABLE income (after std deduction), not gross
+  // Gross 12,75,000 - 75,000 std = 12,00,000 taxable → zero tax ✓
+  if(taxable<=1200000){
+    tot=0; // Full rebate
+  } else if(taxable<=1275000){
+    // Marginal relief: tax capped at amount exceeding 12L taxable
+    tot=Math.min(tot,taxable-1200000);
+  }
+
   const final=cess(tot,gross);
-  return{tax:Math.round(final),bd,taxable};
+  return{tax:Math.round(final),bd,taxable,ti};
 }
 
 function calculate(){
