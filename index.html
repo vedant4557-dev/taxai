@@ -240,6 +240,15 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .comp-tbl td:not(:first-child){text-align:right;font-family:'JetBrains Mono',monospace;}
 
 /* ── INVESTMENT SIMULATOR ── */
+.recon-th{background:var(--bg);padding:8px 10px;text-align:left;font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);}
+.recon-td{padding:8px 10px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink);vertical-align:middle;}
+.recon-td.mismatch{background:#fdf0ee;color:#c0392b;font-weight:600;}
+.recon-td.match{color:var(--accent);}
+.recon-td.empty{color:var(--muted);font-style:italic;}
+.recon-row:hover td{background:rgba(0,0,0,.02);}
+.recon-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;margin-left:6px;}
+.recon-badge.ok{background:#e8f5e9;color:#1a5c2a;}
+.recon-badge.warn{background:#fdf0ee;color:#c0392b;}
 .sim-card{background:linear-gradient(135deg,#0f2d1a,#1a472a);border-radius:20px;padding:28px;margin-bottom:20px;color:#fff;}
 .sim-title{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;opacity:.7;margin-bottom:6px;}
 .sim-heading{font-family:'Crimson Pro',serif;font-size:22px;font-weight:600;margin-bottom:4px;}
@@ -734,6 +743,18 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- Error / Mismatch Panel -->
   <div id="error-panel"></div>
 
+  <!-- ═══ RECONCILIATION TABLE ═══ -->
+  <div id="recon-section" style="display:none;margin-bottom:20px;">
+    <div class="sec-card" style="padding:18px 20px;">
+      <div class="sec-title" id="recon-title">📋 Document Reconciliation</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Side-by-side comparison of your uploaded documents vs what you entered. Highlighted cells indicate mismatches.</div>
+      <div style="overflow-x:auto;">
+        <table id="recon-table" style="width:100%;border-collapse:collapse;font-size:12.5px;"></table>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;opacity:.7;">* Values extracted by AI — cross-check against original documents before filing</div>
+    </div>
+  </div>
+
   <!-- ═══ INVESTMENT SIMULATOR ═══ -->
   <div class="sim-card" id="sim-card" style="display:none">
     <div class="sim-title">🤖 AI-Suggested Next Best Move</div>
@@ -1004,6 +1025,8 @@ async function runExtraction(){
     _errors=data.errors||[];
     setEpState('cross','done',`Found ${_errors.length} item(s) to review`);
     _extractedData={...f16Data,...as26Data,...aisData};
+    // Store separately for reconciliation table
+    window._f16=f16Data; window._as26=as26Data; window._ais=aisData;
 
     const wm=document.getElementById('warmup-msg');if(wm)wm.style.display='none';
     setTimeout(()=>{
@@ -1310,6 +1333,7 @@ function calculate(){
   nc.innerHTML=(win==='new'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">New Regime</div><div class="rc-tax">'+fmt(_n.tax)+'</div><div class="rc-eff">Effective: '+pct(_n.tax,_i.gross)+'</div>';
 
   buildErrorPanel();
+  buildRecon();
   buildUtil();
   buildComp();
   buildSlabViz();
@@ -1328,6 +1352,74 @@ function calculate(){
 // =====================================================================================================================================================================
 // ERROR PANEL
 // =====================================================================================================================================================================
+function buildRecon(){
+  const f16=window._f16||{}, as26=window._as26||{}, ais=window._ais||{};
+  const hasAny=Object.keys(f16).length>2||Object.keys(as26).length>2||Object.keys(as26).length>2;
+  const sec=document.getElementById('recon-section');
+  if(!sec||!hasAny){if(sec)sec.style.display='none';return;}
+
+  const rows=[
+    ['Gross Salary',        'gross_salary',        'salary_income_26as', 'salary_ais',          'gross'],
+    ['TDS Deducted',        'tds_deducted_form16', 'total_tds_26as',     'tds_total_ais',       'tds_deducted'],
+    ['FD/Bond Interest',    null,                   'interest_income_26as','interest_income_ais','interest_income'],
+    ['Rental Income',       null,                   null,                 'rental_income_ais',   'rental_income'],
+    ['LTCG',                null,                   null,                 'ltcg_ais',            'ltcg'],
+    ['STCG',                null,                   null,                 'stcg_ais',            'stcg'],
+    ['80C Deductions',      'sec80c',               null,                 null,                  'sec80c'],
+    ['NPS (80CCD 1B)',       'nps',                  null,                 null,                  'nps'],
+    ['Home Loan Interest',  'home_loan_interest',   null,                 null,                  'home_loan_interest'],
+  ];
+
+  const fv=(obj,key)=>key&&obj[key]>0?obj[key]:null;
+  const getUserV=(fid)=>{const el=document.getElementById(fid);return el?(parseFloat(el.value)||0):0;};
+
+  let hasMismatch=false;
+  const tableRows=rows.map(([lbl,fk,ak,ak2,fid])=>{
+    const vF=fv(f16,fk), vA=fv(as26,ak), vI=fv(ais,ak2);
+    const vUser=getUserV(fid);
+    if(!vF&&!vA&&!vI&&!vUser)return '';
+
+    const docVals=[vF,vA,vI].filter(v=>v!==null);
+    const allSame=docVals.length<2||docVals.every(v=>Math.abs(v-docVals[0])/Math.max(docVals[0],1)<0.02);
+    if(!allSame)hasMismatch=true;
+
+    const refVal=vF||vA||vI;
+    const cls=(v)=>{
+      if(v===null)return 'empty';
+      if(!refVal||Math.abs(v-refVal)/Math.max(refVal,1)<0.02)return 'match';
+      return 'mismatch';
+    };
+    const disp=(v)=>v!==null?'₹'+v.toLocaleString('en-IN'):'—';
+
+    return '<tr class="recon-row">'
+      +'<td class="recon-td" style="font-weight:500;white-space:nowrap">'+lbl+'</td>'
+      +'<td class="recon-td '+cls(vF)+'">'+disp(vF)+'</td>'
+      +'<td class="recon-td '+cls(vA)+'">'+disp(vA)+'</td>'
+      +'<td class="recon-td '+cls(vI)+'">'+disp(vI)+'</td>'
+      +'<td class="recon-td" style="font-weight:500">'+(vUser>0?'₹'+vUser.toLocaleString('en-IN'):'—')+'</td>'
+      +'</tr>';
+  }).filter(Boolean).join('');
+
+  if(!tableRows){sec.style.display='none';return;}
+
+  const badge=hasMismatch
+    ?'<span class="recon-badge warn">⚠ Mismatches found</span>'
+    :'<span class="recon-badge ok">✓ All consistent</span>';
+  const titleEl=document.getElementById('recon-title');
+  if(titleEl)titleEl.innerHTML='📋 Document Reconciliation'+badge;
+
+  document.getElementById('recon-table').innerHTML=
+    '<thead><tr>'
+    +'<th class="recon-th">Field</th>'
+    +'<th class="recon-th">Form 16</th>'
+    +'<th class="recon-th">Form 26AS</th>'
+    +'<th class="recon-th">AIS</th>'
+    +'<th class="recon-th">Your Entry</th>'
+    +'</tr></thead><tbody>'+tableRows+'</tbody>';
+
+  sec.style.display='block';
+}
+
 function buildErrorPanel(){
   const container=document.getElementById('error-panel');
   if(_errors.length===0){
