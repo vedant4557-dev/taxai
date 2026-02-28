@@ -1006,7 +1006,17 @@ async function runExtraction(){
     if(_files.ais){   formData.append('ais',  _files.ais);   setEpState('ais',  'spin','Reading full income picture…');}
     setEpState('cross','spin','Checking for errors and mismatches…');
 
-    const res=await fetch(BACKEND_URL+'/extract',{method:'POST',body:formData});
+    const controller=new AbortController();
+    const timeoutId=setTimeout(()=>controller.abort(),90000); // 90s timeout
+    let res;
+    try{
+      res=await fetch(BACKEND_URL+'/extract',{method:'POST',body:formData,signal:controller.signal});
+    }catch(fetchErr){
+      if(fetchErr.name==='AbortError')throw new Error('Request timed out after 90 seconds. The server may be cold-starting — please try again in a moment.');
+      throw fetchErr;
+    }finally{
+      clearTimeout(timeoutId);
+    }
     if(!res.ok){
       const err=await res.json().catch(()=>({error:'Server error'}));
       throw new Error(err.error||'Extraction failed');
