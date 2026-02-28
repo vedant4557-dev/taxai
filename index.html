@@ -238,6 +238,32 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .comp-tbl th:not(:first-child){text-align:right;}
 .comp-tbl td{padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);font-size:12px;}
 .comp-tbl td:not(:first-child){text-align:right;font-family:'JetBrains Mono',monospace;}
+
+/* ── INVESTMENT SIMULATOR ── */
+.sim-card{background:linear-gradient(135deg,#0f2d1a,#1a472a);border-radius:20px;padding:28px;margin-bottom:20px;color:#fff;}
+.sim-title{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;opacity:.7;margin-bottom:6px;}
+.sim-heading{font-family:'Crimson Pro',serif;font-size:22px;font-weight:600;margin-bottom:4px;}
+.sim-sub{font-size:12px;opacity:.6;margin-bottom:24px;}
+.sim-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.sim-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);transition:all .2s;}
+.sim-tab.active{background:#c8f04a;color:#0f2d1a;border-color:#c8f04a;}
+.sim-tab:hover:not(.active){background:rgba(255,255,255,.1);color:#fff;}
+.sim-body{background:rgba(255,255,255,.07);border-radius:14px;padding:20px;}
+.sim-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
+.sim-row-label{font-size:13px;opacity:.8;flex:1;min-width:140px;}
+.sim-slider-wrap{flex:2;min-width:180px;}
+.sim-slider{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(255,255,255,.2);outline:none;}
+.sim-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#c8f04a;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.3);}
+.sim-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#c8f04a;min-width:80px;text-align:right;}
+.sim-result{background:rgba(200,240,74,.1);border:1.5px solid rgba(200,240,74,.3);border-radius:12px;padding:18px;margin-top:4px;}
+.sim-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;}
+.sim-metric{text-align:center;}
+.sim-metric-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#c8f04a;display:block;margin-bottom:2px;}
+.sim-metric-label{font-size:10px;opacity:.6;letter-spacing:1px;text-transform:uppercase;}
+.sim-narrative{font-size:13px;line-height:1.7;opacity:.85;border-top:1px solid rgba(255,255,255,.1);padding-top:12px;}
+.sim-narrative strong{color:#c8f04a;}
+.sim-cta{margin-top:12px;background:#c8f04a;color:#0f2d1a;border:none;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+.sim-cta:hover{background:#d4f55a;}
 </style>
 </head>
 <body>
@@ -319,7 +345,8 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <!-- Extraction progress UI -->
   <div class="extract-progress" id="extract-progress">
-    <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:12px;margin-top:16px;">Extracting data from your documents…</div>
+    <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:4px;margin-top:16px;">Extracting data from your documents…</div>
+    <div id="warmup-msg" style="font-size:11px;color:var(--ink2);margin-bottom:12px;opacity:0.7;">First request may take up to 30 seconds while the server wakes up. Please wait.</div>
     <div class="ep-step" id="ep-f16">
       <div class="ep-icon wait" id="ep-f16-icon">📄</div>
       <div><div class="ep-label">Reading Form 16</div><div class="ep-sub" id="ep-f16-sub">Salary, deductions, TDS paid</div></div>
@@ -694,6 +721,50 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- Error / Mismatch Panel -->
   <div id="error-panel"></div>
 
+  <!-- ═══ INVESTMENT SIMULATOR ═══ -->
+  <div class="sim-card" id="sim-card" style="display:none">
+    <div class="sim-title">🔮 What-If Simulator</div>
+    <div class="sim-heading">If You Invest ₹X More...</div>
+    <div class="sim-sub">See exactly how much tax you save and your effective return</div>
+
+    <div class="sim-tabs">
+      <button class="sim-tab active" onclick="simSelect(this,'nps')" data-key="nps">NPS (80CCD 1B)</button>
+      <button class="sim-tab" onclick="simSelect(this,'80c')" data-key="80c">80C Top-up</button>
+      <button class="sim-tab" onclick="simSelect(this,'80d')" data-key="80d">Health Insurance</button>
+      <button class="sim-tab" onclick="simSelect(this,'hloan')" data-key="hloan">Home Loan</button>
+    </div>
+
+    <div class="sim-body">
+      <div class="sim-row">
+        <div class="sim-row-label">Extra investment</div>
+        <div class="sim-slider-wrap">
+          <input type="range" class="sim-slider" id="sim-slider" min="0" max="50000" step="1000" value="25000" oninput="updateSim()">
+        </div>
+        <div class="sim-val" id="sim-input-val">₹25,000</div>
+      </div>
+
+      <div class="sim-result" id="sim-result">
+        <div class="sim-result-grid">
+          <div class="sim-metric">
+            <span class="sim-metric-val" id="sim-tax-saved">₹0</span>
+            <span class="sim-metric-label">Tax Saved</span>
+          </div>
+          <div class="sim-metric">
+            <span class="sim-metric-val" id="sim-eff-return">0%</span>
+            <span class="sim-metric-label">Effective Return</span>
+          </div>
+          <div class="sim-metric">
+            <span class="sim-metric-val" id="sim-net-cost">₹0</span>
+            <span class="sim-metric-label">Net Cost to You</span>
+          </div>
+        </div>
+        <div class="sim-narrative" id="sim-narrative"></div>
+        <button class="sim-cta" id="sim-cta" onclick="simApply()">✓ Apply This to My Plan</button>
+      </div>
+    </div>
+  </div>
+
+
   <div class="reg-cards">
     <div class="reg-card" id="old-card"></div>
     <div class="reg-card" id="new-card"></div>
@@ -916,6 +987,7 @@ async function runExtraction(){
     setEpState('cross','done',`Found ${_errors.length} item(s) to review`);
     _extractedData={...f16Data,...as26Data,...aisData};
 
+    const wm=document.getElementById('warmup-msg');if(wm)wm.style.display='none';
     setTimeout(()=>{
       autoFillForm(_extractedData);
       cur=1;showStep(1);
@@ -1162,6 +1234,7 @@ function calculate(){
   document.getElementById('prog-wrap').style.display='none';
   document.getElementById('results').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(initSim, 100);
 }
 
 // =====================================================================================================================================================================
@@ -1443,6 +1516,193 @@ ${errorHTML}
   a.href=url;a.download=`TaxSmart_${name.replace(/\s+/g,'_')}_FY2025-26.html`;
   a.click();URL.revokeObjectURL(url);
 }
+// ═══════════════════════════════════════════════════════════════
+// INVESTMENT SIMULATOR
+// ═══════════════════════════════════════════════════════════════
+let _simKey = 'nps';
+
+const SIM_CONFIG = {
+  nps: {
+    label: 'NPS (80CCD 1B)',
+    max: 50000,
+    default: 25000,
+    section: 'Section 80CCD(1B)',
+    description: 'Extra NPS contribution',
+    // Deduction applies in OLD regime only (80CCD 1B)
+    calcDeduction: (amt, i, regime) => regime === 'old' ? Math.min(amt, 50000) : 0,
+    tip: 'NPS gives you market-linked returns (~10-12% historical) PLUS tax savings — making your effective return much higher than FD.'
+  },
+  '80c': {
+    label: '80C Top-up',
+    max: 150000,
+    default: 50000,
+    section: 'Section 80C',
+    description: 'PPF / ELSS / NSC investment',
+    calcDeduction: (amt, i, regime) => {
+      if (regime !== 'old') return 0;
+      const current80c = Math.min((i.sec80c||0)+(i.epf_employee||0)+(i.home_loan_principal||0), 150000);
+      const remaining = Math.max(0, 150000 - current80c);
+      return Math.min(amt, remaining);
+    },
+    tip: 'ELSS mutual funds give equity market returns (~12-15% long-term) with 3-year lock-in and full 80C deduction.'
+  },
+  '80d': {
+    label: 'Health Insurance',
+    max: 75000,
+    default: 25000,
+    section: 'Section 80D',
+    description: 'Health insurance premium',
+    calcDeduction: (amt, i, regime) => {
+      if (regime !== 'old') return 0;
+      const current = (i.sec80d_self||0) + (i.sec80d_parents||0);
+      const maxAllowed = 75000; // 25k self + 50k parents
+      return Math.min(amt, Math.max(0, maxAllowed - current));
+    },
+    tip: 'Health insurance is the only investment that protects both your health AND saves tax. Premiums for parents (senior) get ₹50K deduction.'
+  },
+  hloan: {
+    label: 'Home Loan Interest',
+    max: 200000,
+    default: 100000,
+    section: 'Section 24(b)',
+    description: 'Additional home loan interest',
+    calcDeduction: (amt, i, regime) => {
+      if (regime !== 'old') return 0;
+      const current = i.home_loan_interest||0;
+      return Math.min(amt, Math.max(0, 200000 - current));
+    },
+    tip: 'Home loan interest deduction up to ₹2L/year under old regime. Self-occupied property only.'
+  }
+};
+
+function simSelect(el, key) {
+  document.querySelectorAll('.sim-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  _simKey = key;
+  const cfg = SIM_CONFIG[key];
+  const slider = document.getElementById('sim-slider');
+  slider.max = cfg.max;
+  slider.value = cfg.default;
+  updateSim();
+}
+
+function updateSim() {
+  if (!_o || !_n || !_i) return;
+
+  const slider = document.getElementById('sim-slider');
+  const amount = parseInt(slider.value) || 0;
+  const cfg = SIM_CONFIG[_simKey];
+
+  document.getElementById('sim-input-val').textContent = '₹' + toIN(amount);
+
+  // Determine current winning regime
+  const currentWin = _o.tax <= _n.tax ? 'old' : 'new';
+
+  // Calculate extra deduction this investment gives
+  const extraDeduction = cfg.calcDeduction(amount, _i, currentWin);
+
+  // Calculate tax saved based on marginal rate
+  let taxSaved = 0;
+  if (extraDeduction > 0) {
+    // Recalculate with extra deduction
+    const newInputs = {..._i};
+    if (_simKey === 'nps') newInputs.nps = (_i.nps||0) + amount;
+    else if (_simKey === '80c') newInputs.sec80c = (_i.sec80c||0) + amount;
+    else if (_simKey === '80d') newInputs.sec80d_self = (_i.sec80d_self||0) + amount;
+    else if (_simKey === 'hloan') newInputs.home_loan_interest = (_i.home_loan_interest||0) + amount;
+
+    const newOld = compOld(newInputs);
+    const newNew = compNew(newInputs);
+    const oldBest = Math.min(_o.tax, _n.tax);
+    const newBest = Math.min(newOld.tax, newNew.tax);
+    taxSaved = Math.max(0, oldBest - newBest);
+  }
+
+  const netCost = Math.max(0, amount - taxSaved);
+  const effReturn = amount > 0 ? (taxSaved / amount * 100) : 0;
+
+  // Update UI
+  document.getElementById('sim-tax-saved').textContent = taxSaved > 0 ? '₹' + toIN(taxSaved) : '₹0';
+  document.getElementById('sim-eff-return').textContent = effReturn.toFixed(1) + '%';
+  document.getElementById('sim-net-cost').textContent = '₹' + toIN(netCost);
+
+  // Generate narrative
+  const name = document.getElementById('name').value || 'You';
+  let narrative = '';
+
+  if (amount === 0) {
+    narrative = 'Move the slider to see your tax savings.';
+  } else if (extraDeduction === 0 && currentWin === 'new') {
+    narrative = `<strong>Note:</strong> ${cfg.section} deductions don't apply in the New Regime. You're currently better off in the New Regime. Switch to Old Regime analysis to use this deduction — but verify it's still worth it overall.`;
+  } else if (extraDeduction === 0) {
+    narrative = `<strong>You've already maxed out</strong> the ${cfg.section} limit. No additional tax saving from investing more here. Consider another category.`;
+  } else if (taxSaved > 0) {
+    narrative = `${name}, investing <strong>₹${toIN(amount)}</strong> in ${cfg.description} saves you <strong>₹${toIN(taxSaved)} in tax</strong> — an instant ${effReturn.toFixed(1)}% return before any investment gains. Your actual out-of-pocket cost is just <strong>₹${toIN(netCost)}</strong>. ${cfg.tip}`;
+  } else {
+    narrative = `This investment won't save additional tax given your current income and deductions.`;
+  }
+
+  document.getElementById('sim-narrative').innerHTML = narrative;
+
+  // Update CTA button
+  const cta = document.getElementById('sim-cta');
+  if (taxSaved > 0) {
+    cta.textContent = `✓ Add ₹${toIN(amount)} to my ${cfg.label} plan`;
+    cta.style.display = 'block';
+  } else {
+    cta.style.display = 'none';
+  }
+}
+
+function simApply() {
+  const amount = parseInt(document.getElementById('sim-slider').value) || 0;
+  if (!amount) return;
+
+  // Show a toast/confirmation
+  const cta = document.getElementById('sim-cta');
+  cta.textContent = '✓ Added to your plan!';
+  cta.style.background = '#27ae60';
+  setTimeout(() => {
+    cta.textContent = `✓ Add ₹${toIN(amount)} to my ${SIM_CONFIG[_simKey].label} plan`;
+    cta.style.background = '#c8f04a';
+  }, 2000);
+
+  // Scroll to tips
+  document.getElementById('tips-list').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function initSim() {
+  if (!_o || !_n || !_i) return;
+
+  // Find the best opportunity automatically
+  const opportunities = Object.entries(SIM_CONFIG).map(([key, cfg]) => {
+    const testAmt = cfg.default;
+    const deduction = cfg.calcDeduction(testAmt, _i, _o.tax <= _n.tax ? 'old' : 'new');
+    const newInputs = {..._i};
+    if (key === 'nps') newInputs.nps = (_i.nps||0) + testAmt;
+    else if (key === '80c') newInputs.sec80c = (_i.sec80c||0) + testAmt;
+    else if (key === '80d') newInputs.sec80d_self = (_i.sec80d_self||0) + testAmt;
+    else if (key === 'hloan') newInputs.home_loan_interest = (_i.home_loan_interest||0) + testAmt;
+    const newOld = compOld(newInputs);
+    const newNew = compNew(newInputs);
+    const oldBest = Math.min(_o.tax, _n.tax);
+    const newBest = Math.min(newOld.tax, newNew.tax);
+    return { key, saved: Math.max(0, oldBest - newBest), deduction };
+  });
+
+  // Auto-select the highest saving option
+  opportunities.sort((a,b) => b.saved - a.saved);
+  const best = opportunities[0];
+  if (best && best.saved > 0) {
+    const tab = document.querySelector(`.sim-tab[data-key="${best.key}"]`);
+    if (tab) simSelect(tab, best.key);
+  } else {
+    updateSim();
+  }
+
+  document.getElementById('sim-card').style.display = 'block';
+}
+
 </script>
 </body>
 </html>
