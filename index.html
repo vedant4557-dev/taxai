@@ -1173,7 +1173,8 @@ function compOld(i){
   const cnps=Math.min(nps,50000),cenps=Math.min(employer_nps,.1*(basic+da));
   const c80d=Math.min(sec80d_self,(age||0)>=60?50000:25000)+Math.min(sec80d_parents,50000);
   const c24b=Math.min(home_loan_interest,200000),c80e_v=sec80e;
-  const c80tta=Math.min(sec80tta,(age||0)>=60?50000:10000)  // 80TTB for seniors,c80g_v=sec80g*.5,c80u_v=sec80u;
+  const c80tta=Math.min(sec80tta,(age||0)>=60?50000:10000); // 80TTB for seniors
+  const c80g_v=sec80g*.5,c80u_v=sec80u;
   const exempts=std+hra+lta+cea_ex+hos+prof_tax+other_exempt+grat;
   const deds=c80c+cnps+cenps+c80d+c24b+c80e_v+c80tta+c80g_v+c80u_v;
   const rnet=rental_income*.7,ltcg_t=Math.max(0,ltcg-125000);
@@ -1199,6 +1200,7 @@ function compNew(i){
 }
 
 function calculate(){
+  try{
   _i={
     gross:gv('gross'),basic:gv('basic'),da:gv('da'),
     hra_received:gv('hra_received'),rent_paid:gv('rent_paid'),
@@ -1217,7 +1219,7 @@ function calculate(){
     age:parseInt(document.getElementById('age').value)||0,
     gross_salary:gv('gross'),
   };
-  if(_i.gross===0){alert('Please enter your gross salary in Step 2.');showStep(2);return;}
+  if(_i.gross===0){showStep(2);return;}
   _o=compOld(_i);_n=compNew(_i);
   const win=_o.tax<=_n.tax?'old':'new',sav=Math.abs(_o.tax-_n.tax),best=Math.min(_o.tax,_n.tax);
   const name=document.getElementById('name').value||'Your';
@@ -1251,6 +1253,7 @@ function calculate(){
   document.getElementById('results').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
   setTimeout(initSim, 100);
+  } catch(err) { alert('Error in calculation: ' + err.message + '\n\nPlease check the console for details.'); console.error(err); }
 }
 
 // =====================================================================================================================================================================
@@ -1814,7 +1817,7 @@ function validateAndCalculate() {
       box = document.createElement('div');
       box.id = 'calc-err-box';
       box.style.cssText = 'background:#fdf0ee;border:1.5px solid #c0392b;border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#c0392b;line-height:1.6;';
-      const calcBtn = document.getElementById('calc-btn') || document.querySelector('[onclick="calculate()"]');
+      const calcBtn = document.getElementById('calc-btn') || document.querySelector('[onclick*="calculate"]');
       if (calcBtn) calcBtn.parentNode.insertBefore(box, calcBtn);
     }
     box.innerHTML = '<strong>⚠ Please fix before calculating:</strong><ul style="margin:6px 0 0 16px">' + hardErrors.map(e => '<li>' + e + '</li>').join('') + '</ul>';
