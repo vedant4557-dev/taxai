@@ -264,6 +264,13 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .sim-narrative strong{color:#c8f04a;}
 .sim-cta{margin-top:12px;background:#c8f04a;color:#0f2d1a;border:none;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;width:100%;}
 .sim-cta:hover{background:#d4f55a;}
+
+/* ── VALIDATION ── */
+.v-err{display:none;background:#fdf0ee;border:1.5px solid var(--red);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--red);line-height:1.5;}
+.v-err.show{display:block;}
+.v-err ul{margin:6px 0 0 16px;}
+.v-err ul li{margin-bottom:3px;}
+.inp-err{border-color:var(--red)!important;background:#fffafa!important;}
 </style>
 </head>
 <body>
@@ -490,7 +497,6 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     </div>
     <div class="info-pill green">📚 Max exempt: ₹2,400 CEA + ₹7,200 hostel per family (2 children).</div>
   </div>
-
   <div class="nav-row"><button class="btn-back" onclick="ps(2)">← Back</button><button class="btn-next" onclick="ns(2)">Continue → Investments</button></div>
 </div>
 
@@ -538,7 +544,6 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80d_parents_d" placeholder="0" oninput="fa(this,'sec80d_parents')"><input type="hidden" id="sec80d_parents"></div>
     </div>
   </div>
-
   <div class="nav-row"><button class="btn-back" onclick="ps(3)">← Back</button><button class="btn-next" onclick="ns(3)">Continue → Loans & More</button></div>
 </div>
 
@@ -591,7 +596,6 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80u_d" placeholder="0" oninput="fa(this,'sec80u')"><input type="hidden" id="sec80u"></div>
   </div>
-
   <div class="nav-row"><button class="btn-back" onclick="ps(4)">← Back</button><button class="btn-next" onclick="ns(4)">Continue → EPF & Gratuity</button></div>
 </div>
 
@@ -638,7 +642,6 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="other_exempt_d" placeholder="0" oninput="fa(this,'other_exempt')"><input type="hidden" id="other_exempt"></div>
   </div>
-
   <div class="nav-row"><button class="btn-back" onclick="ps(5)">← Back</button><button class="btn-next" onclick="ns(5)">Continue → Other Income</button></div>
 </div>
 
@@ -696,7 +699,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     <div class="amt-words" id="tds_deducted_w"></div>
   </div>
 
-  <div class="nav-row"><button class="btn-back" onclick="ps(6)">← Back</button><button class="btn-next" onclick="calculate()" style="background:var(--a2);">🧮 Generate My Tax Report</button></div>
+  <div class="nav-row"><button class="btn-back" onclick="ps(6)">← Back</button><button class="btn-next" onclick="validateAndCalculate()" style="background:var(--a2);">🧮 Generate My Tax Report</button></div>
 </div>
 
 <!-- ═══════════════ RESULTS ═══════════════ -->
@@ -1765,6 +1768,67 @@ function initSim() {
   document.getElementById('sim-card').style.display = 'block';
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// VALIDATION — runs only at Calculate time, not on step nav
+// Hard blocks: gross=0, basic>gross, age invalid
+// Soft fixes: auto-cap 80C, prof_tax silently
+// ═══════════════════════════════════════════════════════════════
+
+function validateAndCalculate() {
+  // ── collect raw values ──
+  const gross  = gv('gross');
+  const basic  = gv('basic');
+  const age    = document.getElementById('age').value.trim();
+  const ageNum = parseInt(age);
+
+  const hardErrors = [];
+
+  // Hard block 1: no gross salary
+  if (gross <= 0) {
+    hardErrors.push('Gross annual salary is required. Please go back to Step 2 and enter it.');
+  }
+
+  // Hard block 2: basic > gross
+  if (gross > 0 && basic > 0 && basic > gross) {
+    hardErrors.push('Basic salary (₹' + toIN(basic) + ') cannot be more than Gross salary (₹' + toIN(gross) + '). Please fix Step 2.');
+  }
+
+  // Hard block 3: age is not a number
+  if (age && (isNaN(ageNum) || ageNum < 1 || ageNum > 120)) {
+    hardErrors.push('Age "' + age + '" doesn\'t look right. Please enter a number between 1 and 120 in Step 1.');
+  }
+
+  if (hardErrors.length > 0) {
+    // Show a clean error above the calculate button
+    let box = document.getElementById('calc-err-box');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'calc-err-box';
+      box.style.cssText = 'background:#fdf0ee;border:1.5px solid #c0392b;border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#c0392b;line-height:1.6;';
+      const calcBtn = document.getElementById('calc-btn') || document.querySelector('[onclick="calculate()"]');
+      if (calcBtn) calcBtn.parentNode.insertBefore(box, calcBtn);
+    }
+    box.innerHTML = '<strong>⚠ Please fix before calculating:</strong><ul style="margin:6px 0 0 16px">' + hardErrors.map(e => '<li>' + e + '</li>').join('') + '</ul>';
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return; // stop — don't calculate
+  }
+
+  // ── Soft auto-fixes (silent, no friction) ──
+  // These are just clamped during compOld/compNew anyway, but let's also
+  // silently clamp the hidden inputs so displayed values stay consistent
+  const profTax = gv('prof_tax');
+  if (profTax > 2500) {
+    document.getElementById('prof_tax').value = 2500;
+  }
+
+  // Clear any previous error box
+  const box = document.getElementById('calc-err-box');
+  if (box) box.remove();
+
+  // All good — run the real calculate
+  calculate();
+}
 
 </script>
 </body>
