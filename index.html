@@ -720,9 +720,10 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     <div class="rh-saving" id="rh-saving">Saves ₹0</div>
     <div class="stat-row">
       <div class="stat-box"><div class="stat-l">Tax Payable</div><div class="stat-v" id="st-tax">₹0</div><div class="stat-s">with cess</div></div>
-      <div class="stat-box"><div class="stat-l">Effective Rate</div><div class="stat-v" id="st-eff">0%</div><div class="stat-s">of gross</div></div>
+      <div class="stat-box"><div class="stat-l">Effective Rate</div><div class="stat-v" id="st-eff">0%</div><div class="stat-s" id="st-eff-sub">of gross · marginal: <span id="st-marginal">0%</span></div></div>
       <div class="stat-box"><div class="stat-l">TDS Balance</div><div class="stat-v" id="st-tds">₹0</div><div class="stat-s" id="st-tds-sub">refund / due</div></div>
     </div>
+    <div id="adv-tax-warn" style="display:none;background:#fdf0ee;border:1.5px solid #c0392b;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#7a1010;line-height:1.5;"></div>
   </div>
 
   <div class="act-row">
@@ -1274,9 +1275,34 @@ function calculate(){
   document.getElementById('res-hdr').style.background=win==='new'
     ?'linear-gradient(135deg,#1a472a,#0f2d1a)':'linear-gradient(135deg,#7a5010,#4a2f08)';
   document.getElementById('st-tax').textContent=fmt(best);
-  document.getElementById('st-eff').textContent=pct(best,_i.gross);
+  // Effective rate = Tax / Gross income (what % of total income goes to tax)
+  // Marginal rate = top slab rate (what you pay on the next ₹1 earned)
+  const effRate = pct(best, _i.gross);
+  const taxableInc = win==='new' ? _n.taxable : _o.taxable;
+  // Determine marginal rate from taxable income (new regime slabs)
+  const marginalRate = win==='new'
+    ? (taxableInc>2400000?30:taxableInc>2000000?25:taxableInc>1600000?20:taxableInc>1200000?15:taxableInc>800000?10:taxableInc>400000?5:0)
+    : (taxableInc>1000000?30:taxableInc>500000?20:taxableInc>250000?5:0);
+  document.getElementById('st-eff').textContent = effRate;
+  document.getElementById('st-marginal').textContent = marginalRate + '%';
   document.getElementById('st-tds').textContent=fmt(Math.abs(tdsBalance));
   document.getElementById('st-tds-sub').textContent=tdsBalance>=0?'refund due →':'balance due ↑';
+
+  // Advance tax warning: 234B/C interest if balance due > 10,000 and unpaid by March 31
+  const advTaxWarn = document.getElementById('adv-tax-warn');
+  if(advTaxWarn) {
+    const balDue = -tdsBalance; // positive = money owed
+    if(balDue > 10000) {
+      const interest = Math.round(balDue * 0.01); // ~1% per month
+      advTaxWarn.style.display = 'block';
+      advTaxWarn.innerHTML = '⚠️ <strong>Advance Tax Alert (Sec 234B/234C):</strong> You have ₹' + 
+        (balDue/100000).toFixed(2) + 'L balance due. If unpaid by 31 March, interest of ~₹' +
+        Math.round(interest).toLocaleString('en-IN') + '/month may apply. ' +
+        '<a href="https://www.incometax.gov.in/iec/foportal/help/e-payment-of-taxes" target="_blank" style="color:inherit;font-weight:700;">Pay via Challan 280 →</a>';
+    } else {
+      advTaxWarn.style.display = 'none';
+    }
+  }
 
   const oc=document.getElementById('old-card'),nc=document.getElementById('new-card');
   oc.classList.toggle('winner',win==='old');nc.classList.toggle('winner',win==='new');
