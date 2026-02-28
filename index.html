@@ -1128,7 +1128,12 @@ function autoFillForm(data){
 // TAX ENGINE
 // =====================================================================================================================================================================
 const NS=[[300000,0,'Up to ₹3L'],[700000,.05,'₹3L–₹7L'],[1000000,.10,'₹7L–₹10L'],[1200000,.15,'₹10L–₹12L'],[1500000,.20,'₹12L–₹15L'],[Infinity,.30,'Above ₹15L']];
-const OS=[[250000,0,'Up to ₹2.5L'],[500000,.05,'₹2.5L–₹5L'],[1000000,.20,'₹5L–₹10L'],[Infinity,.30,'Above ₹10L']];
+// Old regime slabs are age-dependent
+function getOS(age){
+  if(age>=80)return[[500000,0,'Up to ₹5L'],[1000000,.20,'₹5L–₹10L'],[Infinity,.30,'Above ₹10L']];
+  if(age>=60)return[[300000,0,'Up to ₹3L'],[500000,.05,'₹3L–₹5L'],[1000000,.20,'₹5L–₹10L'],[Infinity,.30,'Above ₹10L']];
+  return[[250000,0,'Up to ₹2.5L'],[500000,.05,'₹2.5L–₹5L'],[1000000,.20,'₹5L–₹10L'],[Infinity,.30,'Above ₹10L']];
+}
 
 function slabs(tax,sl){
   let t=0,prev=0,bd=[];
@@ -1157,7 +1162,8 @@ function gs(id){return document.getElementById(id).value;}
 let _o,_n,_i;
 
 function compOld(i){
-  const{gross,basic,da,hra_received,rent_paid,is_metro,prof_tax,has_lta,lta_received,lta_claimed,has_cea,cea,hostel_allowance,sec80c,nps,employer_nps,sec80d_self,sec80d_parents,home_loan_interest,home_loan_principal,sec80e,sec80tta,sec80g,sec80u,epf_employee,has_gratuity,gratuity,other_exempt,interest_income,rental_income,stcg,ltcg,freelance}=i;
+  const{gross,basic,da,hra_received,rent_paid,is_metro,prof_tax,has_lta,lta_received,lta_claimed,has_cea,cea,hostel_allowance,sec80c,nps,employer_nps,sec80d_self,sec80d_parents,home_loan_interest,home_loan_principal,sec80e,sec80tta,sec80g,sec80u,epf_employee,has_gratuity,gratuity,other_exempt,interest_income,rental_income,stcg,ltcg,freelance,age}=i;
+  const OS=getOS(age||0);
   const std=50000,hra=calcHRA(basic,da,hra_received,rent_paid,is_metro);
   const lta=has_lta==='yes'?Math.min(lta_received,lta_claimed):0;
   const cea_ex=has_cea==='yes'?Math.min(cea,2400):0;
@@ -1165,9 +1171,9 @@ function compOld(i){
   const grat=has_gratuity==='yes'?Math.min(gratuity,2000000):0;
   const c80c=Math.min(sec80c+epf_employee+home_loan_principal,150000);
   const cnps=Math.min(nps,50000),cenps=Math.min(employer_nps,.1*(basic+da));
-  const c80d=Math.min(sec80d_self,25000)+Math.min(sec80d_parents,50000);
+  const c80d=Math.min(sec80d_self,(age||0)>=60?50000:25000)+Math.min(sec80d_parents,50000);
   const c24b=Math.min(home_loan_interest,200000),c80e_v=sec80e;
-  const c80tta=Math.min(sec80tta,10000),c80g_v=sec80g*.5,c80u_v=sec80u;
+  const c80tta=Math.min(sec80tta,(age||0)>=60?50000:10000)  // 80TTB for seniors,c80g_v=sec80g*.5,c80u_v=sec80u;
   const exempts=std+hra+lta+cea_ex+hos+prof_tax+other_exempt+grat;
   const deds=c80c+cnps+cenps+c80d+c24b+c80e_v+c80tta+c80g_v+c80u_v;
   const rnet=rental_income*.7,ltcg_t=Math.max(0,ltcg-125000);
@@ -1175,9 +1181,9 @@ function compOld(i){
   const taxable=Math.max(0,ti-deds);
   const{tax:base,bd}=slabs(taxable,OS);
   let tot=base+ltcg_t*.125+stcg*.2;
-  if(taxable<=500000)tot=Math.max(0,tot-Math.min(base,12500));
+  if(taxable<=500000&&(age||0)<60)tot=Math.max(0,tot-Math.min(base,12500));
   const final=cess(tot,gross);
-  return{tax:Math.round(final),bd,taxable,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,c80c,cnps,cenps,c80d,c24b,c80e_v,c80tta,c80g_v,c80u_v,exempts,totalDed:deds}};
+  return{tax:Math.round(final),bd,taxable,age:age||0,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,c80c,cnps,cenps,c80d,c24b,c80e_v,c80tta,c80g_v,c80u_v,exempts,totalDed:deds}};
 }
 function compNew(i){
   const{gross,basic,da,employer_nps,interest_income,rental_income,stcg,ltcg,freelance}=i;
@@ -1208,6 +1214,8 @@ function calculate(){
     interest_income:gv('interest_income'),rental_income:gv('rental_income'),
     stcg:gv('stcg'),ltcg:gv('ltcg'),freelance:gv('freelance'),
     tds_deducted:gv('tds_deducted'),
+    age:parseInt(document.getElementById('age').value)||0,
+    gross_salary:gv('gross'),
   };
   if(_i.gross===0){alert('Please enter your gross salary in Step 2.');showStep(2);return;}
   _o=compOld(_i);_n=compNew(_i);
