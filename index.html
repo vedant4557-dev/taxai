@@ -99,11 +99,11 @@ label{font-size:13px;font-weight:600;color:var(--ink2);}
 .af-badge{display:inline-flex;align-items:center;gap:3px;background:var(--al);color:var(--accent);font-size:9px;font-weight:800;padding:2px 7px;border-radius:100px;letter-spacing:.5px;text-transform:uppercase;}
 /* Tooltip */
 .tip-wrap{position:relative;display:inline-flex;}
-.tip-btn{width:18px;height:18px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
-.tip-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
-.tip-box{display:none;position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;width:240px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.2);font-weight:400;}
+.tip-btn{width:22px;height:22px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.tip-btn:hover,.tip-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.tip-box{display:none;position:fixed;background:var(--ink);color:#fff;border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;width:260px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.3);font-weight:400;pointer-events:none;}
 .tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink);}
-.tip-wrap:hover .tip-box{display:block;animation:fadeIn .15s ease;}
+.tip-box.open{display:block;animation:fadeIn .15s ease;}
 .ex-chip{display:inline-block;background:rgba(255,255,255,.15);border-radius:4px;padding:2px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;margin-top:6px;}
 /* Amount */
 .amt-wrap{position:relative;}
@@ -1006,17 +1006,7 @@ async function runExtraction(){
     if(_files.ais){   formData.append('ais',  _files.ais);   setEpState('ais',  'spin','Reading full income picture…');}
     setEpState('cross','spin','Checking for errors and mismatches…');
 
-    const controller=new AbortController();
-    const timeoutId=setTimeout(()=>controller.abort(),90000); // 90s timeout
-    let res;
-    try{
-      res=await fetch(BACKEND_URL+'/extract',{method:'POST',body:formData,signal:controller.signal});
-    }catch(fetchErr){
-      if(fetchErr.name==='AbortError')throw new Error('Request timed out after 90 seconds. The server may be cold-starting — please try again in a moment.');
-      throw fetchErr;
-    }finally{
-      clearTimeout(timeoutId);
-    }
+    const res=await fetch(BACKEND_URL+'/extract',{method:'POST',body:formData});
     if(!res.ok){
       const err=await res.json().catch(()=>({error:'Server error'}));
       throw new Error(err.error||'Extraction failed');
@@ -2024,6 +2014,66 @@ function validateAndCalculate() {
   // All good — run the real calculate
   calculate();
 }
+
+// ── Tooltip: click/touch toggle (works on mobile) ──────────────────────────
+(function(){
+  let activeBtn=null, activeBox=null;
+
+  function positionBox(btn, box){
+    const r=btn.getBoundingClientRect();
+    const bw=260;
+    // Place above the button
+    let left=r.left+r.width/2-bw/2;
+    let top=r.top-8; // will subtract box height below
+    // Clamp horizontally so it doesn't bleed off screen
+    left=Math.max(8, Math.min(left, window.innerWidth-bw-8));
+    box.style.width=bw+'px';
+    box.style.left=left+'px';
+    // Temporarily show to measure height
+    box.style.visibility='hidden';
+    box.classList.add('open');
+    const bh=box.offsetHeight;
+    box.classList.remove('open');
+    box.style.visibility='';
+    top=r.top-bh-8;
+    // If no room above, flip below
+    if(top<8){
+      top=r.bottom+8;
+      box.style.setProperty('--arrow-dir','bottom');
+    }
+    box.style.top=top+'px';
+  }
+
+  function closeActive(){
+    if(activeBox){activeBox.classList.remove('open');}
+    if(activeBtn){activeBtn.classList.remove('active');}
+    activeBtn=null; activeBox=null;
+  }
+
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest('.tip-btn');
+    if(btn){
+      e.stopPropagation();
+      const box=btn.closest('.tip-wrap').querySelector('.tip-box');
+      if(!box) return;
+      // Toggle: clicking same button closes it
+      if(activeBtn===btn){closeActive();return;}
+      closeActive();
+      positionBox(btn,box);
+      box.classList.add('open');
+      btn.classList.add('active');
+      activeBtn=btn; activeBox=box;
+      return;
+    }
+    // Click outside closes
+    if(!e.target.closest('.tip-box')) closeActive();
+  });
+
+  // Close on scroll/resize so box doesn't drift
+  window.addEventListener('scroll',closeActive,true);
+  window.addEventListener('resize',closeActive);
+})();
+
 
 </script>
 </body>
