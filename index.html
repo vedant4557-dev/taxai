@@ -170,6 +170,17 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .btn-dl:hover{background:#153921;transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,71,42,.3);}
 .btn-restart{padding:13px 18px;border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);}
 /* WhatsApp share button */
+.risk-panel{background:var(--white);border:1.5px solid #c0392b;border-radius:16px;padding:22px;margin-bottom:14px;box-shadow:var(--sh);}
+.risk-panel.low{border-color:#2d6a4f;}
+.risk-panel.med{border-color:#c17f24;}
+.risk-panel.high{border-color:#c0392b;}
+.risk-meter{height:10px;border-radius:100px;background:#e8e4dc;margin:12px 0;overflow:hidden;}
+.risk-meter-fill{height:100%;border-radius:100px;transition:width .6s ease;}
+.risk-flags{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.risk-flag{display:flex;align-items:flex-start;gap:10px;font-size:12.5px;padding:8px 12px;border-radius:8px;line-height:1.5;}
+.risk-flag.red{background:#fdf0ee;color:#7a1010;}
+.risk-flag.amber{background:#fdf3e3;color:#7a4f08;}
+.risk-flag.green{background:#e8f5ec;color:#1a472a;}
 .cap-warn{font-size:11px;color:#c17f24;font-weight:600;margin-top:4px;display:none;}
 .cap-warn.show{display:block;}
 .amt-inp.over-cap{border-color:#c17f24!important;background:#fdf3e3!important;}
@@ -942,6 +953,9 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- 234B/C Interest Panel -->
   <div id="interest-panel"></div>
 
+  <!-- Tax Risk Score -->
+  <div id="risk-score-panel"></div>
+
   <!-- Error / Mismatch Panel -->
   <div id="error-panel"></div>
 
@@ -1195,25 +1209,67 @@ function setEpState(id,state,sub){
 }
 
 async function runExtraction(){
-  // ⚠️ After deploying to Render, update this URL to your actual backend URL
   const BACKEND_URL='https://taxsmart-api.onrender.com';
+  const MAX_RETRIES=2;
+  const TIMEOUT_MS=90000;
 
   document.getElementById('extract-btn').disabled=true;
   document.getElementById('extract-progress').classList.add('show');
 
+  function getWm(){ return document.getElementById('warmup-msg'); }
+
+  // Show warmup message if first attempt takes >5s
+  const warmupTimer=setTimeout(()=>{
+    const wm=getWm();
+    if(wm){wm.style.display='flex';wm.innerHTML='⏳ <span>Server is waking up (Render free tier cold start — usually 20–30s). Hang tight…</span>';}
+  },5000);
+
+  async function attemptFetch(){
+    const ctrl=new AbortController();
+    const tout=setTimeout(()=>ctrl.abort(),TIMEOUT_MS);
+    try{
+      const formData=new FormData();
+      if(_files.f16)    formData.append('f16',  _files.f16);
+      if(_files['26as'])formData.append('as26',_files['26as']);
+      if(_files.ais)    formData.append('ais',  _files.ais);
+      const res=await fetch(BACKEND_URL+'/extract',{method:'POST',body:formData,signal:ctrl.signal});
+      clearTimeout(tout);
+      if(!res.ok){
+        const errBody=await res.json().catch(()=>({error:'Server error '+res.status}));
+        throw new Error(errBody.error||'Server error '+res.status);
+      }
+      return await res.json();
+    }catch(e){
+      clearTimeout(tout);
+      if(e.name==='AbortError') throw new Error('timeout');
+      throw e;
+    }
+  }
+
   try{
-    const formData=new FormData();
-    if(_files.f16){   formData.append('f16',  _files.f16);   setEpState('f16',  'spin','Reading salary breakup and TDS…');}
-    if(_files['26as']){formData.append('as26',_files['26as']);setEpState('26as','spin','Reading TDS credits…');}
-    if(_files.ais){   formData.append('ais',  _files.ais);   setEpState('ais',  'spin','Reading full income picture…');}
+    if(_files.f16)    setEpState('f16',  'spin','Reading salary breakup and TDS…');
+    if(_files['26as'])setEpState('26as','spin','Reading TDS credits…');
+    if(_files.ais)    setEpState('ais',  'spin','Reading full income picture…');
     setEpState('cross','spin','Checking for errors and mismatches…');
 
-    const res=await fetch(BACKEND_URL+'/extract',{method:'POST',body:formData});
-    if(!res.ok){
-      const err=await res.json().catch(()=>({error:'Server error'}));
-      throw new Error(err.error||'Extraction failed');
+    let data, lastErr;
+    for(let attempt=1;attempt<=MAX_RETRIES;attempt++){
+      try{
+        if(attempt>1){
+          setEpState('cross','spin',`Retry ${attempt-1} of ${MAX_RETRIES-1} — server may have been sleeping…`);
+          await new Promise(r=>setTimeout(r,3000));
+        }
+        data=await attemptFetch();
+        break;
+      }catch(e){
+        lastErr=e;
+        if(attempt===MAX_RETRIES) throw e;
+      }
     }
-    const data=await res.json();
+    if(!data) throw lastErr;
+
+    clearTimeout(warmupTimer);
+    const wmEl=getWm(); if(wmEl) wmEl.style.display='none';
 
     const f16Data=data.f16Data||{}, as26Data=data.as26Data||{}, aisData=data.aisData||{};
 
@@ -1227,10 +1283,8 @@ async function runExtraction(){
     _errors=data.errors||[];
     setEpState('cross','done',`Found ${_errors.length} item(s) to review`);
     _extractedData={...f16Data,...as26Data,...aisData};
-    // Store separately for reconciliation table
     window._f16=f16Data; window._as26=as26Data; window._ais=aisData;
 
-    const wm=document.getElementById('warmup-msg');if(wm)wm.style.display='none';
     setTimeout(()=>{
       autoFillForm(_extractedData);
       cur=1;showStep(1);
@@ -1244,9 +1298,43 @@ async function runExtraction(){
     },600);
 
   }catch(err){
+    clearTimeout(warmupTimer);
     console.error('Extraction error:',err);
-    ['f16','26as','ais'].forEach(k=>{if(_files[k])setEpState(k,'err','Could not read — fill manually');});
-    setEpState('cross','err',err.message||'Server error. Please fill manually.');
+    const wmEl=getWm(); if(wmEl) wmEl.style.display='none';
+
+    let userMsg, hint;
+    if(err.message==='timeout'||err.name==='AbortError'){
+      userMsg='Request timed out after 90 seconds.';
+      hint='The server may be cold-starting. Wait 30 seconds and try again — it usually works on the second attempt.';
+    } else if(err.message&&err.message.includes('fetch')){
+      userMsg='Could not reach the extraction server.';
+      hint='Check your internet connection, or try again in a moment. Your documents are safe — nothing was uploaded.';
+    } else if(err.message&&(err.message.includes('quota')||err.message.includes('429'))){
+      userMsg='AI quota exhausted for today.';
+      hint='The free AI tier (1,500 requests/day) is used up. Try again tomorrow, or fill the form manually — it only takes 3 minutes.';
+    } else if(err.message&&err.message.includes('413')){
+      userMsg='File too large.';
+      hint='Try compressing your PDF before uploading, or fill the form manually — it only takes 3 minutes.';
+    } else {
+      userMsg='Extraction failed: '+(err.message||'Unknown error');
+      hint='Please fill the form manually — it only takes 3 minutes. All fields have tooltips (?) to guide you.';
+    }
+
+    ['f16','26as','ais'].forEach(k=>{if(_files[k])setEpState(k,'err','Could not read — please fill manually');});
+    setEpState('cross','err',userMsg);
+
+    const warnBox=getWm();
+    if(warnBox){
+      warnBox.style.display='flex';
+      warnBox.style.background='#fdf3e3';
+      warnBox.style.borderColor='#c17f24';
+      warnBox.style.color='#7a4f08';
+      warnBox.innerHTML=`⚠️ <span><strong>${userMsg}</strong> ${hint}<br><br>
+        <button onclick="showStep(1);document.getElementById('warmup-msg').style.display='none'" style="margin-top:4px;padding:8px 18px;background:var(--a2);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">
+          Fill manually instead →
+        </button>
+      </span>`;
+    }
     document.getElementById('extract-btn').disabled=false;
   }
 }
@@ -1678,6 +1766,7 @@ function calculate(){
   buildInsight(win,sav,name,tdsBalance);
   buildITRPanel();
   buildScheduleAL();
+  buildRiskScore();
   buildInterestPanel();
 
   document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
@@ -2412,6 +2501,120 @@ function validateAndCalculate() {
 
   // All good — run the real calculate
   calculate();
+}
+
+// ── Tax Risk Score ───────────────────────────────────────────────────────────
+function buildRiskScore(){
+  const panel=document.getElementById('risk-score-panel');
+  if(!panel||!_i) return;
+
+  const flags=[];
+  let score=0;
+
+  // ── Flag 1: TDS Mismatch (Form 16 vs 26AS)
+  const f16tds=window._f16&&window._f16.tds_deducted_form16||0;
+  const as26tds=window._as26&&window._as26.total_tds_26as||0;
+  if(f16tds>0&&as26tds>0){
+    const diff=Math.abs(f16tds-as26tds);
+    if(diff>5000){
+      score+=3;
+      flags.push({level:'red',icon:'🔴',text:`TDS mismatch: Form 16 shows ${fmt(f16tds)}, 26AS shows ${fmt(as26tds)} (diff: ${fmt(diff)}). IT Dept computers auto-detect this.`});
+    } else if(diff>1000){
+      score+=1;
+      flags.push({level:'amber',icon:'🟡',text:`Minor TDS difference of ${fmt(diff)} between Form 16 and 26AS. Usually fine but worth checking.`});
+    }
+  }
+
+  // ── Flag 2: AIS income not declared in ITR
+  const aisInt=window._ais&&window._ais.interest_income_ais||0;
+  const declaredInt=_i.interest_income||0;
+  if(aisInt>0&&declaredInt<aisInt*0.7){
+    score+=3;
+    flags.push({level:'red',icon:'🔴',text:`AIS shows interest income of ${fmt(aisInt)} but you've declared only ${fmt(declaredInt)}. IT Dept gets AIS from all banks — undeclared interest is a common scrutiny trigger.`});
+  }
+
+  // ── Flag 3: Large 80G donations vs income
+  const donations=_i.sec80g||0;
+  if(donations>0&&donations>_i.gross*0.3){
+    score+=2;
+    flags.push({level:'red',icon:'🔴',text:`80G donations of ${fmt(donations)} are ${Math.round(donations/_i.gross*100)}% of your gross income. Unusually large donation claims frequently trigger scrutiny.`});
+  } else if(donations>100000){
+    score+=1;
+    flags.push({level:'amber',icon:'🟡',text:`80G donations of ${fmt(donations)} — keep donation receipts and Form 10BE ready in case of notice.`});
+  }
+
+  // ── Flag 4: HRA claimed but no rent paid
+  const hraClaimed=_o.deds&&_o.deds.hra||0;
+  if(hraClaimed>0&&(_i.rent_paid||0)<1000){
+    score+=2;
+    flags.push({level:'red',icon:'🔴',text:`HRA exemption claimed (${fmt(hraClaimed)}) but rent paid appears to be ₹0. Landlord PAN required for rent >₹1L/year. False HRA claims are heavily scrutinised.`});
+  }
+
+  // ── Flag 5: High TDS but low declared salary (potential income suppression)
+  if(as26tds>0&&_i.gross>0&&as26tds>_i.gross*0.35){
+    score+=2;
+    flags.push({level:'amber',icon:'🟡',text:`TDS (${fmt(as26tds)}) is very high relative to declared salary (${fmt(_i.gross)}). Ensure all income sources are included.`});
+  }
+
+  // ── Flag 6: Crypto income declared (high scrutiny sector)
+  if((_i.crypto||0)>50000){
+    score+=1;
+    flags.push({level:'amber',icon:'🟡',text:`Crypto/VDA income of ${fmt(_i.crypto)} declared. IT Dept receives data from exchanges — ensure you've declared ALL VDA transactions, not just profitable ones.`});
+  }
+
+  // ── Flag 7: Job change — under-deducted TDS
+  if(_i.changed_jobs==='yes'){
+    const tdsEmp=(_i.tds_emp1||0)+(_i.tds_emp2||0);
+    const totalTax=Math.min(_o.tax,_n.tax);
+    if(tdsEmp>0&&tdsEmp<totalTax*0.7){
+      score+=2;
+      flags.push({level:'amber',icon:'🟡',text:`Job change detected with combined TDS of ${fmt(tdsEmp)} against total tax of ${fmt(totalTax)}. Large balance due increases scrutiny probability.`});
+    }
+  }
+
+  // ── Flag 8: Online gaming income (new high-scrutiny category)
+  if((_i.gaming_income||0)>10000){
+    score+=1;
+    flags.push({level:'amber',icon:'🟡',text:`Online gaming/lottery income of ${fmt(_i.gaming_income)} declared. IT Dept gets platform data under Sec 285BA — match your declared amount against your gaming app's tax statement.`});
+  }
+
+  // ── Positive signals (reduce perception of risk)
+  if(flags.length===0){
+    flags.push({level:'green',icon:'🟢',text:'No major risk flags found. Your return looks clean and consistent.'});
+  }
+  if(f16tds>0&&as26tds>0&&Math.abs(f16tds-as26tds)<500){
+    flags.push({level:'green',icon:'🟢',text:'TDS matches perfectly between Form 16 and 26AS. ✓'});
+  }
+  if(_i.tds_deducted>0&&Math.abs(_i.tds_deducted-Math.min(_o.tax,_n.tax))<10000){
+    flags.push({level:'green',icon:'🟢',text:'TDS closely matches tax liability — minimal chance of demand notice.'});
+  }
+
+  // ── Score → label
+  score=Math.min(score,10);
+  const label=score<=2?'Low Risk':score<=5?'Moderate Risk':'High Scrutiny Risk';
+  const color=score<=2?'#2d6a4f':score<=5?'#c17f24':'#c0392b';
+  const panelClass=score<=2?'low':score<=5?'med':'high';
+  const fillPct=Math.round(score/10*100);
+  const advice=score<=2
+    ?'Your return looks clean. File with confidence.'
+    :score<=5
+    ?'A few items worth double-checking before filing.'
+    :'Multiple risk factors detected — review each flag carefully and ensure documents are ready.';
+
+  panel.innerHTML=`
+    <div class="risk-panel ${panelClass}">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:2px;">IT Scrutiny Risk Score</div>
+          <div style="font-size:22px;font-weight:800;color:${color};">${score}/10 — ${label}</div>
+        </div>
+        <div style="font-size:28px;">${score<=2?'✅':score<=5?'⚠️':'🚨'}</div>
+      </div>
+      <div class="risk-meter"><div class="risk-meter-fill" style="width:${fillPct}%;background:${color};"></div></div>
+      <div style="font-size:12.5px;color:var(--ink2);margin-bottom:14px;">${advice}</div>
+      <div class="risk-flags">${flags.map(f=>`<div class="risk-flag ${f.level}"><span style="flex-shrink:0;font-size:15px;">${f.icon}</span><span>${f.text}</span></div>`).join('')}</div>
+      <div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;">Score based on common IT Dept scrutiny triggers. This is a planning guide — not legal advice. Consult a CA if score is 6+.</div>
+    </div>`;
 }
 
 // ── Schedule AL (Assets & Liabilities — mandatory if income > ₹50L) ──────────
