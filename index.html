@@ -498,7 +498,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
       <div class="lbl-wrap"><label>Age</label>
         <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Citizens above 60 (Senior) and 80 (Super Senior) get higher exemption limits under the old regime — ₹3L and ₹5L respectively.</div></div>
       </div>
-      <input type="text" id="age" placeholder="28" style="font-family:'JetBrains Mono',monospace;">
+      <input type="number" id="age" placeholder="28" min="18" max="100" style="font-family:'JetBrains Mono',monospace;">
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>Financial Year</label></div>
@@ -1113,6 +1113,12 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <!-- util-bars now inside accordion above -->
 
+  <!-- ═══ WHAT'S NEXT CTA BAR ═══ -->
+  <div id="whats-next" style="display:none;background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:var(--sh);">
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700;">📋 What to do next</div>
+    <div style="display:flex;flex-direction:column;gap:8px;" id="next-steps-list"></div>
+  </div>
+
   <div class="sec-card">
     <div class="sec-title">🔢 Income & Tax Comparison</div>
     <table class="comp-tbl" id="comp-tbl"></table>
@@ -1542,6 +1548,15 @@ function autoFillForm(data){
 }
 
 // =====================================================================================================================================================================
+// ── Keep-alive ping (prevents Render cold start) ────────────────────────────
+// Pings server every 10 minutes silently — user never sees this
+(function keepAlive(){
+  const API = 'https://taxsmart-api.onrender.com';
+  function ping(){ fetch(API+'/ping',{method:'GET',mode:'cors'}).catch(()=>{}); }
+  ping(); // immediate on load
+  setInterval(ping, 10 * 60 * 1000); // then every 10 min
+})();
+
 // TAX ENGINE
 // =====================================================================================================================================================================
 // FY 2025-26 New Regime Slabs (Budget 2025)
@@ -1854,6 +1869,7 @@ function calculate(){
   buildRiskScore();
   buildInterestPanel();
   buildHeroResult();
+  buildWhatsNext();
 
   document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
   document.getElementById('prog-wrap').style.display='none';
@@ -2883,6 +2899,79 @@ _Calculated using TaxSmart — Free Indian Tax Calculator_
 
   const url = 'https://wa.me/?text=' + encodeURIComponent(msg);
   window.open(url, '_blank');
+}
+
+// ── What's Next CTA Bar ──────────────────────────────────────────────────────
+function buildWhatsNext(){
+  const panel=document.getElementById('whats-next');
+  const list=document.getElementById('next-steps-list');
+  if(!panel||!list||!_o||!_n||!_i) return;
+
+  const win=_o.tax<_n.tax?'old':'new';
+  const bestTax=Math.min(_o.tax,_n.tax);
+  const tds=_i.tds_deducted||0;
+  const bal=tds-bestTax;
+  const steps=[];
+
+  // Step 1: Always — regime decision
+  steps.push({
+    num:'1',
+    color:'#2d6a4f',
+    bg:'#e8f5ec',
+    title:`Confirm ${win==='new'?'New':'Old'} Regime with your employer`,
+    desc:`Submit a declaration to your HR/payroll before April 1. Once declared, it applies for the whole year.`,
+    cta:null
+  });
+
+  // Step 2: Refund or pay
+  if(bal>0){
+    steps.push({
+      num:'2',color:'#1a6fa3',bg:'#e3f2fd',
+      title:`File ITR to claim ₹${fmt(bal)} refund`,
+      desc:`File your ITR-1 or ITR-2 before July 31, 2025. Refund is deposited directly to your bank within 2-4 weeks.`,
+      cta:{label:'→ File on Income Tax Portal',url:'https://eportal.incometax.gov.in'}
+    });
+  } else if(bal<0){
+    steps.push({
+      num:'2',color:'#c0392b',bg:'#fdf0ee',
+      title:`Pay ₹${fmt(Math.abs(bal))} Self-Assessment Tax now`,
+      desc:`Pay via Challan 280 before filing your ITR to avoid interest under Sections 234B and 234C.`,
+      cta:{label:'→ Pay via Challan 280',url:'https://onlineservices.tin.egov-nsdl.com/etaxnew/tdsnontds.jsp'}
+    });
+  }
+
+  // Step 3: Invest to save more (if old regime and deduction room exists)
+  if(win==='old'&&_o.deds){
+    const unused=Math.max(0,150000-(_o.deds.c80c||0));
+    if(unused>5000){
+      steps.push({
+        num:'3',color:'#7b5ea7',bg:'#f3eeff',
+        title:`Invest ₹${fmt(unused)} more to max your 80C`,
+        desc:`You have ₹${fmt(unused)} of unused 80C room. PPF, ELSS mutual funds, or NPS contributions qualify.`,
+        cta:null
+      });
+    }
+  }
+
+  // Step 4: Download report
+  steps.push({
+    num:steps.length+1+'',color:'#555',bg:'#f5f5f5',
+    title:'Download this report for your CA or records',
+    desc:`Save a copy for reference when filing. Your CA may need the regime recommendation and deduction breakdown.`,
+    cta:{label:'⬇ Download Report',action:'downloadReport()'}
+  });
+
+  list.innerHTML=steps.map(s=>`
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:${s.bg};border-radius:10px;">
+      <div style="width:24px;height:24px;border-radius:50%;background:${s.color};color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${s.num}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:13px;color:${s.color};margin-bottom:2px;">${s.title}</div>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.5;">${s.desc}</div>
+        ${s.cta?s.cta.url?`<a href="${s.cta.url}" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;font-size:11.5px;font-weight:700;color:${s.color};text-decoration:none;">${s.cta.label}</a>`:`<button onclick="${s.cta.action}" style="margin-top:6px;background:${s.color};color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:11.5px;font-weight:700;cursor:pointer;">${s.cta.label}</button>`:''}
+      </div>
+    </div>`).join('');
+
+  panel.style.display='';
 }
 
 // ── Accordion toggle ─────────────────────────────────────────────────────────
