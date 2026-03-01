@@ -169,6 +169,30 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .btn-dl{flex:1;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;min-width:140px;}
 .btn-dl:hover{background:#153921;transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,71,42,.3);}
 .btn-restart{padding:13px 18px;border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);}
+/* WhatsApp share button */
+.btn-wa{flex:1;padding:13px;background:#25D366;color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;min-width:140px;}
+.btn-wa:hover{background:#128C7E;transform:translateY(-1px);box-shadow:0 4px 16px rgba(37,211,102,.3);}
+/* ITR form recommendation panel */
+.itr-panel{background:var(--white);border:1.5px solid var(--accent);border-radius:16px;padding:22px;margin-bottom:14px;box-shadow:var(--sh);}
+.itr-panel .itr-badge{display:inline-block;background:var(--accent);color:#fff;font-size:13px;font-weight:800;padding:6px 16px;border-radius:100px;margin-bottom:12px;letter-spacing:.3px;}
+.itr-panel .itr-title{font-size:17px;font-weight:700;margin-bottom:6px;}
+.itr-panel .itr-desc{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:12px;}
+.itr-panel .itr-reasons{display:flex;flex-direction:column;gap:6px;}
+.itr-panel .itr-reason{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--ink2);}
+.itr-panel .itr-reason span{color:var(--accent);font-weight:700;flex-shrink:0;}
+.itr-panel .itr-link{display:inline-block;margin-top:12px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;}
+.itr-panel .itr-link:hover{text-decoration:underline;}
+/* 234B/C detailed panel */
+.interest-panel{background:var(--white);border:1.5px solid var(--a2);border-radius:16px;padding:22px;margin-bottom:14px;box-shadow:var(--sh);}
+.interest-panel .int-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.interest-panel .int-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.interest-panel .int-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.interest-panel .int-box{background:var(--a2l);border-radius:10px;padding:12px 14px;}
+.interest-panel .int-box-label{font-size:11px;font-weight:700;color:var(--a2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.interest-panel .int-box-val{font-size:20px;font-weight:800;color:var(--ink);}
+.interest-panel .int-box-note{font-size:11px;color:var(--muted);margin-top:2px;}
+.interest-panel .int-steps{font-size:12.5px;color:var(--ink2);line-height:1.8;}
+.interest-panel .int-ok{background:var(--al);border:1.5px solid var(--accent);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--accent);font-weight:600;}
 .reg-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
 @media(max-width:480px){.reg-cards{grid-template-columns:1fr;}}
 .reg-card{background:var(--white);border:2px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--sh);position:relative;}
@@ -759,8 +783,15 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="act-row">
     <button class="btn-dl" onclick="downloadReport()">⬇ Download Report</button>
+    <button class="btn-wa" onclick="shareWhatsApp()">💬 Share on WhatsApp</button>
     <button class="btn-restart" onclick="restart()">↺ Start Over</button>
   </div>
+
+  <!-- ITR Form Recommendation -->
+  <div id="itr-panel"></div>
+
+  <!-- 234B/C Interest Panel -->
+  <div id="interest-panel"></div>
 
   <!-- Error / Mismatch Panel -->
   <div id="error-panel"></div>
@@ -1333,21 +1364,7 @@ function calculate(){
   document.getElementById('st-tds').textContent=fmt(Math.abs(tdsBalance));
   document.getElementById('st-tds-sub').textContent=tdsBalance>=0?'refund due →':'balance due ↑';
 
-  // Advance tax warning: 234B/C interest if balance due > 10,000 and unpaid by March 31
-  const advTaxWarn = document.getElementById('adv-tax-warn');
-  if(advTaxWarn) {
-    const balDue = -tdsBalance; // positive = money owed
-    if(balDue > 10000) {
-      const interest = Math.round(balDue * 0.01); // ~1% per month
-      advTaxWarn.style.display = 'block';
-      advTaxWarn.innerHTML = '⚠️ <strong>Advance Tax Alert (Sec 234B/234C):</strong> You have ₹' + 
-        (balDue/100000).toFixed(2) + 'L balance due. If unpaid by 31 March, interest of ~₹' +
-        Math.round(interest).toLocaleString('en-IN') + '/month may apply. ' +
-        '<a href="https://www.incometax.gov.in/iec/foportal/help/e-payment-of-taxes" target="_blank" style="color:inherit;font-weight:700;">Pay via Challan 280 →</a>';
-    } else {
-      advTaxWarn.style.display = 'none';
-    }
-  }
+  // 234B/C now handled by buildInterestPanel() called below
 
   const oc=document.getElementById('old-card'),nc=document.getElementById('new-card');
   oc.classList.toggle('winner',win==='old');nc.classList.toggle('winner',win==='new');
@@ -1362,6 +1379,8 @@ function calculate(){
   buildDeds();
   buildTips(win);
   buildInsight(win,sav,name,tdsBalance);
+  buildITRPanel();
+  buildInterestPanel();
 
   document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
   document.getElementById('prog-wrap').style.display='none';
@@ -2035,6 +2054,166 @@ function validateAndCalculate() {
 
   // All good — run the real calculate
   calculate();
+}
+
+// ── ITR Form Recommender ────────────────────────────────────────────────────
+function buildITRPanel() {
+  const i = _i, panel = document.getElementById('itr-panel');
+  if (!panel) return;
+
+  const reasons = [];
+  let form = 'ITR-1';
+
+  // ITR-2 triggers
+  if ((i.ltcg || 0) > 0 || (i.stcg || 0) > 0) {
+    form = 'ITR-2';
+    reasons.push('You have capital gains income (LTCG/STCG) — ITR-1 does not support Schedule CG');
+  }
+  if ((i.rental_income || 0) > 0) {
+    form = 'ITR-2';
+    reasons.push('You have rental income — ITR-2 required for income from house property');
+  }
+  if ((i.freelance || 0) > 0) {
+    form = 'ITR-3';
+    reasons.push('You have freelance/business income — ITR-3 required for business/profession income');
+  }
+  if ((i.crypto || 0) > 0) {
+    form = form === 'ITR-3' ? 'ITR-3' : 'ITR-2';
+    reasons.push('You have crypto/VDA income — requires Schedule VDA, not available in ITR-1');
+  }
+  if (i.gross > 5000000) {
+    if (form === 'ITR-1') {
+      form = 'ITR-2';
+      reasons.push('Income above ₹50L — ITR-1 is only for income up to ₹50L');
+    }
+  }
+
+  // ITR-1 reasons if no upgrade triggered
+  if (form === 'ITR-1') {
+    reasons.push('Salary is your only major income source');
+    reasons.push('No capital gains, rental, or freelance income detected');
+    if (i.gross <= 5000000) reasons.push('Total income is within the ₹50L ITR-1 limit');
+  }
+
+  const colors = { 'ITR-1': 'var(--accent)', 'ITR-2': '#1a3a72', 'ITR-3': '#7a1010' };
+  const descs = {
+    'ITR-1': 'The simplest form — designed for salaried individuals with one house property and no complex income. Most likely pre-filled on the Income Tax portal.',
+    'ITR-2': 'For individuals with salary plus capital gains, multiple properties, or foreign income. Slightly more detailed but fully manageable online.',
+    'ITR-3': 'Required if you have freelance, consulting, or business income alongside salary. You may want CA assistance for this one.'
+  };
+  const links = {
+    'ITR-1': 'https://eportal.incometax.gov.in/iec/foservices/#/pre-login/bl-link?lang=en',
+    'ITR-2': 'https://eportal.incometax.gov.in/iec/foservices/#/pre-login/bl-link?lang=en',
+    'ITR-3': 'https://eportal.incometax.gov.in/iec/foservices/#/pre-login/bl-link?lang=en'
+  };
+
+  panel.innerHTML = `
+    <div class="itr-panel">
+      <div class="itr-badge" style="background:${colors[form]}">📋 File ${form}</div>
+      <div class="itr-title">You should file ${form} this year</div>
+      <div class="itr-desc">${descs[form]}</div>
+      <div class="itr-reasons">
+        ${reasons.map(r => `<div class="itr-reason"><span>✓</span>${r}</div>`).join('')}
+      </div>
+      <a class="itr-link" href="${links[form]}" target="_blank">→ File on Income Tax Portal</a>
+    </div>`;
+}
+
+// ── Section 234B / 234C Interest Calculator ─────────────────────────────────
+function buildInterestPanel() {
+  const panel = document.getElementById('interest-panel');
+  if (!panel || !_i || !_o || !_n) return;
+
+  const best = Math.min(_o.tax, _n.tax);
+  const tds = _i.tds_deducted || 0;
+  const advanceTaxPaid = _i.advance_tax || 0;
+  const balDue = best - tds - advanceTaxPaid;
+
+  if (balDue <= 10000) {
+    // No significant liability — show green OK
+    if (tds >= best) {
+      panel.innerHTML = `<div class="interest-panel">
+        <div class="int-title">✅ Section 234B/234C — No Interest Due</div>
+        <div class="int-sub">Your TDS covers your full tax liability. No advance tax penalty applies.</div>
+        <div class="int-ok">Your employer has already deducted sufficient TDS. You're in the clear!</div>
+      </div>`;
+    }
+    return;
+  }
+
+  // 234B: Interest for not paying advance tax (if >10% of tax unpaid during year)
+  // Simple formula: 1% per month from April 1 to date of filing (assume July 31)
+  // April→July = 4 months
+  const months234B = 4;
+  const interest234B = Math.round(balDue * 0.01 * months234B);
+
+  // 234C: Interest for short payment of each installment
+  // Simplified: assume all advance tax was skipped, 1% × 3 months on 30% due by Dec, etc.
+  // Conservative estimate: ~1% × 3 months on full amount
+  const interest234C = Math.round(balDue * 0.01 * 3);
+
+  const totalInterest = interest234B + interest234C;
+  const totalPayable = balDue + totalInterest;
+
+  panel.innerHTML = `
+    <div class="interest-panel">
+      <div class="int-title">⚠️ Section 234B/234C — Advance Tax Interest</div>
+      <div class="int-sub">You have a balance due of ${fmt(balDue)}. Estimated interest penalty if you pay only at filing time (July 31).</div>
+      <div class="int-grid">
+        <div class="int-box">
+          <div class="int-box-label">Sec 234B Interest</div>
+          <div class="int-box-val">${fmt(interest234B)}</div>
+          <div class="int-box-note">~1%/month × 4 months<br>(Apr–Jul on unpaid tax)</div>
+        </div>
+        <div class="int-box">
+          <div class="int-box-label">Sec 234C Interest</div>
+          <div class="int-box-val">${fmt(interest234C)}</div>
+          <div class="int-box-note">~1%/month × 3 months<br>(missed installments)</div>
+        </div>
+      </div>
+      <div class="int-steps">
+        <strong>Total tax due:</strong> ${fmt(best)}<br>
+        <strong>TDS already deducted:</strong> ${fmt(tds)}<br>
+        <strong>Balance to pay:</strong> ${fmt(balDue)}<br>
+        <strong>Estimated interest penalty:</strong> ${fmt(totalInterest)}<br>
+        <strong style="color:var(--a2)">Total payable by July 31:</strong> <strong style="color:var(--a2)">${fmt(totalPayable)}</strong>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--muted);">
+        Pay now as Self-Assessment Tax to stop interest from accumulating. →
+        <a href="https://www.incometax.gov.in/iec/foportal/help/e-payment-of-taxes" target="_blank" style="color:var(--a2);font-weight:700;">Pay via Challan 280</a>
+      </div>
+    </div>`;
+}
+
+// ── WhatsApp Share ───────────────────────────────────────────────────────────
+function shareWhatsApp() {
+  if (!_i || !_o || !_n) return;
+  const best = Math.min(_o.tax, _n.tax);
+  const win = _o.tax <= _n.tax ? 'Old' : 'New';
+  const sav = Math.abs(_o.tax - _n.tax);
+  const tds = _i.tds_deducted || 0;
+  const bal = tds - best;
+  const name = document.getElementById('name')?.value || '';
+
+  const balLine = bal >= 0
+    ? `✅ Refund coming: ${fmt(bal)}`
+    : `⚠️ Balance due: ${fmt(Math.abs(bal))}`;
+
+  const msg =
+`🧾 *TaxSmart Report — FY 2025–26*${name ? ' · ' + name : ''}
+
+💰 Tax Payable: *${fmt(best)}*
+🏆 Best Regime: *${win} Regime* (saves ${fmt(sav)})
+${balLine}
+
+📊 Old Regime: ${fmt(_o.tax)}
+📊 New Regime: ${fmt(_n.tax)}
+
+_Calculated using TaxSmart — Free Indian Tax Calculator_
+🔗 https://vedant4557-dev.github.io/taxai/`;
+
+  const url = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
 }
 
 // ── Tooltip: click/touch toggle (works on mobile) ──────────────────────────
