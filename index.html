@@ -804,6 +804,65 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     </div>
   </div>
 
+  <!-- Savings Bank Interest (separate for 80TTA) -->
+  <div class="field">
+    <div class="lbl-wrap"><label>Savings Bank Interest</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Interest from savings accounts only (not FD). First ₹10,000 is tax-free under 80TTA (₹50K for seniors via 80TTB). Enter total amount — we apply the exemption automatically.<div class="ex-chip">SB interest ₹15K → ₹10K exempt, ₹5K taxable</div></div></div>
+    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="savings_interest_d" placeholder="0" oninput="fa(this,'savings_interest')"><input type="hidden" id="savings_interest"></div>
+  </div>
+
+  <!-- Online Gaming / Lottery -->
+  <div class="field">
+    <div class="lbl-wrap"><label>Online Gaming / Lottery / Puzzle Winnings</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 115BBJ: Winnings from online games (Dream11, MPL etc.), lottery, crossword, card games. Taxed at flat 30% — no deductions allowed. TDS deducted above ₹10,000 per win. Heavily scrutinised by IT Dept.<div class="ex-chip">₹1L winnings → ₹30,000 flat tax</div></div></div>
+    </div>
+    <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="gaming_income_d" placeholder="0" oninput="fa(this,'gaming_income')"><input type="hidden" id="gaming_income"></div>
+    <div class="amt-words" id="gaming_income_w"></div>
+  </div>
+
+  <!-- Second Employer / Multiple Employers -->
+  <div class="field">
+    <div class="lbl-wrap"><label>Changed jobs this year?</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">If you worked at 2+ employers, each deducts TDS independently — often leading to under-deduction. You must combine both salaries and compute tax yourself. Enter total salary from ALL employers above in Gross Salary.<div class="ex-chip">Job A ₹8L + Job B ₹6L → enter ₹14L total</div></div></div>
+    </div>
+    <div class="toggle-group">
+      <div class="tog-btn active" onclick="setTog(this,'changed_jobs','no');showCond('jobs-sec',false)">No</div>
+      <div class="tog-btn" onclick="setTog(this,'changed_jobs','yes');showCond('jobs-sec',true)">Yes</div>
+    </div>
+  </div>
+  <input type="hidden" id="changed_jobs" value="no">
+  <div class="cond" id="jobs-sec">
+    <div class="field-row">
+      <div class="field"><div class="lbl-wrap"><label>Salary from Employer 1</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="salary_emp1_d" placeholder="8,00,000" oninput="fa(this,'salary_emp1')"><input type="hidden" id="salary_emp1"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>Salary from Employer 2</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="salary_emp2_d" placeholder="6,00,000" oninput="fa(this,'salary_emp2')"><input type="hidden" id="salary_emp2"></div></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><div class="lbl-wrap"><label>TDS by Employer 1</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="tds_emp1_d" placeholder="0" oninput="fa(this,'tds_emp1')"><input type="hidden" id="tds_emp1"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>TDS by Employer 2</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="tds_emp2_d" placeholder="0" oninput="fa(this,'tds_emp2')"><input type="hidden" id="tds_emp2"></div></div>
+    </div>
+    <div class="info-pill amber">⚠️ Make sure your Gross Salary above includes the total of BOTH employers. Each employer only knows their part — so total TDS is usually lower than required.</div>
+  </div>
+
+  <!-- Salary Arrears — Section 89 Relief -->
+  <div class="field">
+    <div class="lbl-wrap"><label>Received salary arrears this year?</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 89(1): If you received arrears of salary for previous years, you can claim relief so you're taxed as if you received it in those years — not all at once in the current year. File Form 10E before filing ITR.<div class="ex-chip">Arrears ₹3L received in FY25 for FY22 → lower effective tax</div></div></div>
+    </div>
+    <div class="toggle-group">
+      <div class="tog-btn active" onclick="setTog(this,'has_arrears','no');showCond('arrears-sec',false)">No</div>
+      <div class="tog-btn" onclick="setTog(this,'has_arrears','yes');showCond('arrears-sec',true)">Yes</div>
+    </div>
+  </div>
+  <input type="hidden" id="has_arrears" value="no">
+  <div class="cond" id="arrears-sec">
+    <div class="field-row">
+      <div class="field"><div class="lbl-wrap"><label>Arrears Amount Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="arrears_amount_d" placeholder="2,00,000" oninput="fa(this,'arrears_amount')"><input type="hidden" id="arrears_amount"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>Sec 89 Relief Claimed</label><div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Compute relief using Form 10E on Income Tax Portal. Enter the relief amount from there. We deduct it from your final tax.<div class="ex-chip">File Form 10E BEFORE submitting ITR</div></div></div></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec89_relief_d" placeholder="0" oninput="fa(this,'sec89_relief')"><input type="hidden" id="sec89_relief"></div></div>
+    </div>
+    <div class="info-pill amber">⚠️ You MUST file Form 10E on incometax.gov.in before submitting your ITR. Relief not available without it. Arrears already included in your Gross Salary above.</div>
+  </div>
+
   <!-- TDS fields (from 26AS) -->
   <div class="field">
     <div class="lbl-wrap"><label>TDS Already Deducted (Total)</label><span id="af-tds_deducted" class="af-badge" style="display:none">✓ auto</span>
@@ -831,6 +890,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     <div id="adv-tax-warn" style="display:none;background:#fdf0ee;border:1.5px solid #c0392b;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#7a1010;line-height:1.5;"></div>
     <div id="surcharge-warn" style="display:none;background:#fdf3e3;border:1.5px solid #c17f24;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#7a4f08;line-height:1.6;"></div>
     <div id="rebate-banner" style="display:none;background:#e8f5ec;border:1.5px solid #2d6a4f;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#1a472a;line-height:1.6;font-weight:600;"></div>
+    <div id="belated-warn" style="display:none;background:#fdf0ee;border:1.5px solid #c0392b;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#7a1010;line-height:1.6;"></div>
   </div>
 
   <div class="act-row">
@@ -841,6 +901,9 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <!-- ITR Form Recommendation -->
   <div id="itr-panel"></div>
+
+  <!-- Schedule AL -->
+  <div id="schedule-al-panel"></div>
 
   <!-- 234B/C Interest Panel -->
   <div id="interest-panel"></div>
@@ -1329,7 +1392,7 @@ function gs(id){return document.getElementById(id).value;}
 let _o,_n,_i;
 
 function compOld(i){
-  const{gross,basic,da,hra_received,rent_paid,is_metro,prof_tax,has_lta,lta_received,lta_claimed,has_cea,cea,hostel_allowance,sec80c,nps,employer_nps,sec80d_self,sec80d_parents,home_loan_interest,home_loan_principal,sec80e,sec80tta,sec80g,sec80u,epf_employee,has_gratuity,gratuity,other_exempt,has_vrs,vrs_amount,has_retrench,retrench_amount,retrench_years,has_leave_enc,leave_enc_amount,interest_income,rental_income,stcg,ltcg,freelance,crypto,age}=i;
+  const{gross,basic,da,hra_received,rent_paid,is_metro,prof_tax,has_lta,lta_received,lta_claimed,has_cea,cea,hostel_allowance,sec80c,nps,employer_nps,sec80d_self,sec80d_parents,home_loan_interest,home_loan_principal,sec80e,sec80tta,sec80g,sec80u,epf_employee,has_gratuity,gratuity,other_exempt,has_vrs,vrs_amount,has_retrench,retrench_amount,retrench_years,has_leave_enc,leave_enc_amount,interest_income,rental_income,stcg,ltcg,freelance,crypto,savings_interest,gaming_income,sec89_relief,age}=i;
   const OS=getOS(age||0);
   const std=50000,hra=calcHRA(basic,da,hra_received,rent_paid,is_metro);
   const lta=has_lta==='yes'?Math.min(lta_received,lta_claimed):0;
@@ -1352,24 +1415,32 @@ function compOld(i){
   const exempts=std+hra+lta+cea_ex+hos+prof_tax+other_exempt+grat+vrs_ex+retrench_ex+leave_ex;
   const deds=c80c+cnps+cenps+c80d+c24b+c80e_v+c80tta+c80g_v+c80u_v;
   const rnet=rental_income*.7,ltcg_t=Math.max(0,ltcg-125000);
-  const ti=Math.max(0,gross-exempts)+interest_income+rnet+freelance;
+  // Savings interest: net of 80TTA/80TTB exemption (already in c80tta above, so just add gross here)
+  const sav_int=savings_interest||0;
+  const gaming_t=(gaming_income||0)*.30;  // Sec 115BBJ: flat 30%, no deductions
+  const ti=Math.max(0,gross-exempts)+interest_income+sav_int+rnet+freelance;
   const taxable=Math.max(0,ti-deds);
   const{tax:base,bd}=slabs(taxable,OS);
   const crypto_t=(crypto||0)*.30;  // VDA flat 30%, no deductions
-  let tot=base+ltcg_t*.125+stcg*.2+crypto_t;
+  let tot=base+ltcg_t*.125+stcg*.2+crypto_t+gaming_t;
   if(taxable<=500000&&(age||0)<60)tot=Math.max(0,tot-Math.min(base,12500));
+  // Sec 89 relief — deduct from final tax
+  const relief89=Math.min(sec89_relief||0,tot);
+  tot=Math.max(0,tot-relief89);
   const final=cess(tot,gross);
-  return{tax:Math.round(final),bd,taxable,age:age||0,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,vrs_ex,retrench_ex,leave_ex,c80c,cnps,cenps,c80d,c24b,c80e_v,c80tta,c80g_v,c80u_v,exempts,totalDed:deds}};
+  return{tax:Math.round(final),bd,taxable,gaming_t:Math.round(gaming_t*1.04),relief89,age:age||0,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,vrs_ex,retrench_ex,leave_ex,c80c,cnps,cenps,c80d,c24b,c80e_v,c80tta,c80g_v,c80u_v,exempts,totalDed:deds}};
 }
 function compNew(i){
-  const{gross,basic,da,employer_nps,interest_income,rental_income,stcg,ltcg,freelance,crypto}=i;
+  const{gross,basic,da,employer_nps,interest_income,rental_income,stcg,ltcg,freelance,crypto,savings_interest,gaming_income,sec89_relief}=i;
   const std=75000,cenps=Math.min(employer_nps,.1*(basic+da));
   const rnet=rental_income*.7,ltcg_t=Math.max(0,ltcg-125000);
-  const ti=gross+interest_income+rnet+freelance;
+  const sav_int=savings_interest||0;
+  const gaming_t=(gaming_income||0)*.30;
+  const ti=gross+(interest_income||0)+sav_int+rnet+freelance;
   const taxable=Math.max(0,ti-std-cenps);
   const{tax:base,bd}=slabs(taxable,NS);
   const crypto_t=(crypto||0)*.30;  // VDA flat 30%, no deductions
-  let tot=base+ltcg_t*.125+stcg*.2+crypto_t;
+  let tot=base+ltcg_t*.125+stcg*.2+crypto_t+gaming_t;
 
   // FY 2025-26: 87A rebate — zero tax if total income <= ₹12L
   // Marginal relief: if income slightly above 12L, tax capped at (income - 12L)
@@ -1382,8 +1453,11 @@ function compNew(i){
     tot=Math.min(tot,taxable-1200000);
   }
 
+  // Sec 89 relief
+  const relief89=Math.min(sec89_relief||0,tot);
+  tot=Math.max(0,tot-relief89);
   const final=cess(tot,gross);
-  return{tax:Math.round(final),bd,taxable,ti};
+  return{tax:Math.round(final),bd,taxable,gaming_t:Math.round(gaming_t*1.04),relief89,ti};
 }
 
 function calculate(){
@@ -1405,6 +1479,10 @@ function calculate(){
     has_leave_enc:gs('has_leave_enc'),leave_enc_amount:gv('leave_enc_amount'),
     interest_income:gv('interest_income'),rental_income:gv('rental_income'),
     stcg:gv('stcg'),ltcg:gv('ltcg'),freelance:gv('freelance'),crypto:gv('crypto'),
+    savings_interest:gv('savings_interest'),gaming_income:gv('gaming_income'),
+    changed_jobs:gs('changed_jobs'),salary_emp1:gv('salary_emp1'),salary_emp2:gv('salary_emp2'),
+    tds_emp1:gv('tds_emp1'),tds_emp2:gv('tds_emp2'),
+    has_arrears:gs('has_arrears'),arrears_amount:gv('arrears_amount'),sec89_relief:gv('sec89_relief'),
     tds_deducted:gv('tds_deducted'),
     age:parseInt(document.getElementById('age').value)||0,
     gross_salary:gv('gross'),
@@ -1478,6 +1556,42 @@ function calculate(){
       rebateBanner.style.display='none';
     }
   }
+  // Belated return warning (after July 31, Old Regime not available)
+  const belatedWarn = document.getElementById('belated-warn');
+  if(belatedWarn){
+    const today=new Date();
+    const filingDeadline=new Date('2025-07-31');
+    if(today>filingDeadline && win==='old'){
+      belatedWarn.style.display='block';
+      belatedWarn.innerHTML='🚨 <strong>Belated Return Warning:</strong> The ITR filing deadline (July 31, 2025) has passed. '+
+        'As per Income Tax rules, you <strong>cannot opt for the Old Regime in a Belated Return</strong>. '+
+        'Your tax will be computed under the New Regime only. '+
+        '<strong>Tax due under New Regime: '+fmt(_n.tax)+'</strong>';
+    } else if(today>filingDeadline){
+      belatedWarn.style.display='block';
+      belatedWarn.innerHTML='⚠️ <strong>Filing after July 31:</strong> You are filing a Belated Return (Sec 139(4)). '+
+        'A penalty of ₹5,000 (₹1,000 if income ≤ ₹5L) applies. Old Regime is not available for belated returns.';
+    } else {
+      belatedWarn.style.display='none';
+    }
+  }
+
+  // Multiple employer warning
+  if(_i.changed_jobs==='yes'){
+    const emp1=_i.salary_emp1||0, emp2=_i.salary_emp2||0;
+    const tdsEmp=(_i.tds_emp1||0)+(_i.tds_emp2||0);
+    if(emp1+emp2>0 && Math.abs((emp1+emp2)-_i.gross)>10000){
+      const errP=document.getElementById('error-panel');
+      if(errP){
+        errP.innerHTML=`<div class="error-panel warn" style="margin-bottom:14px;">
+          <div class="ep-heading">⚠️ Multiple Employer — Verify Gross Salary</div>
+          <div class="err-desc">Employer 1: ${fmt(emp1)} + Employer 2: ${fmt(emp2)} = ${fmt(emp1+emp2)}, but your Gross Salary entry is ${fmt(_i.gross)}. Please ensure gross salary includes income from ALL employers.</div>
+          <div class="err-action amber">→ Update Gross Salary in Step 2 to ${fmt(emp1+emp2)}</div>
+        </div>`+errP.innerHTML;
+      }
+    }
+  }
+
   // 234B/C now handled by buildInterestPanel() called below
 
   const oc=document.getElementById('old-card'),nc=document.getElementById('new-card');
@@ -1494,6 +1608,7 @@ function calculate(){
   buildTips(win);
   buildInsight(win,sav,name,tdsBalance);
   buildITRPanel();
+  buildScheduleAL();
   buildInterestPanel();
 
   document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
@@ -1706,6 +1821,8 @@ function buildComp(){
     ]:[
       ['Health & Education Cess (4%)',_o_sur.cessAmt,_n_sur.cessAmt,false],
     ]),
+    ...((_i.gaming_income||0)>0?[['Online Gaming / Lottery (30%)',_o.gaming_t||0,_n.gaming_t||0,false]]:[]),
+    ...(((_o.relief89||0)>0||(_n.relief89||0)>0)?[['Sec 89(1) Arrears Relief',-((_o.relief89||0)),-((_n.relief89||0)),false]]:[]),
     ['Total Tax (incl. cess)',_o.tax,_n.tax,true],
     ['TDS Deducted',_i.tds_deducted,_i.tds_deducted,false],
     ['Balance (Refund/Due)',_o.tax-_i.tds_deducted,_n.tax-_i.tds_deducted,true],
@@ -2187,6 +2304,28 @@ function validateAndCalculate() {
 
   // All good — run the real calculate
   calculate();
+}
+
+// ── Schedule AL (Assets & Liabilities — mandatory if income > ₹50L) ──────────
+function buildScheduleAL(){
+  const panel=document.getElementById('schedule-al-panel');
+  if(!panel||!_i) return;
+  if(_i.gross<=5000000){panel.innerHTML='';return;}
+
+  panel.innerHTML=`
+    <div class="itr-panel" style="border-color:var(--a2);">
+      <div class="itr-badge" style="background:var(--a2)">📊 Schedule AL Required</div>
+      <div class="itr-title">You must file Schedule AL this year</div>
+      <div class="itr-desc">Your income exceeds ₹50L. Schedule AL (Assets &amp; Liabilities) is <strong>mandatory</strong> in your ITR. You must disclose the value of all assets and liabilities as of March 31, 2026.</div>
+      <div class="itr-reasons">
+        <div class="itr-reason"><span>📋</span>Immovable property — land, house, flat (cost of acquisition)</div>
+        <div class="itr-reason"><span>📋</span>Movable assets — vehicles, jewellery, bullion, artwork</div>
+        <div class="itr-reason"><span>📋</span>Financial assets — bank balances, shares, MF units, EPF, NSC</div>
+        <div class="itr-reason"><span>📋</span>Liabilities — home loan, personal loan, credit card outstanding</div>
+        <div class="itr-reason"><span>⚠️</span>Non-disclosure attracts penalty under Sec 271FA (₹500/day)</div>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--muted);">Schedule AL is filed as part of ITR-2 or ITR-3. Have your property purchase documents, bank statements, and loan statements ready.</div>
+    </div>`;
 }
 
 // ── ITR Form Recommender ────────────────────────────────────────────────────
