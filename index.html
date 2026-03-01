@@ -691,6 +691,56 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     <div class="field"><div class="lbl-wrap"><label>Gratuity Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="gratuity_d" placeholder="5,00,000" oninput="fa(this,'gratuity')"><input type="hidden" id="gratuity"></div><div class="amt-words" id="gratuity_w"></div></div>
   </div>
 
+  <!-- VRS -->
+  <div class="field">
+    <div class="lbl-wrap"><label>VRS / Voluntary Retirement received?</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 10(10C): Up to ₹5,00,000 is tax-free if received under an approved VRS scheme after 10+ years of service. Amount above ₹5L is fully taxable.<div class="ex-chip">VRS ₹8L → ₹5L exempt, ₹3L taxable</div></div></div>
+    </div>
+    <div class="toggle-group">
+      <div class="tog-btn active" onclick="setTog(this,'has_vrs','no');showCond('vrs-sec',false)">No</div>
+      <div class="tog-btn" onclick="setTog(this,'has_vrs','yes');showCond('vrs-sec',true)">Yes</div>
+    </div>
+  </div>
+  <input type="hidden" id="has_vrs" value="no">
+  <div class="cond" id="vrs-sec">
+    <div class="field"><div class="lbl-wrap"><label>VRS Amount Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="vrs_amount_d" placeholder="5,00,000" oninput="fa(this,'vrs_amount')"><input type="hidden" id="vrs_amount"></div><div class="amt-words" id="vrs_amount_w"></div></div>
+    <div class="info-pill amber">⚠️ Exempt only for PSU/govt/approved private schemes. Confirm with your employer's HR that VRS is CBDT-approved.</div>
+  </div>
+
+  <!-- Retrenchment Compensation -->
+  <div class="field">
+    <div class="lbl-wrap"><label>Retrenchment Compensation received?</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 10(10B): Exempt up to the lower of ₹5,00,000 OR average salary of last 3 years × completed years of service. Received on layoff/retrenchment.<div class="ex-chip">Avg salary ₹8L × 3 yrs = ₹24L → capped at ₹5L</div></div></div>
+    </div>
+    <div class="toggle-group">
+      <div class="tog-btn active" onclick="setTog(this,'has_retrench','no');showCond('retrench-sec',false)">No</div>
+      <div class="tog-btn" onclick="setTog(this,'has_retrench','yes');showCond('retrench-sec',true)">Yes</div>
+    </div>
+  </div>
+  <input type="hidden" id="has_retrench" value="no">
+  <div class="cond" id="retrench-sec">
+    <div class="field-row">
+      <div class="field"><div class="lbl-wrap"><label>Amount Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="retrench_amount_d" placeholder="5,00,000" oninput="fa(this,'retrench_amount')"><input type="hidden" id="retrench_amount"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>Years of Service</label><div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Completed years only. Used to calculate the exempt portion.</div></div></div><div class="amt-wrap"><span class="amt-pfx">#</span><input class="amt-inp" id="retrench_years_d" placeholder="5" oninput="fa(this,'retrench_years')"><input type="hidden" id="retrench_years"></div></div>
+    </div>
+  </div>
+
+  <!-- Leave Encashment -->
+  <div class="field">
+    <div class="lbl-wrap"><label>Leave Encashment received?</label>
+      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 10(10AA): Tax-free up to ₹25,00,000 (lifetime limit for non-govt employees) on retirement/leaving. Leave encashed during service is fully taxable.<div class="ex-chip">Only exempt on separation — not mid-service</div></div></div>
+    </div>
+    <div class="toggle-group">
+      <div class="tog-btn active" onclick="setTog(this,'has_leave_enc','no');showCond('leave-enc-sec',false)">No</div>
+      <div class="tog-btn" onclick="setTog(this,'has_leave_enc','yes');showCond('leave-enc-sec',true)">Yes</div>
+    </div>
+  </div>
+  <input type="hidden" id="has_leave_enc" value="no">
+  <div class="cond" id="leave-enc-sec">
+    <div class="field"><div class="lbl-wrap"><label>Leave Encashment Amount</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="leave_enc_amount_d" placeholder="3,00,000" oninput="fa(this,'leave_enc_amount')"><input type="hidden" id="leave_enc_amount"></div><div class="amt-words" id="leave_enc_amount_w"></div></div>
+    <div class="info-pill green">✅ On retirement/leaving: ₹25L lifetime exempt for non-govt. Govt employees: 100% exempt.</div>
+  </div>
+
   <div class="field">
     <div class="lbl-wrap"><label>Other Tax-Free Allowances</label>
       <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Uniform allowance, research allowance, conveyance (old regime), etc. Check salary slip.</div></div>
@@ -780,6 +830,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     </div>
     <div id="adv-tax-warn" style="display:none;background:#fdf0ee;border:1.5px solid #c0392b;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#7a1010;line-height:1.5;"></div>
     <div id="surcharge-warn" style="display:none;background:#fdf3e3;border:1.5px solid #c17f24;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#7a4f08;line-height:1.6;"></div>
+    <div id="rebate-banner" style="display:none;background:#e8f5ec;border:1.5px solid #2d6a4f;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#1a472a;line-height:1.6;font-weight:600;"></div>
   </div>
 
   <div class="act-row">
@@ -1278,20 +1329,27 @@ function gs(id){return document.getElementById(id).value;}
 let _o,_n,_i;
 
 function compOld(i){
-  const{gross,basic,da,hra_received,rent_paid,is_metro,prof_tax,has_lta,lta_received,lta_claimed,has_cea,cea,hostel_allowance,sec80c,nps,employer_nps,sec80d_self,sec80d_parents,home_loan_interest,home_loan_principal,sec80e,sec80tta,sec80g,sec80u,epf_employee,has_gratuity,gratuity,other_exempt,interest_income,rental_income,stcg,ltcg,freelance,crypto,age}=i;
+  const{gross,basic,da,hra_received,rent_paid,is_metro,prof_tax,has_lta,lta_received,lta_claimed,has_cea,cea,hostel_allowance,sec80c,nps,employer_nps,sec80d_self,sec80d_parents,home_loan_interest,home_loan_principal,sec80e,sec80tta,sec80g,sec80u,epf_employee,has_gratuity,gratuity,other_exempt,has_vrs,vrs_amount,has_retrench,retrench_amount,retrench_years,has_leave_enc,leave_enc_amount,interest_income,rental_income,stcg,ltcg,freelance,crypto,age}=i;
   const OS=getOS(age||0);
   const std=50000,hra=calcHRA(basic,da,hra_received,rent_paid,is_metro);
   const lta=has_lta==='yes'?Math.min(lta_received,lta_claimed):0;
   const cea_ex=has_cea==='yes'?Math.min(cea,2400):0;
   const hos=has_cea==='yes'?Math.min(hostel_allowance,7200):0;
   const grat=has_gratuity==='yes'?Math.min(gratuity,2000000):0;
+  // Sec 10(10C): VRS — exempt up to ₹5L under approved scheme
+  const vrs_ex=has_vrs==='yes'?Math.min(vrs_amount||0,500000):0;
+  // Sec 10(10B): Retrenchment — exempt up to lower of ₹5L or avg3yr salary × yrs
+  const rtr_avg3=(gross/1)*.5; // approx: use basic*3yrs as proxy, capped at 5L
+  const retrench_ex=has_retrench==='yes'?Math.min(retrench_amount||0,500000,rtr_avg3*(retrench_years||0)):0;
+  // Sec 10(10AA): Leave encashment on retirement — exempt up to ₹25L (non-govt)
+  const leave_ex=has_leave_enc==='yes'?Math.min(leave_enc_amount||0,2500000):0;
   const c80c=Math.min(sec80c+epf_employee+home_loan_principal,150000);
   const cnps=Math.min(nps,50000),cenps=Math.min(employer_nps,.1*(basic+da));
   const c80d=Math.min(sec80d_self,(age||0)>=60?50000:25000)+Math.min(sec80d_parents,50000);
   const c24b=Math.min(home_loan_interest,200000),c80e_v=sec80e;
   const c80tta=Math.min(sec80tta,(age||0)>=60?50000:10000); // 80TTB for seniors
   const c80g_v=sec80g*.5,c80u_v=sec80u;
-  const exempts=std+hra+lta+cea_ex+hos+prof_tax+other_exempt+grat;
+  const exempts=std+hra+lta+cea_ex+hos+prof_tax+other_exempt+grat+vrs_ex+retrench_ex+leave_ex;
   const deds=c80c+cnps+cenps+c80d+c24b+c80e_v+c80tta+c80g_v+c80u_v;
   const rnet=rental_income*.7,ltcg_t=Math.max(0,ltcg-125000);
   const ti=Math.max(0,gross-exempts)+interest_income+rnet+freelance;
@@ -1301,7 +1359,7 @@ function compOld(i){
   let tot=base+ltcg_t*.125+stcg*.2+crypto_t;
   if(taxable<=500000&&(age||0)<60)tot=Math.max(0,tot-Math.min(base,12500));
   const final=cess(tot,gross);
-  return{tax:Math.round(final),bd,taxable,age:age||0,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,c80c,cnps,cenps,c80d,c24b,c80e_v,c80tta,c80g_v,c80u_v,exempts,totalDed:deds}};
+  return{tax:Math.round(final),bd,taxable,age:age||0,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,vrs_ex,retrench_ex,leave_ex,c80c,cnps,cenps,c80d,c24b,c80e_v,c80tta,c80g_v,c80u_v,exempts,totalDed:deds}};
 }
 function compNew(i){
   const{gross,basic,da,employer_nps,interest_income,rental_income,stcg,ltcg,freelance,crypto}=i;
@@ -1342,6 +1400,9 @@ function calculate(){
     sec80e:gv('sec80e'),sec80tta:gv('sec80tta'),sec80g:gv('sec80g'),sec80u:gv('sec80u'),
     epf_employee:gv('epf_employee'),epf_employer:gv('epf_employer'),
     has_gratuity:gs('has_gratuity'),gratuity:gv('gratuity'),other_exempt:gv('other_exempt'),
+    has_vrs:gs('has_vrs'),vrs_amount:gv('vrs_amount'),
+    has_retrench:gs('has_retrench'),retrench_amount:gv('retrench_amount'),retrench_years:gv('retrench_years'),
+    has_leave_enc:gs('has_leave_enc'),leave_enc_amount:gv('leave_enc_amount'),
     interest_income:gv('interest_income'),rental_income:gv('rental_income'),
     stcg:gv('stcg'),ltcg:gv('ltcg'),freelance:gv('freelance'),crypto:gv('crypto'),
     tds_deducted:gv('tds_deducted'),
@@ -1390,6 +1451,31 @@ function calculate(){
         'This is shown as a separate line in your tax breakdown below.';
     } else {
       surWarn.style.display='none';
+    }
+  }
+  // 87A Rebate banner
+  const rebateBanner = document.getElementById('rebate-banner');
+  if(rebateBanner){
+    // New regime: full rebate if taxable <= 12L
+    if(_n.taxable<=1200000 && win==='new'){
+      rebateBanner.style.display='block';
+      rebateBanner.innerHTML='🎉 <strong>Section 87A Rebate Applied!</strong> Your taxable income is ₹'+
+        (_n.taxable/100000).toFixed(2)+'L — under the ₹12L threshold. '+
+        '<strong>Zero tax under the New Regime</strong> before cess. Your final tax is only the 4% cess on any special income (LTCG/STCG/Crypto).';
+    // Marginal relief band
+    } else if(_n.taxable<=1275000 && win==='new'){
+      const saved=Math.round((_n.taxable*0.1)-(_n.taxable-1200000));
+      rebateBanner.style.display='block';
+      rebateBanner.innerHTML='💡 <strong>Marginal Relief Applied (Sec 87A):</strong> Your income is just above ₹12L. '+
+        'Instead of paying full slab tax, your tax is capped at ₹'+(_n.taxable-1200000).toLocaleString('en-IN')+
+        ' (the amount exceeding ₹12L). You saved ~'+fmt(Math.max(0,saved))+'.';
+    // Old regime 87A: if taxable <= 5L
+    } else if(_o.taxable<=500000 && win==='old'){
+      rebateBanner.style.display='block';
+      rebateBanner.innerHTML='🎉 <strong>Section 87A Rebate Applied (Old Regime)!</strong> Your taxable income is under ₹5L. '+
+        'Tax rebate of up to ₹12,500 applied — effectively zero income tax.';
+    } else {
+      rebateBanner.style.display='none';
     }
   }
   // 234B/C now handled by buildInterestPanel() called below
@@ -1595,6 +1681,11 @@ function buildComp(){
   const rows=[
     ['Gross Salary Income',_i.gross,_i.gross,false],
     ['Exemptions (HRA,LTA etc.)',d.hra+d.lta+d.cea_ex+d.hos+d.prof_tax+d.grat,0,false],
+    ...((d.vrs_ex||0)+(d.retrench_ex||0)+(d.leave_ex||0)>0?[
+      ['  VRS Exemption [Sec 10(10C)]',(d.vrs_ex||0),0,false],
+      ['  Retrenchment Exempt [Sec 10(10B)]',(d.retrench_ex||0),0,false],
+      ['  Leave Encashment Exempt [Sec 10(10AA)]',(d.leave_ex||0),0,false],
+    ]:[]),
     ['Standard Deduction',d.std,75000,false],
     ['Chapter VI-A Deductions',d.c80c+d.cnps+d.c80d+d.c24b+d.c80e_v+d.c80tta+d.c80g_v+d.c80u_v,0,false],
     ['Employer NPS [80CCD(2)]',d.cenps,d.cenps,false],
