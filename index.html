@@ -1490,17 +1490,25 @@ function slabs(tax,sl){
   }
   return{tax:t,bd};
 }
-function cess(tax,gross){
-  let s=0;
-  if(gross>50000000)s=tax*.37;else if(gross>20000000)s=tax*.25;
-  else if(gross>10000000)s=tax*.15;else if(gross>5000000)s=tax*.10;
-  return tax+s+(tax+s)*.04;
+function cess(tax,gross,specialTax){
+  // Surcharge on LTCG/STCG/crypto is capped at 15% per Finance Act
+  // For gross > 2Cr: normal income gets higher surcharge, special income capped at 15%
+  const normalTax=tax-(specialTax||0);
+  let sNormal=0,sSpecial=0;
+  if(gross>50000000)sNormal=.37;else if(gross>20000000)sNormal=.25;
+  else if(gross>10000000)sNormal=.15;else if(gross>5000000)sNormal=.10;
+  // Special income surcharge capped at 15% regardless of income level
+  sSpecial=Math.min(sNormal,.15);
+  const surcharge=normalTax*sNormal+(specialTax||0)*sSpecial;
+  return tax+surcharge+(tax+surcharge)*.04;
 }
-function cessBreakdown(tax,gross){
+function cessBreakdown(tax,gross,specialTax){
   let sRate=0;
   if(gross>50000000)sRate=.37;else if(gross>20000000)sRate=.25;
   else if(gross>10000000)sRate=.15;else if(gross>5000000)sRate=.10;
-  const surcharge=Math.round(tax*sRate);
+  const sRateSpecial=Math.min(sRate,.15);
+  const normalTax=tax-(specialTax||0);
+  const surcharge=Math.round(normalTax*sRate+(specialTax||0)*sRateSpecial);
   const cessAmt=Math.round((tax+surcharge)*.04);
   return {surcharge,cessAmt,sRate};
 }
@@ -1533,7 +1541,7 @@ function compOld(i){
   const c80d=Math.min(sec80d_self,(age||0)>=60?50000:25000)+Math.min(sec80d_parents,50000);
   const c24b=Math.min(home_loan_interest,200000),c80e_v=sec80e;
   const c80tta=Math.min(sec80tta,(age||0)>=60?50000:10000); // 80TTB for seniors
-  const c80g_v=sec80g*.5,c80u_v=sec80u;
+  const c80g_v=sec80g*.5,c80u_v=Math.min(sec80u||0,125000); // 80U: max ₹75K normal, ₹1.25L severe
   const exempts=std+hra+lta+cea_ex+hos+prof_tax+other_exempt+grat+vrs_ex+retrench_ex+leave_ex;
   const deds=c80c+cnps+cenps+c80d+c24b+c80e_v+c80tta+c80g_v+c80u_v;
   const rnet=rental_income*.7,ltcg_t=Math.max(0,ltcg-125000);
@@ -1544,12 +1552,13 @@ function compOld(i){
   const taxable=Math.max(0,ti-deds);
   const{tax:base,bd}=slabs(taxable,OS);
   const crypto_t=(crypto||0)*.30;  // VDA flat 30%, no deductions
-  let tot=base+ltcg_t*.125+stcg*.2+crypto_t+gaming_t;
+  const specialTaxOld=ltcg_t*.125+stcg*.2+crypto_t+gaming_t;
+  let tot=base+specialTaxOld;
   if(taxable<=500000&&(age||0)<60)tot=Math.max(0,tot-Math.min(base,12500));
   // Sec 89 relief — deduct from final tax
   const relief89=Math.min(sec89_relief||0,tot);
   tot=Math.max(0,tot-relief89);
-  const final=cess(tot,gross);
+  const final=cess(tot,gross,specialTaxOld);
   return{tax:Math.round(final),bd,taxable,gaming_t:Math.round(gaming_t*1.04),relief89,age:age||0,deds:{std,hra,lta,cea_ex,hos,prof_tax,other_exempt,grat,vrs_ex,retrench_ex,leave_ex,c80c,cnps,cenps,c80d,c24b,c80e_v,c80tta,c80g_v,c80u_v,exempts,totalDed:deds}};
 }
 function compNew(i){
@@ -1562,23 +1571,25 @@ function compNew(i){
   const taxable=Math.max(0,ti-std-cenps);
   const{tax:base,bd}=slabs(taxable,NS);
   const crypto_t=(crypto||0)*.30;  // VDA flat 30%, no deductions
-  let tot=base+ltcg_t*.125+stcg*.2+crypto_t+gaming_t;
+  // Special income tax (LTCG/STCG/crypto/gaming) — NOT eligible for 87A rebate
+  const specialTax=ltcg_t*.125+stcg*.2+crypto_t+gaming_t;
+  let slabTax=base;
 
-  // FY 2025-26: 87A rebate — zero tax if total income <= ₹12L
-  // Marginal relief: if income slightly above 12L, tax capped at (income - 12L)
-  // FY 2025-26: Rebate based on TAXABLE income (after std deduction), not gross
-  // Gross 12,75,000 - 75,000 std = 12,00,000 taxable → zero tax ✓
+  // FY 2025-26: 87A rebate — applies ONLY to slab tax, NOT to special rate income
+  // Gross 12,75,000 - 75,000 std = 12,00,000 taxable → zero SLAB tax ✓
+  // But LTCG/STCG/crypto tax still applies even if salary income ≤ ₹12L
   if(taxable<=1200000){
-    tot=0; // Full rebate
+    slabTax=0; // Full rebate on slab tax only
   } else if(taxable<=1275000){
-    // Marginal relief: tax capped at amount exceeding 12L taxable
-    tot=Math.min(tot,taxable-1200000);
+    // Marginal relief: slab tax capped at amount exceeding 12L taxable
+    slabTax=Math.min(slabTax,taxable-1200000);
   }
+  let tot=slabTax+specialTax;
 
   // Sec 89 relief
   const relief89=Math.min(sec89_relief||0,tot);
   tot=Math.max(0,tot-relief89);
-  const final=cess(tot,gross);
+  const final=cess(tot,gross,specialTax);
   return{tax:Math.round(final),bd,taxable,gaming_t:Math.round(gaming_t*1.04),relief89,ti};
 }
 
