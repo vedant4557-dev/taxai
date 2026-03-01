@@ -842,6 +842,15 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
       <div class="field"><div class="lbl-wrap"><label>TDS by Employer 2</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="tds_emp2_d" placeholder="0" oninput="fa(this,'tds_emp2')"><input type="hidden" id="tds_emp2"></div></div>
     </div>
     <div class="info-pill amber">⚠️ Make sure your Gross Salary above includes the total of BOTH employers. Each employer only knows their part — so total TDS is usually lower than required.</div>
+    <!-- Live consolidation summary -->
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-top:10px;font-size:13px;" id="emp-summary">
+      <div style="font-weight:700;margin-bottom:6px;color:var(--ink);">📊 Consolidated Salary Summary</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;">
+        <div><div style="color:var(--muted);font-size:11px;">Employer 1</div><div id="emp1-show" style="font-weight:700;color:var(--ink2);">₹0</div></div>
+        <div><div style="color:var(--muted);font-size:11px;">Employer 2</div><div id="emp2-show" style="font-weight:700;color:var(--ink2);">₹0</div></div>
+        <div><div style="color:var(--muted);font-size:11px;">Total (enter above ↑)</div><div id="emp-total-show" style="font-weight:800;color:var(--accent);">₹0</div></div>
+      </div>
+    </div>
   </div>
 
   <!-- Salary Arrears — Section 89 Relief -->
@@ -1576,19 +1585,54 @@ function calculate(){
     }
   }
 
-  // Multiple employer warning
+  // Multiple employer warning + duplicate standard deduction check
   if(_i.changed_jobs==='yes'){
     const emp1=_i.salary_emp1||0, emp2=_i.salary_emp2||0;
     const tdsEmp=(_i.tds_emp1||0)+(_i.tds_emp2||0);
-    if(emp1+emp2>0 && Math.abs((emp1+emp2)-_i.gross)>10000){
-      const errP=document.getElementById('error-panel');
-      if(errP){
-        errP.innerHTML=`<div class="error-panel warn" style="margin-bottom:14px;">
-          <div class="ep-heading">⚠️ Multiple Employer — Verify Gross Salary</div>
-          <div class="err-desc">Employer 1: ${fmt(emp1)} + Employer 2: ${fmt(emp2)} = ${fmt(emp1+emp2)}, but your Gross Salary entry is ${fmt(_i.gross)}. Please ensure gross salary includes income from ALL employers.</div>
-          <div class="err-action amber">→ Update Gross Salary in Step 2 to ${fmt(emp1+emp2)}</div>
-        </div>`+errP.innerHTML;
-      }
+    const errP=document.getElementById('error-panel');
+
+    // Check 1: Consolidated salary mismatch
+    if(emp1+emp2>0 && Math.abs((emp1+emp2)-_i.gross)>10000 && errP){
+      errP.innerHTML=`<div class="error-panel warn" style="margin-bottom:14px;">
+        <div class="ep-heading">⚠️ Multiple Employer — Salary Mismatch</div>
+        <div class="err-desc">
+          Employer 1: ${fmt(emp1)}<br>
+          Employer 2: ${fmt(emp2)}<br>
+          <strong>Consolidated: ${fmt(emp1+emp2)}</strong><br>
+          Your Gross Salary entry: ${fmt(_i.gross)} — difference of ${fmt(Math.abs((emp1+emp2)-_i.gross))}.
+        </div>
+        <div class="err-action amber">→ Update Gross Salary in Step 2 to ${fmt(emp1+emp2)} (total of both)</div>
+      </div>`+errP.innerHTML;
+    }
+
+    // Check 2: Duplicate standard deduction — each Form 16 includes ₹50K std deduction
+    // but ITR allows only ONE std deduction regardless of number of employers
+    // If user entered gross salary that already had std deduction subtracted from each employer
+    // this is caught by warning them explicitly
+    if(emp1>0 && emp2>0 && errP){
+      const stdOld=50000, stdNew=75000;
+      errP.innerHTML=`<div class="error-panel warn" style="margin-bottom:14px;">
+        <div class="ep-heading">⚠️ Duplicate Standard Deduction Risk</div>
+        <div class="err-desc">
+          Each employer's Form 16 shows a ₹50,000 standard deduction (old) or ₹75,000 (new) separately.
+          But you are entitled to only <strong>ONE standard deduction</strong> across all employers.
+          Make sure your Gross Salary is the <strong>total gross from both employers before any deductions</strong> — not the taxable salary from each Form 16.
+        </div>
+        <div class="err-action amber">→ Use "Gross Salary" from Part B of each Form 16, then add them. Do NOT use "Income chargeable under Salaries".</div>
+      </div>`+errP.innerHTML;
+    }
+
+    // Check 3: TDS under-deduction warning (very common in job change)
+    if(tdsEmp>0 && Math.abs(tdsEmp-_i.tds_deducted)>5000 && errP){
+      errP.innerHTML=`<div class="error-panel warn" style="margin-bottom:14px;">
+        <div class="ep-heading">⚠️ TDS Under-Deduction — Job Change</div>
+        <div class="err-desc">
+          TDS by Employer 1: ${fmt(_i.tds_emp1||0)} + Employer 2: ${fmt(_i.tds_emp2||0)} = ${fmt(tdsEmp)}<br>
+          But total TDS entered above: ${fmt(_i.tds_deducted)}. Difference: ${fmt(Math.abs(tdsEmp-_i.tds_deducted))}<br>
+          Each employer only taxes their portion — combined salary pushes you into a higher slab.
+        </div>
+        <div class="err-action amber">→ You likely have additional tax due. Pay Self-Assessment Tax via Challan 280 before filing.</div>
+      </div>`+errP.innerHTML;
     }
   }
 
@@ -2487,6 +2531,26 @@ _Calculated using TaxSmart — Free Indian Tax Calculator_
   const url = 'https://wa.me/?text=' + encodeURIComponent(msg);
   window.open(url, '_blank');
 }
+
+// ── Multi-employer live summary ──────────────────────────────────────────────
+function updateEmpSummary(){
+  const e1=parseInt(document.getElementById('salary_emp1')?.value)||0;
+  const e2=parseInt(document.getElementById('salary_emp2')?.value)||0;
+  const total=e1+e2;
+  const s1=document.getElementById('emp1-show');
+  const s2=document.getElementById('emp2-show');
+  const st=document.getElementById('emp-total-show');
+  if(s1)s1.textContent=fmt(e1);
+  if(s2)s2.textContent=fmt(e2);
+  if(st){
+    st.textContent=fmt(total);
+    st.style.color=total>0?'var(--accent)':'var(--muted)';
+  }
+}
+// Hook into the fa() oninput calls for emp salary fields
+document.addEventListener('input',function(e){
+  if(e.target.id==='salary_emp1_d'||e.target.id==='salary_emp2_d') updateEmpSummary();
+});
 
 // ── Tooltip: click/touch toggle (works on mobile) ──────────────────────────
 (function(){
