@@ -1399,9 +1399,12 @@ async function runExtraction(){
     } else if(err.message&&err.message.includes('fetch')){
       userMsg='Could not reach the extraction server.';
       hint='Check your internet connection, or try again in a moment. Your documents are safe — nothing was uploaded.';
-    } else if(err.message&&(err.message.includes('quota')||err.message.includes('429'))){
-      userMsg='AI quota exhausted for today.';
-      hint='The free AI tier (1,500 requests/day) is used up. Try again tomorrow, or fill the form manually — it only takes 3 minutes.';
+    } else if(err.message&&(err.message.includes('quota')||err.message.includes('429')||err.message.includes('Daily AI'))){
+      userMsg='AI extraction limit reached for today.';
+      hint='The free AI tier is fully used up for today — resets at midnight. Fill the form manually now (3 minutes) — all fields have ⓘ tooltips to guide you.';
+    } else if(err.message&&(err.message.includes('circuit')||err.message.includes('temporarily unavailable'))){
+      userMsg='AI service is temporarily down.';
+      hint='Gemini is having issues. Please try again in 60 seconds, or fill the form manually — it only takes 3 minutes.';
     } else if(err.message&&err.message.includes('413')){
       userMsg='File too large.';
       hint='Try compressing your PDF before uploading, or fill the form manually — it only takes 3 minutes.';
@@ -3056,6 +3059,24 @@ _Calculated using TaxSmart — Free Indian Tax Calculator_
 }
 
 // ── What's Next CTA Bar ──────────────────────────────────────────────────────
+// ── Edge case scenario detector (frontend) ───────────────────────────────────
+// Detects complex situations from the input data and warns users before they start filing
+function detectEdgeCases(){
+  if(!_i) return [];
+  const flags = [];
+  if((_i.foreign_income||0) > 0)
+    flags.push({ icon:'🌍', sev:'red', msg:'Foreign income detected — you need ITR-2, not ITR-1. Consult a CA.' });
+  if((_i.ltcg||0) + (_i.stcg||0) > 1_00_000)
+    flags.push({ icon:'📈', sev:'amber', msg:`Capital gains ₹${fmtL((_i.ltcg||0)+(_i.stcg||0))} — likely requires ITR-2.` });
+  if((_i.crypto||0) > 0)
+    flags.push({ icon:'₿', sev:'amber', msg:`Crypto/VDA income ₹${fmtL(_i.crypto)} taxed at 30% flat. Use Schedule VDA in ITR-2.` });
+  if((_i.rental_income||0) > 0)
+    flags.push({ icon:'🏠', sev:'blue', msg:`Rental income declared — ensure TDS deducted by tenant (if >₹50K/month) is in your 26AS.` });
+  return flags;
+}
+
+function fmtL(n){ return n>=100000?'₹'+(n/100000).toFixed(1)+'L':'₹'+Math.round(n).toLocaleString('en-IN'); }
+
 function buildWhatsNext(){
   const panel=document.getElementById('whats-next');
   const list=document.getElementById('next-steps-list');
@@ -3124,6 +3145,16 @@ function buildWhatsNext(){
         ${s.cta?s.cta.url?`<a href="${s.cta.url}" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;font-size:11.5px;font-weight:700;color:${s.color};text-decoration:none;">${s.cta.label}</a>`:`<button onclick="${s.cta.action}" style="margin-top:6px;background:${s.color};color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:11.5px;font-weight:700;cursor:pointer;">${s.cta.label}</button>`:''}
       </div>
     </div>`).join('');
+
+  // Append edge-case warnings if any complex scenarios detected
+  const edgeFlags = detectEdgeCases();
+  if(edgeFlags.length > 0){
+    const flagDiv = document.createElement('div');
+    flagDiv.style.cssText = 'margin-top:10px;padding-top:10px;border-top:1px solid var(--border);';
+    flagDiv.innerHTML = '<div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px;">⚠️ Complex Scenarios Detected</div>' +
+      edgeFlags.map(f=>`<div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:8px;background:${f.sev==='red'?'#fdf0ee':f.sev==='amber'?'#fef9ec':'#e3f2fd'};margin-bottom:6px;font-size:12px;color:#333;line-height:1.5;"><span style="flex-shrink:0;">${f.icon}</span><span>${f.msg}</span></div>`).join('');
+    list.appendChild(flagDiv);
+  }
 
   panel.style.display='';
 }
