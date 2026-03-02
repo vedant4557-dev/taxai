@@ -1427,6 +1427,9 @@ async function runExtraction(){
     } else if(err.message&&(err.message.includes('circuit')||err.message.includes('temporarily unavailable'))){
       userMsg='AI service is temporarily down.';
       hint='Gemini is having issues. Please try again in 60 seconds, or fill the form manually — it only takes 3 minutes.';
+    } else if(err.message&&(err.message.includes('busy')||err.message.includes('503'))){
+      userMsg='Server is currently busy.';
+      hint='Too many users are uploading at once. Please wait 20-30 seconds and try again — or fill the form manually now.';
     } else if(err.message&&err.message.includes('413')){
       userMsg='File too large.';
       hint='Try compressing your PDF before uploading, or fill the form manually — it only takes 3 minutes.';
@@ -2432,7 +2435,7 @@ ${errorHTML}
 <tr><td>TDS Deducted</td><td>${fmt(tds)}</td><td>${fmt(tds)}</td></tr>
 <tr><td><strong>${bal>=0?'Refund Due':'Balance Due'}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${fmt(Math.abs(_o.tax-tds))}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${fmt(Math.abs(_n.tax-tds))}</strong></td></tr>
 </tbody></table>
-<div class="footer">TaxSmart India · For planning purposes only · Consult a CA for actual filing<br>Based on Income Tax Act & Union Budget 2025 · Documents processed via Gemini API, never stored</div>
+<div class="footer">TaxSmart India · For planning purposes only · Consult a CA for actual filing<br>Based on Income Tax Act & Union Budget 2025 · Documents processed via Gemini API, never stored on our servers · DPDP Act 2023 compliant · No PAN or financial data retained</div>
 </body></html>`;
   const blob=new Blob([html],{type:'text/html'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');
