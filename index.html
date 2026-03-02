@@ -121,8 +121,13 @@ label{font-size:13px;font-weight:600;color:var(--ink2);}
 .af-badge{display:inline-flex;align-items:center;gap:3px;background:var(--al);color:var(--accent);font-size:9px;font-weight:800;padding:2px 7px;border-radius:100px;letter-spacing:.5px;text-transform:uppercase;}
 /* Tooltip */
 .tip-wrap{position:relative;display:inline-flex;}
-.tip-btn{width:22px;height:22px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.tip-btn{width:22px;height:22px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;position:relative;}
 .tip-btn:hover,.tip-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+/* Pulse ring on first load — draws eye to ? buttons */
+.tip-btn.pulse::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--accent);opacity:0;animation:tipPulse 2s ease-out 1s 2;}
+@keyframes tipPulse{0%{opacity:.7;transform:scale(.9)}100%{opacity:0;transform:scale(1.6)}}
+/* Inline hint label next to first tooltip — "tap ? for help" */
+.tip-hint-label{font-size:10px;color:var(--accent);font-weight:600;margin-left:4px;letter-spacing:.3px;opacity:1;transition:opacity .5s;white-space:nowrap;}
 .tip-box{display:none;position:fixed;background:var(--ink);color:#fff;border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;width:260px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.3);font-weight:400;pointer-events:none;}
 .tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink);}
 .tip-box.open{display:block;animation:fadeIn .15s ease;}
@@ -519,7 +524,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>Age</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Citizens above 60 (Senior) and 80 (Super Senior) get higher exemption limits under the old regime — ₹3L and ₹5L respectively.</div></div>
+        <div class="tip-wrap"><div class="tip-btn pulse" id="first-tip-btn" title="Tap for help">ⓘ</div><span class="tip-hint-label" id="tip-hint-label">tap for help</span><div class="tip-box">Citizens above 60 (Senior) and 80 (Super Senior) get higher exemption limits under the old regime — ₹3L and ₹5L respectively.</div></div>
       </div>
       <input type="number" id="age" placeholder="28" min="18" max="100" style="font-family:'JetBrains Mono',monospace;">
     </div>
@@ -530,7 +535,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
   <div class="field">
     <div class="lbl-wrap"><label>City Type</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Metro = 50% of Basic as HRA-exempt. Non-metro = 40%.<div class="ex-chip">Metro: Mumbai, Delhi, Chennai, Kolkata</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Metro = 50% of Basic as HRA-exempt. Non-metro = 40%.<div class="ex-chip">Metro: Mumbai, Delhi, Chennai, Kolkata</div></div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'city','metro')">🏙 Metro City</div>
@@ -551,7 +556,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>Gross Annual Salary (CTC)</label><span id="af-gross" class="af-badge" style="display:none">✓ auto</span>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Total amount employer spends on you per year, before any deductions.<div class="ex-chip">Monthly ₹1,00,000 → Enter ₹12,00,000</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn pulse" title="Tap for help">ⓘ</div><div class="tip-box">Total amount employer spends on you per year, before any deductions.<div class="ex-chip">Monthly ₹1,00,000 → Enter ₹12,00,000</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="gross_d" placeholder="12,00,000" oninput="fa(this,'gross')"><input type="hidden" id="gross"></div>
     <div class="amt-words" id="gross_w"></div>
@@ -560,14 +565,14 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>Basic Salary (Annual)</label><span id="af-basic" class="af-badge" style="display:none">✓ auto</span>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Fixed base component. Usually 40–50% of CTC. HRA, EPF, gratuity are calculated on this.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Fixed base component. Usually 40–50% of CTC. HRA, EPF, gratuity are calculated on this.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="basic_d" placeholder="4,80,000" oninput="fa(this,'basic')"><input type="hidden" id="basic"></div>
       <div class="amt-words" id="basic_w"></div>
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>DA (Dearness Allowance)</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Paid mostly to government employees. Private sector = ₹0 usually.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Paid mostly to government employees. Private sector = ₹0 usually.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="da_d" placeholder="0" oninput="fa(this,'da')"><input type="hidden" id="da"></div>
     </div>
@@ -576,13 +581,13 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>HRA Received</label><span id="af-hra_received" class="af-badge" style="display:none">✓ auto</span>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">House Rent Allowance from employer. Appears on salary slip as "HRA". If you pay rent, part is tax-free in old regime.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">House Rent Allowance from employer. Appears on salary slip as "HRA". If you pay rent, part is tax-free in old regime.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="hra_received_d" placeholder="2,40,000" oninput="fa(this,'hra_received')"><input type="hidden" id="hra_received"></div>
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>Rent Paid (Annual)</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Actual rent you pay to your landlord per year. Enter ₹0 if you own your home or live with parents.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Actual rent you pay to your landlord per year. Enter ₹0 if you own your home or live with parents.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="rent_paid_d" placeholder="1,80,000" oninput="fa(this,'rent_paid')"><input type="hidden" id="rent_paid"></div>
     </div>
@@ -590,14 +595,14 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>Professional Tax Paid</label><span id="af-prof_tax" class="af-badge" style="display:none">✓ auto</span>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">State tax auto-deducted. ~₹200/month = ₹2,400/year. Deductible in old regime.</div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">State tax auto-deducted. ~₹200/month = ₹2,400/year. Deductible in old regime.</div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="prof_tax_d" placeholder="2,400" oninput="fa(this,'prof_tax')"><input type="hidden" id="prof_tax"></div>
   </div>
 
   <div class="field">
     <div class="lbl-wrap"><label>Do you receive LTA?</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Leave Travel Allowance. Actual domestic travel cost is tax-free in old regime. Claimable twice in a 4-year block.</div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Leave Travel Allowance. Actual domestic travel cost is tax-free in old regime. Claimable twice in a 4-year block.</div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'has_lta','no');showCond('lta-sec',false)">No LTA</div>
@@ -608,14 +613,14 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="cond" id="lta-sec">
     <div class="field-row">
       <div class="field"><div class="lbl-wrap"><label>LTA Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="lta_received_d" placeholder="50,000" oninput="fa(this,'lta_received')"><input type="hidden" id="lta_received"></div></div>
-      <div class="field"><div class="lbl-wrap"><label>Actual Travel Cost</label><div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Amount spent on tickets. Exemption = min(LTA received, travel cost).</div></div></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="lta_claimed_d" placeholder="40,000" oninput="fa(this,'lta_claimed')"><input type="hidden" id="lta_claimed"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>Actual Travel Cost</label><div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Amount spent on tickets. Exemption = min(LTA received, travel cost).</div></div></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="lta_claimed_d" placeholder="40,000" oninput="fa(this,'lta_claimed')"><input type="hidden" id="lta_claimed"></div></div>
     </div>
     <div class="info-pill amber">✈️ Only domestic economy travel qualifies. Keep tickets as proof.</div>
   </div>
 
   <div class="field">
     <div class="lbl-wrap"><label>Children Education Allowance?</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">₹100/month per child (max 2) CEA + ₹300/month hostel allowance is tax-free. Old regime only.</div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">₹100/month per child (max 2) CEA + ₹300/month hostel allowance is tax-free. Old regime only.</div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'has_cea','no');showCond('cea-sec',false)">Not applicable</div>
@@ -642,7 +647,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>80C Investments</label><span class="lbl-sub">Max ₹1,50,000</span><span id="af-sec80c" class="af-badge" style="display:none">✓ auto</span>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Add together: PPF + ELSS + LIC premium + your EPF contribution + NSC + tax-saving FD + children's tuition fees. Cap ₹1.5L.<div class="ex-chip">PPF ₹50K + ELSS ₹50K + LIC ₹30K = ₹1.3L</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn pulse" title="Tap for help">ⓘ</div><div class="tip-box">Add together: PPF + ELSS + LIC premium + your EPF contribution + NSC + tax-saving FD + children's tuition fees. Cap ₹1.5L.<div class="ex-chip">PPF ₹50K + ELSS ₹50K + LIC ₹30K = ₹1.3L</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80c_d" placeholder="1,50,000" oninput="fa(this,'sec80c');capWarn('sec80c_d','sec80c-cap',150000,'Capped at ₹1.5L — total 80C limit including EPF & home loan principal')"><input type="hidden" id="sec80c"></div>
     <div class="amt-words" id="sec80c_w"></div>
@@ -651,7 +656,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>NPS Contribution</label><span class="lbl-sub">Extra ₹50,000 over 80C</span><span id="af-nps" class="af-badge" style="display:none">✓ auto</span>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">NPS Tier 1 gives EXTRA ₹50K deduction separate from 80C. Open at your bank or nsdl.co.in.<div class="ex-chip">80C ₹1.5L + NPS ₹50K = ₹2L total!</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">NPS Tier 1 gives EXTRA ₹50K deduction separate from 80C. Open at your bank or nsdl.co.in.<div class="ex-chip">80C ₹1.5L + NPS ₹50K = ₹2L total!</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="nps_d" placeholder="50,000" oninput="fa(this,'nps');capWarn('nps_d','nps-cap',50000,'Capped at ₹50,000 — Section 80CCD(1B) limit')"><input type="hidden" id="nps"><div class="cap-warn" id="nps-cap"></div></div>
     <div class="amt-words" id="nps_w"></div>
@@ -659,7 +664,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>Employer NPS Contribution</label><span id="af-employer_nps" class="af-badge" style="display:none">✓ auto</span>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Employer's NPS contribution up to 10% of Basic+DA. Deductible in BOTH regimes under 80CCD(2)!<div class="ex-chip">✅ Works in New Regime too!</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Employer's NPS contribution up to 10% of Basic+DA. Deductible in BOTH regimes under 80CCD(2)!<div class="ex-chip">✅ Works in New Regime too!</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="employer_nps_d" placeholder="0" oninput="fa(this,'employer_nps');capWarnPct('employer_nps_d','enps-cap','basic','Capped at 10% of Basic+DA — Sec 80CCD(2)')"><input type="hidden" id="employer_nps"><div class="cap-warn" id="enps-cap"></div></div>
   </div>
@@ -667,13 +672,13 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>80D — Self & Family</label><span id="af-sec80d_self" class="af-badge" style="display:none">✓ auto</span>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Health insurance premium for you, spouse, children. Max ₹25,000 deductible (₹50K if senior citizen).</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Health insurance premium for you, spouse, children. Max ₹25,000 deductible (₹50K if senior citizen).</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80d_self_d" placeholder="25,000" oninput="fa(this,'sec80d_self');capWarn('sec80d_self_d','sec80d-self-cap',25000,'Capped at ₹25,000 (₹50K if you are senior citizen)')"><input type="hidden" id="sec80d_self"><div class="cap-warn" id="sec80d-self-cap"></div></div>
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>80D — Parents</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Additional ₹25,000 for parents' insurance (₹50K if parents are senior citizens). Over and above your own ₹25K!</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Additional ₹25,000 for parents' insurance (₹50K if parents are senior citizens). Over and above your own ₹25K!</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80d_parents_d" placeholder="0" oninput="fa(this,'sec80d_parents');capWarn('sec80d_parents_d','sec80d-par-cap',50000,'Capped at ₹25,000 (₹50K if parents are senior citizens)')"><input type="hidden" id="sec80d_parents"><div class="cap-warn" id="sec80d-par-cap"></div></div>
     </div>
@@ -689,7 +694,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>Home Loan Interest</label><span id="af-home_loan_interest" class="af-badge" style="display:none">✓ auto</span>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Interest portion of home loan EMI. Max ₹2L for self-occupied. Get "Interest Certificate" from bank.<div class="ex-chip">EMI ₹30K/month → interest ~₹20K/month</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Interest portion of home loan EMI. Max ₹2L for self-occupied. Get "Interest Certificate" from bank.<div class="ex-chip">EMI ₹30K/month → interest ~₹20K/month</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="home_loan_interest_d" placeholder="0" oninput="fa(this,'home_loan_interest');capWarn('home_loan_interest_d','hl-int-cap',200000,'Capped at ₹2,00,000 — Sec 24(b) self-occupied limit')"><input type="hidden" id="home_loan_interest"><div class="cap-warn" id="hl-int-cap"></div></div>
     <div class="amt-words" id="home_loan_interest_w"></div>
@@ -697,14 +702,14 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>Home Loan Principal Repayment</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Principal part of EMI counts towards 80C ₹1.5L limit. Check your bank's interest certificate for the split.</div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Principal part of EMI counts towards 80C ₹1.5L limit. Check your bank's interest certificate for the split.</div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="home_loan_principal_d" placeholder="0" oninput="fa(this,'home_loan_principal')"><input type="hidden" id="home_loan_principal"></div>
   </div>
 
   <div class="field">
     <div class="lbl-wrap"><label>Education Loan Interest</label><span id="af-sec80e" class="af-badge" style="display:none">✓ auto</span>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">100% deductible — no upper limit! For 8 years from repayment start. Very underused!<div class="ex-chip">No maximum limit</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">100% deductible — no upper limit! For 8 years from repayment start. Very underused!<div class="ex-chip">No maximum limit</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80e_d" placeholder="0" oninput="fa(this,'sec80e')"><input type="hidden" id="sec80e"></div>
   </div>
@@ -712,13 +717,13 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>Savings A/c Interest</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Interest earned in savings bank account — ₹10,000/year tax-free under 80TTA. ₹50K for senior citizens (80TTB).</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Interest earned in savings bank account — ₹10,000/year tax-free under 80TTA. ₹50K for senior citizens (80TTB).</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80tta_d" placeholder="0" oninput="fa(this,'sec80tta')"><input type="hidden" id="sec80tta"></div>
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>Donations (80G)</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">50–100% of donations to approved charities deductible. Keep receipt with 80G number. We calculate 50% conservatively.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">50–100% of donations to approved charities deductible. Keep receipt with 80G number. We calculate 50% conservatively.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80g_d" placeholder="0" oninput="fa(this,'sec80g')"><input type="hidden" id="sec80g"></div>
     </div>
@@ -726,7 +731,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>Disability (80U / 80DD)</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">₹75K for self with disability (40%+), ₹1.25L for severe. 80DD for disabled dependent. Medical certificate needed.</div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">₹75K for self with disability (40%+), ₹1.25L for severe. 80DD for disabled dependent. Medical certificate needed.</div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80u_d" placeholder="0" oninput="fa(this,'sec80u')"><input type="hidden" id="sec80u"></div>
   </div>
@@ -744,13 +749,13 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>EPF — Your Contribution</label><span id="af-epf_employee" class="af-badge" style="display:none">✓ auto</span>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">12% of basic salary auto-deducted monthly. Counts towards 80C limit. Check payslip.<div class="ex-chip">Basic ₹40K/month → EPF ₹57,600/year</div></div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">12% of basic salary auto-deducted monthly. Counts towards 80C limit. Check payslip.<div class="ex-chip">Basic ₹40K/month → EPF ₹57,600/year</div></div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="epf_employee_d" placeholder="57,600" oninput="fa(this,'epf_employee')"><input type="hidden" id="epf_employee"></div>
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>EPF — Employer Contribution</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Employer's 12% of basic to EPF. Tax-free up to ₹7.5L/year combined (EPF+NPS+Superannuation). Not in your 80C.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Employer's 12% of basic to EPF. Tax-free up to ₹7.5L/year combined (EPF+NPS+Superannuation). Not in your 80C.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="epf_employer_d" placeholder="57,600" oninput="fa(this,'epf_employer')"><input type="hidden" id="epf_employer"></div>
     </div>
@@ -758,7 +763,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>Gratuity this year?</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Lump sum on leaving after 5+ years. Up to ₹20,00,000 completely tax-free.</div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Lump sum on leaving after 5+ years. Up to ₹20,00,000 completely tax-free.</div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'has_gratuity','no');showCond('grat-sec',false)">No</div>
@@ -773,7 +778,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- VRS -->
   <div class="field">
     <div class="lbl-wrap"><label>VRS / Voluntary Retirement received?</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 10(10C): Up to ₹5,00,000 is tax-free if received under an approved VRS scheme after 10+ years of service. Amount above ₹5L is fully taxable.<div class="ex-chip">VRS ₹8L → ₹5L exempt, ₹3L taxable</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Sec 10(10C): Up to ₹5,00,000 is tax-free if received under an approved VRS scheme after 10+ years of service. Amount above ₹5L is fully taxable.<div class="ex-chip">VRS ₹8L → ₹5L exempt, ₹3L taxable</div></div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'has_vrs','no');showCond('vrs-sec',false)">No</div>
@@ -789,7 +794,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- Retrenchment Compensation -->
   <div class="field">
     <div class="lbl-wrap"><label>Retrenchment Compensation received?</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 10(10B): Exempt up to the lower of ₹5,00,000 OR average salary of last 3 years × completed years of service. Received on layoff/retrenchment.<div class="ex-chip">Avg salary ₹8L × 3 yrs = ₹24L → capped at ₹5L</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Sec 10(10B): Exempt up to the lower of ₹5,00,000 OR average salary of last 3 years × completed years of service. Received on layoff/retrenchment.<div class="ex-chip">Avg salary ₹8L × 3 yrs = ₹24L → capped at ₹5L</div></div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'has_retrench','no');showCond('retrench-sec',false)">No</div>
@@ -800,14 +805,14 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="cond" id="retrench-sec">
     <div class="field-row">
       <div class="field"><div class="lbl-wrap"><label>Amount Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="retrench_amount_d" placeholder="5,00,000" oninput="fa(this,'retrench_amount')"><input type="hidden" id="retrench_amount"></div></div>
-      <div class="field"><div class="lbl-wrap"><label>Years of Service</label><div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Completed years only. Used to calculate the exempt portion.</div></div></div><div class="amt-wrap"><span class="amt-pfx">#</span><input class="amt-inp" id="retrench_years_d" placeholder="5" oninput="fa(this,'retrench_years')"><input type="hidden" id="retrench_years"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>Years of Service</label><div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Completed years only. Used to calculate the exempt portion.</div></div></div><div class="amt-wrap"><span class="amt-pfx">#</span><input class="amt-inp" id="retrench_years_d" placeholder="5" oninput="fa(this,'retrench_years')"><input type="hidden" id="retrench_years"></div></div>
     </div>
   </div>
 
   <!-- Leave Encashment -->
   <div class="field">
     <div class="lbl-wrap"><label>Leave Encashment received?</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 10(10AA): Tax-free up to ₹25,00,000 (lifetime limit for non-govt employees) on retirement/leaving. Leave encashed during service is fully taxable.<div class="ex-chip">Only exempt on separation — not mid-service</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Sec 10(10AA): Tax-free up to ₹25,00,000 (lifetime limit for non-govt employees) on retirement/leaving. Leave encashed during service is fully taxable.<div class="ex-chip">Only exempt on separation — not mid-service</div></div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'has_leave_enc','no');showCond('leave-enc-sec',false)">No</div>
@@ -822,7 +827,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field">
     <div class="lbl-wrap"><label>Other Tax-Free Allowances</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Uniform allowance, research allowance, conveyance (old regime), etc. Check salary slip.</div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Uniform allowance, research allowance, conveyance (old regime), etc. Check salary slip.</div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="other_exempt_d" placeholder="0" oninput="fa(this,'other_exempt')"><input type="hidden" id="other_exempt"></div>
   </div>
@@ -839,13 +844,13 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>FD / Bond Interest</label><span id="af-interest_income" class="af-badge" style="display:none">✓ auto</span>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Interest from FDs, RDs, bonds. Fully taxable. Bank deducts TDS above ₹40K/year. Check Form 26AS.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Interest from FDs, RDs, bonds. Fully taxable. Bank deducts TDS above ₹40K/year. Check Form 26AS.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="interest_income_d" placeholder="0" oninput="fa(this,'interest_income')"><input type="hidden" id="interest_income"></div>
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>Rental Income (Annual)</label><span id="af-rental_income" class="af-badge" style="display:none">✓ auto</span>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Gross rent received. 30% standard deduction applied automatically. Enter the full rent received.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Gross rent received. 30% standard deduction applied automatically. Enter the full rent received.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="rental_income_d" placeholder="0" oninput="fa(this,'rental_income')"><input type="hidden" id="rental_income"></div>
     </div>
@@ -854,13 +859,13 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>Short-Term Capital Gains</label><span id="af-stcg" class="af-badge" style="display:none">✓ auto</span>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Profit from stocks/equity MFs held less than 1 year. Taxed at flat 20%.<div class="ex-chip">Sold shares within 12 months → STCG</div></div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Profit from stocks/equity MFs held less than 1 year. Taxed at flat 20%.<div class="ex-chip">Sold shares within 12 months → STCG</div></div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="stcg_d" placeholder="0" oninput="fa(this,'stcg')"><input type="hidden" id="stcg"></div>
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>Long-Term Capital Gains</label><span id="af-ltcg" class="af-badge" style="display:none">✓ auto</span>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Profit from stocks/equity MFs held 1+ year. First ₹1,25,000 is tax-free every year!<div class="ex-chip">First ₹1.25L gains = zero tax</div></div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Profit from stocks/equity MFs held 1+ year. First ₹1,25,000 is tax-free every year!<div class="ex-chip">First ₹1.25L gains = zero tax</div></div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="ltcg_d" placeholder="0" oninput="fa(this,'ltcg')"><input type="hidden" id="ltcg"></div>
     </div>
@@ -869,14 +874,14 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="field-row">
     <div class="field">
       <div class="lbl-wrap"><label>Freelance / Side Income</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Income from freelancing, consulting, tuitions etc. Added to salary income, taxed at slab rate. May need ITR-3 if above ₹2.5L.</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Income from freelancing, consulting, tuitions etc. Added to salary income, taxed at slab rate. May need ITR-3 if above ₹2.5L.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="freelance_d" placeholder="0" oninput="fa(this,'freelance')"><input type="hidden" id="freelance"></div>
       <div class="amt-words" id="freelance_w"></div>
     </div>
     <div class="field">
       <div class="lbl-wrap"><label>Crypto / VDA Gains</label>
-        <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Profit from Bitcoin, Ethereum, other crypto (VDA). Taxed at flat 30% — no deductions, no loss set-off allowed. Enter total profit (not sale value).</div></div>
+        <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Profit from Bitcoin, Ethereum, other crypto (VDA). Taxed at flat 30% — no deductions, no loss set-off allowed. Enter total profit (not sale value).</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="crypto_d" placeholder="0" oninput="fa(this,'crypto')"><input type="hidden" id="crypto"></div>
       <div class="amt-words" id="crypto_w"></div>
@@ -886,7 +891,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- Savings Bank Interest (separate for 80TTA) -->
   <div class="field">
     <div class="lbl-wrap"><label>Savings Bank Interest</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Interest from savings accounts only (not FD). First ₹10,000 is tax-free under 80TTA (₹50K for seniors via 80TTB). Enter total amount — we apply the exemption automatically.<div class="ex-chip">SB interest ₹15K → ₹10K exempt, ₹5K taxable</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Interest from savings accounts only (not FD). First ₹10,000 is tax-free under 80TTA (₹50K for seniors via 80TTB). Enter total amount — we apply the exemption automatically.<div class="ex-chip">SB interest ₹15K → ₹10K exempt, ₹5K taxable</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="savings_interest_d" placeholder="0" oninput="fa(this,'savings_interest')"><input type="hidden" id="savings_interest"></div>
   </div>
@@ -894,7 +899,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- Online Gaming / Lottery -->
   <div class="field">
     <div class="lbl-wrap"><label>Online Gaming / Lottery / Puzzle Winnings</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 115BBJ: Winnings from online games (Dream11, MPL etc.), lottery, crossword, card games. Taxed at flat 30% — no deductions allowed. TDS deducted above ₹10,000 per win. Heavily scrutinised by IT Dept.<div class="ex-chip">₹1L winnings → ₹30,000 flat tax</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Sec 115BBJ: Winnings from online games (Dream11, MPL etc.), lottery, crossword, card games. Taxed at flat 30% — no deductions allowed. TDS deducted above ₹10,000 per win. Heavily scrutinised by IT Dept.<div class="ex-chip">₹1L winnings → ₹30,000 flat tax</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="gaming_income_d" placeholder="0" oninput="fa(this,'gaming_income')"><input type="hidden" id="gaming_income"></div>
     <div class="amt-words" id="gaming_income_w"></div>
@@ -903,7 +908,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- Second Employer / Multiple Employers -->
   <div class="field">
     <div class="lbl-wrap"><label>Changed jobs this year?</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">If you worked at 2+ employers, each deducts TDS independently — often leading to under-deduction. You must combine both salaries and compute tax yourself. Enter total salary from ALL employers above in Gross Salary.<div class="ex-chip">Job A ₹8L + Job B ₹6L → enter ₹14L total</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">If you worked at 2+ employers, each deducts TDS independently — often leading to under-deduction. You must combine both salaries and compute tax yourself. Enter total salary from ALL employers above in Gross Salary.<div class="ex-chip">Job A ₹8L + Job B ₹6L → enter ₹14L total</div></div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'changed_jobs','no');showCond('jobs-sec',false)">No</div>
@@ -935,7 +940,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- Salary Arrears — Section 89 Relief -->
   <div class="field">
     <div class="lbl-wrap"><label>Received salary arrears this year?</label>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Sec 89(1): If you received arrears of salary for previous years, you can claim relief so you're taxed as if you received it in those years — not all at once in the current year. File Form 10E before filing ITR.<div class="ex-chip">Arrears ₹3L received in FY25 for FY22 → lower effective tax</div></div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Sec 89(1): If you received arrears of salary for previous years, you can claim relief so you're taxed as if you received it in those years — not all at once in the current year. File Form 10E before filing ITR.<div class="ex-chip">Arrears ₹3L received in FY25 for FY22 → lower effective tax</div></div></div>
     </div>
     <div class="toggle-group">
       <div class="tog-btn active" onclick="setTog(this,'has_arrears','no');showCond('arrears-sec',false)">No</div>
@@ -946,7 +951,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="cond" id="arrears-sec">
     <div class="field-row">
       <div class="field"><div class="lbl-wrap"><label>Arrears Amount Received</label></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="arrears_amount_d" placeholder="2,00,000" oninput="fa(this,'arrears_amount')"><input type="hidden" id="arrears_amount"></div></div>
-      <div class="field"><div class="lbl-wrap"><label>Sec 89 Relief Claimed</label><div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Compute relief using Form 10E on Income Tax Portal. Enter the relief amount from there. We deduct it from your final tax.<div class="ex-chip">File Form 10E BEFORE submitting ITR</div></div></div></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec89_relief_d" placeholder="0" oninput="fa(this,'sec89_relief')"><input type="hidden" id="sec89_relief"></div></div>
+      <div class="field"><div class="lbl-wrap"><label>Sec 89 Relief Claimed</label><div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Compute relief using Form 10E on Income Tax Portal. Enter the relief amount from there. We deduct it from your final tax.<div class="ex-chip">File Form 10E BEFORE submitting ITR</div></div></div></div><div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec89_relief_d" placeholder="0" oninput="fa(this,'sec89_relief')"><input type="hidden" id="sec89_relief"></div></div>
     </div>
     <div class="info-pill amber">⚠️ You MUST file Form 10E on incometax.gov.in before submitting your ITR. Relief not available without it. Arrears already included in your Gross Salary above.</div>
   </div>
@@ -954,7 +959,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- TDS fields (from 26AS) -->
   <div class="field">
     <div class="lbl-wrap"><label>TDS Already Deducted (Total)</label><span id="af-tds_deducted" class="af-badge" style="display:none">✓ auto</span>
-      <div class="tip-wrap"><div class="tip-btn">?</div><div class="tip-box">Total Tax Deducted at Source by all deductors (employer, bank etc.) as shown in Form 26AS. This reduces your final tax payable.</div></div>
+      <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Total Tax Deducted at Source by all deductors (employer, bank etc.) as shown in Form 26AS. This reduces your final tax payable.</div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="tds_deducted_d" placeholder="0" oninput="fa(this,'tds_deducted')"><input type="hidden" id="tds_deducted"></div>
     <div class="amt-words" id="tds_deducted_w"></div>
@@ -989,6 +994,9 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     <button class="btn-wa" onclick="shareWhatsApp()">💬 Share on WhatsApp</button>
     <button class="btn-restart" onclick="restart()">↺ Start Over</button>
   </div>
+
+  <!-- ═══ PRIMARY CTA BAR — shown right after hero result ═══ -->
+  <div id="primary-cta-bar" style="display:none;margin-bottom:16px;"></div>
 
   <!-- ═══ SIMPLE / ADVANCED MODE TOGGLE ═══ -->
   <div class="mode-toggle">
@@ -1327,6 +1335,7 @@ async function runExtraction(){
 
   document.getElementById('extract-btn').disabled=true;
   document.getElementById('extract-progress').classList.add('show');
+  try{ if(typeof gtag==='function') gtag('event','upload_started',{event_category:'funnel'}); }catch(ga_e){}
 
   function getWm(){ return document.getElementById('warmup-msg'); }
 
@@ -2052,6 +2061,28 @@ function calculate(){
   buildWhatsNext();
   // Apply simple mode by default — user can switch to advanced
   setTimeout(() => setMode(currentMode), 50);
+
+  // ── GA funnel tracking ────────────────────────────────────────────────────
+  // These events persist in GA even when server restarts
+  try {
+    const win2=_o.tax<_n.tax?'old':'new';
+    const bestTax2=Math.min(_o.tax,_n.tax);
+    const tds2=_i.tds_deducted||0;
+    const bal2=tds2-bestTax2;
+    // Salary bracket (anonymised — ranges only, no exact number)
+    const gross=_i.gross||0;
+    const bracket = gross<300000?'<3L':gross<500000?'3-5L':gross<700000?'5-7L':gross<1000000?'7-10L':gross<1500000?'10-15L':'15L+';
+    if(typeof gtag==='function'){
+      gtag('event','tax_calculated',{
+        event_category:'funnel',
+        regime_winner: win2,
+        refund_or_due: bal2>=0?'refund':'due',
+        salary_bracket: bracket,
+        has_errors: (_errors&&_errors.length>0)?'yes':'no',
+        extraction_used: (_i.tds_deducted_form16>0)?'yes':'no'
+      });
+    }
+  } catch(e){}
 
   document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
   document.getElementById('prog-wrap').style.display='none';
@@ -3443,10 +3474,48 @@ function buildHeroResult(){
   }
 
   const regimeLabel=win==='new'?'New Regime':'Old Regime';
+
+  // Emotional state — determines headline tone
+  // "You're All Good" when no errors, refund coming, optimal regime
+  const hasErrors = _errors && _errors.filter(e=>e.severity==='red').length > 0;
+  const bigRefund = bal > 5000;
+  const bigSaving = sav > 5000;
+
+  let emotionalHeadline, emotionalSub, emotionalColor;
+  if(!hasErrors && bigRefund && !bal<0){
+    emotionalHeadline = `🎉 You're getting ₹${fmt(bal)} back!`;
+    emotionalSub = `File ITR before July 31 and the refund goes straight to your bank.`;
+    emotionalColor = '#2d6a4f';
+  } else if(!hasErrors && bestTax === 0){
+    emotionalHeadline = `✅ Zero Tax! You're fully covered.`;
+    emotionalSub = `Your TDS covers everything. Just file your ITR to claim your refund.`;
+    emotionalColor = '#2d6a4f';
+  } else if(!hasErrors && bal >= -1000 && bal <= 1000){
+    emotionalHeadline = `✓ You're all good — taxes are settled.`;
+    emotionalSub = `TDS matches your liability. No surprise payments needed.`;
+    emotionalColor = '#2d6a4f';
+  } else if(hasErrors){
+    emotionalHeadline = `⚠️ Action needed before filing`;
+    emotionalSub = `A few issues found in your documents. Review the alerts below.`;
+    emotionalColor = '#c17f24';
+  } else if(bal < -5000){
+    emotionalHeadline = `Tax due: ₹${fmt(Math.abs(bal))}`;
+    emotionalSub = `Pay via Challan 280 before filing to avoid interest charges.`;
+    emotionalColor = '#c0392b';
+  } else {
+    emotionalHeadline = `✓ ${regimeLabel} recommended`;
+    emotionalSub = bigSaving ? `Saves you ₹${fmt(sav)} vs the other regime.` : `Both regimes are similar for your income.`;
+    emotionalColor = '#2d6a4f';
+  }
+
   panel.innerHTML=`
-    <div class="hero-winner">
+    <div style="margin-bottom:14px;">
+      <div style="font-size:19px;font-weight:800;color:${emotionalColor};margin-bottom:4px;line-height:1.3;">${emotionalHeadline}</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.5;">${emotionalSub}</div>
+    </div>
+    <div class="hero-winner" style="margin-bottom:14px;">
       <div class="hero-regime-badge">✓ ${regimeLabel}</div>
-      <div class="hero-saves">${sav>1000?`Saves ₹${fmt(sav)} vs ${win==='new'?'Old':'New'} Regime`:'Both regimes similar'}</div>
+      <div class="hero-saves">${sav>1000?`Saves ₹${fmt(sav)} vs ${win==='new'?'Old':'New'} Regime`:'Both regimes are close'}</div>
     </div>
     <div class="hero-numbers">
       <div class="hero-num">
@@ -3459,7 +3528,7 @@ function buildHeroResult(){
       </div>
       <div class="hero-num ${bal>=0?'refund':'due'}">
         <div class="hn-val">${bal>=0?'+':'-'}${fmt(Math.abs(bal))}</div>
-        <div class="hn-lbl">${bal>=0?'Refund':'Tax Due'}</div>
+        <div class="hn-lbl">${bal>=0?'🟢 Refund':'🔴 Tax Due'}</div>
       </div>
     </div>
     <div class="hero-tips">
@@ -3485,7 +3554,60 @@ function buildHeroResult(){
   const intContent=document.getElementById('interest-panel');
   if(intPanel&&intContent&&intContent.innerHTML.trim()) intPanel.style.display='';
 
-  // util-bars already inside util-bars-wrap
+  // Build primary CTA
+  buildPrimaryCTA(bal, bestTax, win);
+}
+
+// ── Primary CTA builder — ONE clear action after results ─────────────────────
+// The single most important thing for this user to do next.
+// No option paralysis — one big button, one supporting action.
+function buildPrimaryCTA(bal, bestTax, win){
+  const bar = document.getElementById('primary-cta-bar');
+  if(!bar) return;
+
+  let primary, primaryAction, secondary, secondaryAction, bg;
+
+  if(bal > 1000){
+    // Refund coming — file ITR is the clear win
+    primary = `📄 File ITR-1 to claim ₹${fmt(bal)} refund`;
+    primaryAction = "window.open('https://www.incometax.gov.in/iec/foportal','_blank')";
+    secondary = '⬇ Download your tax summary first';
+    secondaryAction = 'downloadReport()';
+    bg = 'linear-gradient(135deg,#2d6a4f,#40916c)';
+  } else if(bal < -1000){
+    // Tax due — pay is the clear action
+    primary = `💳 Pay ₹${fmt(Math.abs(bal))} via Challan 280`;
+    primaryAction = "window.open('https://onlineservices.tin.egov-nsdl.com/etaxnew/tdsnontds.jsp','_blank')";
+    secondary = '⬇ Download summary to share with CA';
+    secondaryAction = 'downloadReport()';
+    bg = 'linear-gradient(135deg,#c0392b,#e74c3c)';
+  } else if(bestTax === 0){
+    // Zero tax — just file
+    primary = '📄 File ITR-1 — Zero Tax, Quick Filing';
+    primaryAction = "window.open('https://www.incometax.gov.in/iec/foportal','_blank')";
+    secondary = '📧 Save report & remind next year';
+    secondaryAction = 'openRetentionModal()';
+    bg = 'linear-gradient(135deg,#2d6a4f,#40916c)';
+  } else {
+    // Neutral — download is a low-commitment primary
+    primary = '⬇ Download your tax summary';
+    primaryAction = 'downloadReport()';
+    secondary = '📄 Export ITR-1 JSON for auto-fill';
+    secondaryAction = 'exportITRJson()';
+    bg = 'linear-gradient(135deg,#495057,#343a40)';
+  }
+
+  bar.style.display = '';
+  bar.innerHTML = `
+    <div style="background:${bg};border-radius:14px;padding:16px 18px;">
+      <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.7);font-weight:700;margin-bottom:10px;">YOUR NEXT STEP</div>
+      <button onclick="${primaryAction}" style="width:100%;padding:14px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:10px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;transition:all .2s;text-align:left;">
+        ${primary}
+      </button>
+      <button onclick="${secondaryAction}" style="width:100%;padding:10px;background:transparent;border:1.5px solid rgba(255,255,255,.25);border-radius:10px;color:rgba(255,255,255,.85);font-size:13px;font-weight:600;cursor:pointer;text-align:left;">
+        ${secondary}
+      </button>
+    </div>`;
 }
 
 // ── Inline cap warnings ──────────────────────────────────────────────────────
@@ -3576,6 +3698,7 @@ document.addEventListener('input',function(e){
     activeBtn=null; activeBox=null;
   }
 
+  let tooltipEverOpened = false;
   document.addEventListener('click',function(e){
     const btn=e.target.closest('.tip-btn');
     if(btn){
@@ -3589,6 +3712,14 @@ document.addEventListener('input',function(e){
       box.classList.add('open');
       btn.classList.add('active');
       activeBtn=btn; activeBox=box;
+      // First-time discovery: fade out hint label + remove pulses after first use
+      if(!tooltipEverOpened){
+        tooltipEverOpened = true;
+        const hint = document.getElementById('tip-hint-label');
+        if(hint){ hint.style.opacity='0'; setTimeout(()=>hint.remove(),600); }
+        document.querySelectorAll('.tip-btn.pulse').forEach(b=>b.classList.remove('pulse'));
+        try{ if(typeof gtag==='function') gtag('event','tooltip_first_use',{event_category:'ux'}); }catch(e){}
+      }
       return;
     }
     // Click outside closes
