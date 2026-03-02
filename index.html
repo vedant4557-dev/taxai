@@ -170,6 +170,9 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .btn-dl:hover{background:#153921;transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,71,42,.3);}
 .btn-restart{padding:13px 18px;border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);}
 /* WhatsApp share button */
+.mode-toggle{display:flex;align-items:center;justify-content:center;gap:0;background:var(--bg);border:1.5px solid var(--border);border-radius:100px;padding:3px;margin-bottom:16px;}
+.mode-btn{padding:7px 20px;border-radius:100px;border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .2s;}
+.mode-btn.active{background:var(--white);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12);}
 .accord{border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--white);box-shadow:var(--sh);}
 .accord-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;font-weight:700;font-size:14px;color:var(--ink);}
 .accord-hdr:hover{background:var(--bg);}
@@ -963,6 +966,12 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     <button class="btn-dl" onclick="exportITRJson()" style="background:#2d6a4f;color:#fff;" title="Pre-filled ITR-1 JSON for Income Tax Portal">📄 Export ITR-1 JSON</button>
     <button class="btn-wa" onclick="shareWhatsApp()">💬 Share on WhatsApp</button>
     <button class="btn-restart" onclick="restart()">↺ Start Over</button>
+  </div>
+
+  <!-- ═══ SIMPLE / ADVANCED MODE TOGGLE ═══ -->
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="mode-simple" onclick="setMode('simple')">✦ Simple</button>
+    <button class="mode-btn" id="mode-advanced" onclick="setMode('advanced')">⚙ Advanced</button>
   </div>
 
   <!-- ═══ HERO RESULT — always visible ═══ -->
@@ -2013,6 +2022,8 @@ function calculate(){
   buildInterestPanel();
   buildHeroResult();
   buildWhatsNext();
+  // Apply simple mode by default — user can switch to advanced
+  setTimeout(() => setMode(currentMode), 50);
 
   document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
   document.getElementById('prog-wrap').style.display='none';
@@ -3115,6 +3126,37 @@ function buildWhatsNext(){
     </div>`).join('');
 
   panel.style.display='';
+}
+
+// ── Simple / Advanced mode toggle ────────────────────────────────────────────
+// Simple: show only hero card + what's next. 80% of users just want tax + regime.
+// Advanced: everything expanded via accordions.
+let currentMode = 'simple';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('mode-simple').classList.toggle('active', mode === 'simple');
+  document.getElementById('mode-advanced').classList.toggle('active', mode === 'advanced');
+
+  // Advanced panels — only show in advanced mode
+  const advancedPanels = document.querySelectorAll('.accord, .insight-box, .sim-card, #recon-section');
+  advancedPanels.forEach(el => {
+    if (el.id === 'accord-errors' || el.id === 'accord-risk') {
+      // Always show these if they have content — critical info
+      const hasContent = el.style.display !== 'none';
+      el.style.display = hasContent ? '' : 'none';
+    } else {
+      el.style.display = mode === 'advanced' ? '' : 'none';
+    }
+  });
+
+  // What's next — always visible
+  const wn = document.getElementById('whats-next');
+  if (wn) wn.style.display = '';
+
+  // Action row — always visible
+  const ar = document.querySelector('.act-row');
+  if (ar) ar.style.display = '';
 }
 
 // ── Accordion toggle ─────────────────────────────────────────────────────────
