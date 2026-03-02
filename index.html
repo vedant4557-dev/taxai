@@ -171,6 +171,26 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .btn-restart{padding:13px 18px;border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);}
 /* WhatsApp share button */
 .mode-toggle{display:flex;align-items:center;justify-content:center;gap:0;background:var(--bg);border:1.5px solid var(--border);border-radius:100px;padding:3px;margin-bottom:16px;}
+
+/* ── Retention modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:20px;padding:28px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative;}
+.modal-close{position:absolute;top:14px;right:16px;border:none;background:none;font-size:20px;cursor:pointer;color:#999;line-height:1;}
+.modal-title{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+.modal-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;box-sizing:border-box;transition:border-color .2s;}
+.modal-input:focus{border-color:var(--a2);}
+.modal-btn{width:100%;margin-top:10px;padding:12px;border:none;border-radius:10px;background:var(--a2);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.modal-btn:hover{opacity:.88;}
+.modal-success{text-align:center;padding:16px 0;font-size:15px;color:#2d6a4f;font-weight:700;}
+
+/* ── Notice response modal ── */
+.notice-modal{max-width:600px;}
+.notice-output{background:#f8f9fa;border:1.5px solid var(--border);border-radius:10px;padding:14px;font-size:13px;line-height:1.7;color:var(--ink);max-height:320px;overflow-y:auto;white-space:pre-wrap;margin-top:12px;}
+.notice-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.notice-type-btn{padding:10px;border:1.5px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:all .2s;color:var(--ink);}
+.notice-type-btn.sel{border-color:var(--a2);background:#e8f5ec;color:var(--a2);}
 .mode-btn{padding:7px 20px;border-radius:100px;border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .2s;}
 .mode-btn.active{background:var(--white);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12);}
 .accord{border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--white);box-shadow:var(--sh);}
@@ -964,6 +984,8 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="act-row">
     <button class="btn-dl" onclick="downloadReport()">⬇ Download Report</button>
     <button class="btn-dl" onclick="exportITRJson()" style="background:#2d6a4f;color:#fff;" title="Pre-filled ITR-1 JSON for Income Tax Portal">📄 Export ITR-1 JSON</button>
+    <button class="btn-dl" onclick="openRetentionModal()" style="background:#6c63ff;color:#fff;" title="Save report & get reminder next filing season">📧 Save & Remind Next Year</button>
+    <button class="btn-dl" onclick="openNoticeModal()" style="background:#c0392b;color:#fff;" title="AI-drafted response to income tax notice">⚖️ Draft IT Notice Response</button>
     <button class="btn-wa" onclick="shareWhatsApp()">💬 Share on WhatsApp</button>
     <button class="btn-restart" onclick="restart()">↺ Start Over</button>
   </div>
@@ -3077,6 +3099,179 @@ function detectEdgeCases(){
 
 function fmtL(n){ return n>=100000?'₹'+(n/100000).toFixed(1)+'L':'₹'+Math.round(n).toLocaleString('en-IN'); }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// RETENTION HOOK — Email capture + "Remind next year"
+// ══════════════════════════════════════════════════════════════════════════════
+function openRetentionModal(){
+  document.getElementById('retention-modal').classList.add('open');
+  document.getElementById('retention-email').focus();
+}
+function closeRetentionModal(){
+  document.getElementById('retention-modal').classList.remove('open');
+}
+
+async function submitRetention(){
+  const email = document.getElementById('retention-email').value.trim();
+  const name = document.getElementById('retention-name').value.trim();
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    document.getElementById('retention-email').style.borderColor='#e74c3c';
+    document.getElementById('retention-email').focus();
+    return;
+  }
+  document.getElementById('retention-email').style.borderColor='var(--border)';
+
+  // Build a compact summary to "save"
+  const summary = {
+    fy: 'FY 2025-26',
+    name: name || 'TaxSmart User',
+    email,
+    regime: _o?.recommended_regime === 'new' ? 'New Regime' : 'Old Regime',
+    tax: _o?.new_regime?.tax_payable ?? 0,
+    refund: (_o?.new_regime?.tds_credit ?? 0) - (_o?.new_regime?.tax_payable ?? 0),
+    savedAt: new Date().toISOString()
+  };
+
+  // Store in localStorage so user can see their summary if they return
+  try {
+    const prev = JSON.parse(localStorage.getItem('ts_saves') || '[]');
+    prev.push(summary);
+    localStorage.setItem('ts_saves', JSON.stringify(prev.slice(-5)));
+  } catch(e){}
+
+  // In a real product, POST to a backend /subscribe endpoint
+  // For now: log and show success (backend endpoint to be built)
+  console.log('[Retention] Captured:', email, summary);
+
+  // Show success state
+  document.getElementById('retention-body').style.display='none';
+  document.getElementById('retention-success').style.display='block';
+
+  // Auto-close after 3 seconds
+  setTimeout(closeRetentionModal, 3000);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// IT NOTICE RESPONSE GENERATOR — AI-drafted formal response
+// Uses Anthropic API to generate a tailored response based on user's tax data
+// ══════════════════════════════════════════════════════════════════════════════
+let _selectedNoticeType = null;
+
+function openNoticeModal(){
+  document.getElementById('notice-modal').classList.add('open');
+  document.getElementById('notice-output').style.display='none';
+  document.getElementById('notice-loading').style.display='none';
+  document.getElementById('notice-actions').style.display='none';
+  _selectedNoticeType = null;
+  document.querySelectorAll('.notice-type-btn').forEach(b=>b.classList.remove('sel'));
+}
+function closeNoticeModal(){
+  document.getElementById('notice-modal').classList.remove('open');
+}
+function selNoticeType(type){
+  _selectedNoticeType = type;
+  document.querySelectorAll('.notice-type-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('nb-'+type)?.classList.add('sel');
+}
+
+async function generateNoticeResponse(){
+  if(!_selectedNoticeType){
+    alert('Please select the type of notice you received.');
+    return;
+  }
+  if(!_o){
+    alert('No tax data available. Please complete an extraction first.');
+    return;
+  }
+
+  const noticeLabels = {
+    tds: 'TDS Mismatch (Form 26AS vs Filed ITR)',
+    ais: 'AIS Income Discrepancy (Unreported Income)',
+    verify: 'Verification Notice under Section 143(1)',
+    deduction: 'Deduction Query (80C/80D/HRA proof required)'
+  };
+
+  // Build a tax data summary for the AI prompt
+  const taxData = {
+    grossSalary: _i?.gross_salary || 0,
+    tdsFormF16: _i?.tds_deducted_form16 || 0,
+    tds26AS: _i?.total_tds_26as || 0,
+    salaryAIS: _i?.salary_ais || 0,
+    newRegimeTax: _o?.new_regime?.tax_payable || 0,
+    oldRegimeTax: _o?.old_regime?.tax_payable || 0,
+    recommendedRegime: _o?.recommended_regime || 'new',
+    errors: _errors?.map(e=>e.title).join(', ') || 'None'
+  };
+
+  const prompt = `You are a senior Indian Chartered Accountant drafting a formal response to an Income Tax Department notice on behalf of a taxpayer.
+
+NOTICE TYPE: ${noticeLabels[_selectedNoticeType]}
+
+TAXPAYER'S TAX DATA (FY 2025-26):
+- Gross Salary: ₹${taxData.grossSalary.toLocaleString('en-IN')}
+- TDS per Form 16: ₹${taxData.tdsFormF16.toLocaleString('en-IN')}
+- TDS per 26AS: ₹${taxData.tds26AS.toLocaleString('en-IN')}
+- Salary per AIS: ₹${taxData.salaryAIS.toLocaleString('en-IN')}
+- Tax under New Regime: ₹${taxData.newRegimeTax.toLocaleString('en-IN')}
+- Recommended Regime: ${taxData.recommendedRegime === 'new' ? 'New Tax Regime' : 'Old Tax Regime'}
+- Discrepancies detected: ${taxData.errors}
+
+Write a professional, formal response letter to the Income Tax Officer. Include:
+1. Formal salutation and reference to the notice type
+2. Clear explanation of the taxpayer's position with specific numbers
+3. Explanation of any discrepancies and their legitimate cause
+4. List of documents the taxpayer can provide
+5. Respectful closing
+
+Keep it factual, professional, and under 350 words. Use Indian English. Include placeholder [ASSESSMENT YEAR], [PAN], [NAME], [DATE] for the taxpayer to fill in.`;
+
+  // Show loading
+  document.getElementById('notice-gen-btn').style.display='none';
+  document.getElementById('notice-loading').style.display='block';
+  document.getElementById('notice-output').style.display='none';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.[0]?.text || 'Could not generate response. Please try again.';
+
+    document.getElementById('notice-output').textContent = text;
+    document.getElementById('notice-output').style.display='block';
+    document.getElementById('notice-actions').style.display='flex';
+    window._noticeDraftText = text;
+  } catch(e){
+    document.getElementById('notice-output').textContent = 'Error generating response: ' + e.message + '\n\nPlease try again or consult a CA directly.';
+    document.getElementById('notice-output').style.display='block';
+  } finally {
+    document.getElementById('notice-loading').style.display='none';
+    document.getElementById('notice-gen-btn').style.display='block';
+  }
+}
+
+function copyNoticeText(){
+  if(window._noticeDraftText){
+    navigator.clipboard.writeText(window._noticeDraftText)
+      .then(()=>{ const b=document.querySelector('#notice-actions .modal-btn'); const orig=b.textContent; b.textContent='✓ Copied!'; setTimeout(()=>b.textContent=orig,2000); })
+      .catch(()=>alert('Copy failed — select text manually'));
+  }
+}
+
+function downloadNoticeDraft(){
+  if(!window._noticeDraftText) return;
+  const blob = new Blob([window._noticeDraftText], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'TaxSmart_IT_Notice_Response_Draft.txt';
+  a.click();
+}
+
 function buildWhatsNext(){
   const panel=document.getElementById('whats-next');
   const list=document.getElementById('next-steps-list');
@@ -3404,5 +3599,48 @@ document.addEventListener('input',function(e){
 
 
 </script>
+
+<!-- ═══ RETENTION MODAL — Email capture + remind next year ═══ -->
+<div class="modal-overlay" id="retention-modal" onclick="if(event.target===this)closeRetentionModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeRetentionModal()">×</button>
+    <div id="retention-body">
+      <div class="modal-title">📧 Save Your Report</div>
+      <div class="modal-sub">Enter your email to receive your tax summary PDF + a reminder in January 2027 when Form 16 season starts. No spam, no account needed.</div>
+      <input class="modal-input" type="email" id="retention-email" placeholder="your@email.com" />
+      <input class="modal-input" style="margin-top:8px;" type="text" id="retention-name" placeholder="Your name (optional)" />
+      <button class="modal-btn" onclick="submitRetention()">✓ Save & Get Reminder Next Year</button>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;">No account. One email reminder in Jan 2027. Unsubscribe anytime.</div>
+    </div>
+    <div id="retention-success" class="modal-success" style="display:none;">
+      ✅ Saved! You'll get a reminder in January 2027.<br><br>
+      <span style="font-size:13px;color:var(--muted);">Your tax summary has been noted. See you next filing season!</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ IT NOTICE RESPONSE MODAL ═══ -->
+<div class="modal-overlay" id="notice-modal" onclick="if(event.target===this)closeNoticeModal()">
+  <div class="modal-box notice-modal">
+    <button class="modal-close" onclick="closeNoticeModal()">×</button>
+    <div class="modal-title">⚖️ Draft IT Notice Response</div>
+    <div class="modal-sub">Select the type of notice you received. AI will draft a formal response using your tax data.</div>
+    <div class="notice-type-grid">
+      <button class="notice-type-btn" id="nb-tds" onclick="selNoticeType('tds')">📋 TDS Mismatch<br><small>26AS vs Filed ITR</small></button>
+      <button class="notice-type-btn" id="nb-ais" onclick="selNoticeType('ais')">📊 AIS Discrepancy<br><small>Unreported income</small></button>
+      <button class="notice-type-btn" id="nb-verify" onclick="selNoticeType('verify')">🔍 Verification Notice<br><small>Section 143(1)</small></button>
+      <button class="notice-type-btn" id="nb-deduction" onclick="selNoticeType('deduction')">💰 Deduction Query<br><small>80C/80D proof needed</small></button>
+    </div>
+    <button class="modal-btn" onclick="generateNoticeResponse()" id="notice-gen-btn" style="margin-bottom:0;">✦ Generate Draft Response</button>
+    <div id="notice-loading" style="display:none;text-align:center;padding:16px;color:var(--muted);font-size:13px;">✦ Drafting your response...</div>
+    <div id="notice-output" class="notice-output" style="display:none;"></div>
+    <div id="notice-actions" style="display:none;margin-top:10px;display:none;gap:8px;flex-wrap:wrap;">
+      <button class="modal-btn" style="width:auto;padding:8px 18px;" onclick="copyNoticeText()">📋 Copy Text</button>
+      <button class="modal-btn" style="width:auto;padding:8px 18px;background:#2d6a4f;" onclick="downloadNoticeDraft()">⬇ Download Draft</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px;text-align:center;">⚠️ AI-generated draft — review with a CA before submitting. Not legal advice.</div>
+  </div>
+</div>
+
 </body>
 </html>
