@@ -1404,24 +1404,60 @@ async function runExtraction(){
     });
   }
 
+  // Build FormData payload
+  function buildFormData(){
+    const fd = new FormData();
+    if(_files.f16)     fd.append('f16',   _files.f16);
+    if(_files['26as']) fd.append('as26',  _files['26as']);
+    if(_files.ais)     fd.append('ais',   _files.ais);
+    return fd;
+  }
+
+  // Build JSON+base64 payload (for sandboxed environments)
+  async function buildJsonPayload(){
+    const payload={};
+    if(_files.f16)     payload.f16  = await fileToB64(_files.f16);
+    if(_files['26as']) payload.as26 = await fileToB64(_files['26as']);
+    if(_files.ais)     payload.ais  = await fileToB64(_files.ais);
+    return payload;
+  }
+
   async function attemptFetch(){
     const ctrl=new AbortController();
     const tout=setTimeout(()=>ctrl.abort(),TIMEOUT_MS);
-    try{
-      // Build JSON payload with base64-encoded files
-      // FormData cannot be cloned via postMessage (sandbox restriction)
-      // JSON + base64 works everywhere including iframe sandboxes
-      const payload={};
-      if(_files.f16)     payload.f16  = await fileToB64(_files.f16);
-      if(_files['26as']) payload.as26 = await fileToB64(_files['26as']);
-      if(_files.ais)     payload.ais  = await fileToB64(_files.ais);
 
-      const res=await fetch(BACKEND_URL+'/extract',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload),
-        signal:ctrl.signal
-      });
+    // Strategy: Try JSON+base64 first (works in sandboxed iframes like Claude artifacts)
+    // If server returns 400 "upload at least one" (old server only accepts FormData),
+    // fall back to FormData (works on live site github.io, not in Claude artifact sandbox)
+    async function tryRequest(useJson){
+      const opts = { method:'POST', signal:ctrl.signal };
+      if(useJson){
+        const payload = await buildJsonPayload();
+        opts.headers = {'Content-Type':'application/json'};
+        opts.body = JSON.stringify(payload);
+      } else {
+        opts.body = buildFormData(); // no Content-Type header - browser sets multipart boundary
+      }
+      return fetch(BACKEND_URL+'/extract', opts);
+    }
+
+    try{
+      // First attempt: JSON+base64
+      let res = await tryRequest(true);
+
+      // If old server doesn't understand JSON (returns 400 with "upload" message), retry with FormData
+      if(res.status === 400){
+        const errBody = await res.json().catch(()=>({}));
+        const errMsg = (errBody.error||'').toLowerCase();
+        if(errMsg.includes('upload') || errMsg.includes('document')){
+          // Old server - retry with FormData
+          res = await tryRequest(false);
+        } else {
+          clearTimeout(tout);
+          throw new Error(errBody.error||'Server error 400');
+        }
+      }
+
       clearTimeout(tout);
       if(!res.ok){
         const errBody=await res.json().catch(()=>({error:'Server error '+res.status}));
