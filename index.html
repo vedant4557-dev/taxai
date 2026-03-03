@@ -479,31 +479,32 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <!-- Upload zones -->
   <div class="upload-grid">
-    <div class="upload-zone" id="zone-f16" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'f16')" onclick="document.getElementById('inp-f16').click()">
+    <div class="upload-zone" id="zone-f16" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'f16')">
       <span class="uz-icon">📄</span>
       <div class="uz-title">Form 16</div>
       <div class="uz-sub">Part A + Part B<br>PDF from employer</div>
       <div class="uz-badge">✓ UPLOADED</div>
       <div class="uz-filename" id="fn-f16"></div>
+      <input type="file" accept=".pdf" id="inp-f16" onchange="handleFile(this,'f16')">
     </div>
-    <div class="upload-zone" id="zone-26as" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'26as')" onclick="document.getElementById('inp-26as').click()">
+    <div class="upload-zone" id="zone-26as" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'26as')">
       <span class="uz-icon">📊</span>
       <div class="uz-title">Form 26AS</div>
       <div class="uz-sub">TDS / tax credit<br>statement PDF</div>
       <div class="uz-badge">✓ UPLOADED</div>
       <div class="uz-filename" id="fn-26as"></div>
+      <input type="file" accept=".pdf" id="inp-26as" onchange="handleFile(this,'26as')">
     </div>
-    <div class="upload-zone" id="zone-ais" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'ais')" onclick="document.getElementById('inp-ais').click()">
+        <div class="upload-zone" id="zone-ais" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,'ais')">
       <span class="uz-icon">📑</span>
       <div class="uz-title">AIS</div>
       <div class="uz-sub">Annual Information<br>Statement PDF</div>
       <div class="uz-badge">✓ UPLOADED</div>
       <div class="uz-filename" id="fn-ais"></div>
+      <input type="file" accept=".pdf" id="inp-ais" onchange="handleFile(this,'ais')">
     </div>
   </div>
-  <input type="file" accept=".pdf" id="inp-f16" style="display:none" onchange="handleFile(this,'f16')">
-  <input type="file" accept=".pdf" id="inp-26as" style="display:none" onchange="handleFile(this,'26as')">
-  <input type="file" accept=".pdf" id="inp-ais" style="display:none" onchange="handleFile(this,'ais')">
+
 
   <button class="extract-btn" id="extract-btn" onclick="runExtraction()" disabled>
     <span id="extract-btn-label">⬆ Upload at least one document to extract</span>
@@ -1293,36 +1294,61 @@ const _files={f16:null,'26as':null,ais:null};
 function handleFile(input,key){
   const file=input.files[0];
   if(!file)return;
+  if(!file.name.toLowerCase().endsWith('.pdf')&&file.type!=='application/pdf'){
+    alert('Please upload a PDF file.');
+    input.value='';
+    return;
+  }
   _files[key]=file;
   const zone=document.getElementById('zone-'+key);
-  zone.classList.add('uploaded');
-  document.getElementById('fn-'+key).textContent=file.name;
+  if(zone){
+    zone.classList.add('uploaded');
+    zone.style.borderColor='var(--accent)';
+    zone.style.background='var(--al)';
+    zone.style.borderStyle='solid';
+  }
+  const fn=document.getElementById('fn-'+key);
+  if(fn)fn.textContent=file.name;
   updateExtractBtn();
 }
 function handleDrop(ev,key){
   ev.preventDefault();
+  ev.stopPropagation();
   const zone=document.getElementById('zone-'+key);
-  zone.classList.remove('drag');
+  if(zone)zone.classList.remove('drag');
   const file=ev.dataTransfer.files[0];
-  if(!file||!file.name.endsWith('.pdf'))return;
+  if(!file)return;
+  if(!file.name.toLowerCase().endsWith('.pdf')&&file.type!=='application/pdf'){
+    alert('Please drop a PDF file.');
+    return;
+  }
   _files[key]=file;
-  zone.classList.add('uploaded');
-  document.getElementById('fn-'+key).textContent=file.name;
+  if(zone){
+    zone.classList.add('uploaded');
+    zone.style.borderColor='var(--accent)';
+    zone.style.background='var(--al)';
+    zone.style.borderStyle='solid';
+  }
+  const fn=document.getElementById('fn-'+key);
+  if(fn)fn.textContent=file.name;
   updateExtractBtn();
 }
 function updateExtractBtn(){
   const any=_files.f16||_files['26as']||_files.ais;
   const btn=document.getElementById('extract-btn');
+  const lbl=document.getElementById('extract-btn-label');
   if(any){
     btn.disabled=false;
-    const parts=[];
-    if(_files.f16)parts.push('Form 16');
-    if(_files['26as'])parts.push('26AS');
-    if(_files.ais)parts.push('AIS');
-    document.getElementById('extract-btn-label').textContent='🔍 Extract from '+parts.join(' + ');
+    if(lbl){
+      const parts=[];
+      if(_files.f16)parts.push('Form 16');
+      if(_files['26as'])parts.push('26AS');
+      if(_files.ais)parts.push('AIS');
+      lbl.textContent='Extract from '+parts.join(' + ');
+    }
   } else {
     btn.disabled=true;
-    document.getElementById('extract-btn-label').textContent='⬆ Upload at least one document to extract';
+    if(lbl)lbl.textContent='Upload at least one document to extract';
   }
 }
 
@@ -1368,15 +1394,34 @@ async function runExtraction(){
     if(wm){wm.style.display='flex';wm.innerHTML='⏳ <span>Server is waking up (Render free tier cold start — usually 20–30s). Hang tight…</span>';}
   },5000);
 
+  // Convert a File to base64 string
+  async function fileToB64(file){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = ()=> resolve(reader.result.split(',')[1]);
+      reader.onerror = ()=> reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  }
+
   async function attemptFetch(){
     const ctrl=new AbortController();
     const tout=setTimeout(()=>ctrl.abort(),TIMEOUT_MS);
     try{
-      const formData=new FormData();
-      if(_files.f16)    formData.append('f16',  _files.f16);
-      if(_files['26as'])formData.append('as26',_files['26as']);
-      if(_files.ais)    formData.append('ais',  _files.ais);
-      const res=await fetch(BACKEND_URL+'/extract',{method:'POST',body:formData,signal:ctrl.signal});
+      // Build JSON payload with base64-encoded files
+      // FormData cannot be cloned via postMessage (sandbox restriction)
+      // JSON + base64 works everywhere including iframe sandboxes
+      const payload={};
+      if(_files.f16)     payload.f16  = await fileToB64(_files.f16);
+      if(_files['26as']) payload.as26 = await fileToB64(_files['26as']);
+      if(_files.ais)     payload.ais  = await fileToB64(_files.ais);
+
+      const res=await fetch(BACKEND_URL+'/extract',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload),
+        signal:ctrl.signal
+      });
       clearTimeout(tout);
       if(!res.ok){
         const errBody=await res.json().catch(()=>({error:'Server error '+res.status}));
@@ -3183,54 +3228,62 @@ function buildCABrief(){
   const bal = tds-best;
   const name = document.getElementById('name')?.value||'Client';
   const pan = document.getElementById('pan_number')?.value||'[PAN]';
-  const errors = _errors&&_errors.length ? _errors.map(e=>`  • ${e.title}: ${e.desc}`).join('
-') : '  None detected';
-  const deds = _o&&_o.deds ? [
-    `  • Standard Deduction: ₹50,000`,
-    _o.deds.c80c>0?`  • 80C: ₹${Math.round(_o.deds.c80c).toLocaleString('en-IN')}`:'',
-    _o.deds.cnps>0?`  • NPS 80CCD(1B): ₹${Math.round(_o.deds.cnps).toLocaleString('en-IN')}`:'',
-    _o.deds.c80d>0?`  • 80D (Health): ₹${Math.round(_o.deds.c80d).toLocaleString('en-IN')}`:'',
-    _o.deds.chl>0?`  • Home Loan (Sec 24): ₹${Math.round(_o.deds.chl).toLocaleString('en-IN')}`:'',
-  ].filter(Boolean).join('
-') : '  As per Form 16';
+  const errLines = (_errors&&_errors.length)
+    ? _errors.map(function(e){ return '  - '+(e.title||'')+(e.desc?': '+e.desc:''); }).join('\n')
+    : '  None detected';
+  const dedLines = (_o&&_o.deds) ? [
+    '  Standard Deduction: Rs 50,000',
+    _o.deds.c80c>0 ? '  80C: Rs '+Math.round(_o.deds.c80c).toLocaleString('en-IN') : '',
+    _o.deds.cnps>0 ? '  NPS 80CCD(1B): Rs '+Math.round(_o.deds.cnps).toLocaleString('en-IN') : '',
+    _o.deds.c80d>0 ? '  80D Health: Rs '+Math.round(_o.deds.c80d).toLocaleString('en-IN') : '',
+    _o.deds.chl>0  ? '  Home Loan Sec24: Rs '+Math.round(_o.deds.chl).toLocaleString('en-IN') : ''
+  ].filter(Boolean).join('\n') : '  As per Form 16';
+  const itrForm = ((_i.ltcg_ais||0)+(_i.stcg_ais||0)>100000||(_i.foreign_income||0)>0)?'ITR-2':'ITR-1';
+  const balLine = bal>=0
+    ? 'REFUND DUE: Rs '+Math.round(bal).toLocaleString('en-IN')
+    : 'BALANCE TAX DUE: Rs '+Math.round(Math.abs(bal)).toLocaleString('en-IN');
+  const actionLine = bal<0
+    ? 'Pay via Challan 280 before filing'
+    : 'Claim via ITR filing before July 31, 2026';
+  const today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
 
-  return `TAXSMART — CLIENT TAX BRIEF
-Assessment Year: AY 2026-27 (FY 2025-26)
-Generated: ${new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}
-─────────────────────────────────────────
-
-CLIENT DETAILS
-Name: ${name}
-PAN: ${pan}
-
-INCOME SUMMARY
-  Gross Salary: ₹${Math.round(_i.gross||0).toLocaleString('en-IN')}
-  Taxable Income (New Regime): ₹${Math.round(_n.ti||0).toLocaleString('en-IN')}
-  Taxable Income (Old Regime): ₹${Math.round(_o.ti||0).toLocaleString('en-IN')}
-
-TAX COMPUTATION
-  New Regime Tax: ₹${Math.round(_n.tax||0).toLocaleString('en-IN')}
-  Old Regime Tax: ₹${Math.round(_o.tax||0).toLocaleString('en-IN')}
-  ──────────────────────────────────────
-  RECOMMENDED: ${win} (saves ₹${Math.round(sav).toLocaleString('en-IN')})
-  Final Tax Payable: ₹${Math.round(best).toLocaleString('en-IN')}
-
-TDS & REFUND STATUS
-  TDS Deducted (Form 16 / 26AS): ₹${Math.round(tds).toLocaleString('en-IN')}
-  ${bal>=0?'REFUND DUE: ₹'+Math.round(bal).toLocaleString('en-IN'):'BALANCE TAX DUE: ₹'+Math.round(Math.abs(bal)).toLocaleString('en-IN')}
-  ${bal<0?'Action: Pay via Challan 280 before filing':'Action: Claim via ITR filing before July 31, 2026'}
-
-DEDUCTIONS (Old Regime)
-${deds}
-
-DISCREPANCIES & FLAGS
-${errors}
-
-RECOMMENDED ITR FORM: ${(_i.ltcg_ais||0)+(_i.stcg_ais||0)>100000||(_i.foreign_income||0)>0?'ITR-2':'ITR-1'}
-
-─────────────────────────────────────────
-Generated by TaxSmart (taxai.vedant.dev)
-For verification only. CA to confirm before filing.`;
+  return [
+    'TAXSMART - CLIENT TAX BRIEF',
+    'Assessment Year: AY 2026-27 (FY 2025-26)',
+    'Generated: '+today,
+    '-----------------------------------------',
+    '',
+    'CLIENT DETAILS',
+    'Name: '+name,
+    'PAN: '+pan,
+    '',
+    'INCOME SUMMARY',
+    '  Gross Salary: Rs '+Math.round(_i.gross||0).toLocaleString('en-IN'),
+    '  Taxable Income (New Regime): Rs '+Math.round(_n.ti||0).toLocaleString('en-IN'),
+    '  Taxable Income (Old Regime): Rs '+Math.round(_o.ti||0).toLocaleString('en-IN'),
+    '',
+    'TAX COMPUTATION',
+    '  New Regime Tax: Rs '+Math.round(_n.tax||0).toLocaleString('en-IN'),
+    '  Old Regime Tax: Rs '+Math.round(_o.tax||0).toLocaleString('en-IN'),
+    '  RECOMMENDED: '+win+' (saves Rs '+Math.round(sav).toLocaleString('en-IN')+')',
+    '  Final Tax Payable: Rs '+Math.round(best).toLocaleString('en-IN'),
+    '',
+    'TDS & REFUND STATUS',
+    '  TDS Deducted: Rs '+Math.round(tds).toLocaleString('en-IN'),
+    '  '+balLine,
+    '  Action: '+actionLine,
+    '',
+    'DEDUCTIONS (Old Regime)',
+    dedLines,
+    '',
+    'DISCREPANCIES & FLAGS',
+    errLines,
+    '',
+    'RECOMMENDED ITR FORM: '+itrForm,
+    '',
+    '-----------------------------------------',
+    'Generated by TaxSmart | For CA use only. Verify before filing.'
+  ].join('\n');
 }
 
 function openCAShareModal(){
@@ -3254,12 +3307,9 @@ function copyCABrief(){
 
 function sendCAWhatsApp(){
   if(!window._caBriefText) return;
-  const intro = `Hi, please find my FY 2025-26 tax brief below for filing assistance:
-
-`;
-  window.open('https://wa.me/?text='+encodeURIComponent(intro+window._caBriefText.substring(0,1000)+'...
-
-[Full brief copied to clipboard]'), '_blank');
+  const intro = 'Hi, please find my FY 2025-26 tax brief below for filing assistance:\n\n';
+  const footer = '\n\n[Full brief copied to clipboard]';
+  window.open('https://wa.me/?text='+encodeURIComponent(intro+window._caBriefText.substring(0,800)+footer), '_blank');
   try{ navigator.clipboard.writeText(window._caBriefText); }catch(e){}
   try{ gtag('event','ca_share_whatsapp',{event_category:'retention'}); }catch(e){}
 }
@@ -3277,31 +3327,33 @@ function emailCABrief(){
 // ENHANCED EMAIL RETENTION — sends report to self via mailto (no backend needed)
 // ══════════════════════════════════════════════════════════════════════════════
 function shareWithSelf(){
-  // Build summary email
   if(!_o||!_i) return;
   const win = _o.tax<=_n.tax?'Old Regime':'New Regime';
   const best = Math.min(_o.tax,_n.tax);
   const tds = _i.tds_deducted||0;
   const bal = tds-best;
   const name = document.getElementById('name')?.value||'';
-
-  const body = encodeURIComponent(`My TaxSmart Results — FY 2025-26
-${name ? 'Name: '+name+'
-' : ''}
-Tax Payable: ₹${Math.round(best).toLocaleString('en-IN')}
-Best Regime: ${win}
-${bal>=0?'Refund Coming: ₹'+Math.round(bal).toLocaleString('en-IN'):'Balance Due: ₹'+Math.round(Math.abs(bal)).toLocaleString('en-IN')}
-
-REMINDER: File ITR-1 before July 31, 2026
-ITR Portal: https://www.incometax.gov.in/iec/foportal
-
-Calculated using TaxSmart: https://vedant4557-dev.github.io/taxai/
-
-— Save this email. When Form 16 arrives next year (April-June 2027), use TaxSmart again for FY 2026-27.`);
-
-  const subject = encodeURIComponent(`My Tax Summary FY 2025-26 — ${win} · ₹${Math.round(best).toLocaleString('en-IN')} tax`);
-  window.open(`mailto:?subject=${subject}&body=${body}`);
-  try{ gtag('event','email_to_self',{event_category:'retention'}); }catch(e){}
+  const nameLine = name ? ('Name: '+name+'\n') : '';
+  const balLine = bal>=0
+    ? 'Refund Coming: Rs '+Math.round(bal).toLocaleString('en-IN')
+    : 'Balance Due: Rs '+Math.round(Math.abs(bal)).toLocaleString('en-IN');
+  const bodyText = [
+    'My TaxSmart Results - FY 2025-26',
+    nameLine,
+    'Tax Payable: Rs '+Math.round(best).toLocaleString('en-IN'),
+    'Best Regime: '+win,
+    balLine,
+    '',
+    'REMINDER: File ITR-1 before July 31, 2026',
+    'ITR Portal: https://www.incometax.gov.in/iec/foportal',
+    '',
+    'Calculated using TaxSmart: https://vedant4557-dev.github.io/taxai/',
+    '',
+    '--- Save this email. Use TaxSmart again in April 2027 for FY 2026-27. ---'
+  ].join('\n');
+  const subject = encodeURIComponent('My Tax Summary FY 2025-26 - '+win+' - Rs '+Math.round(best).toLocaleString('en-IN'));
+  window.open('mailto:?subject='+subject+'&body='+encodeURIComponent(bodyText));
+  try{ if(typeof gtag==='function') gtag('event','email_to_self',{event_category:'retention'}); }catch(e){}
 }
 
 function shareWhatsApp() {
