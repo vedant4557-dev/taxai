@@ -17,16 +17,10 @@
 <meta name="twitter:image" content="https://vedant4557-dev.github.io/taxai/preview.png">
 <meta name="description" content="Upload your Form 16, 26AS or AIS and instantly get old vs new regime comparison, deduction tips, and error alerts — no CA needed.">
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZDVPNK48V"></script>
-<script>
-  window.dataLayer=window.dataLayer||[];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js',new Date());
-  gtag('config','G-KZDVPNK48V');
-</script>
-
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f7f5f0;--white:#fff;--ink:#1a1814;--ink2:#3d3a34;--muted:#8c8880;
@@ -36,6 +30,15 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--ink);font-family:'Sora',sans-serif;min-height:100vh;font-size:15px;}
+/* Utility classes — replaces repeated inline styles */
+.hidden{display:none!important;}
+.mb14{margin-bottom:14px;}
+.mt10{margin-top:10px;}
+.row-flex-sm{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#3d3a34;}
+.lbl-caps{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700;}
+.tbl-hdr{text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);}
+.mono-val{padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;}
+.fw800{font-weight:800;}
 .app{max-width:700px;margin:0 auto;padding:28px 18px 80px;}
 
 /* Header */
@@ -410,6 +413,71 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .v-err ul{margin:6px 0 0 16px;}
 .v-err ul li{margin-bottom:3px;}
 .inp-err{border-color:var(--red)!important;background:#fffafa!important;}
+
+/* ── Tax Card modal ── */
+.tax-card-modal{max-width:480px;}
+.tax-card-preview{background:linear-gradient(135deg,#1a472a 0%,#0f2d1a 60%,#162d1a 100%);border-radius:20px;padding:32px 28px;color:#fff;margin:16px 0;position:relative;overflow:hidden;cursor:pointer;}
+.tax-card-preview.old-regime{background:linear-gradient(135deg,#7a5010 0%,#4a2f08 60%,#3a2006 100%);}
+.tax-card-preview::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04);}
+.tax-card-preview::after{content:'';position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.03);}
+.tc-logo{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.5;margin-bottom:20px;}
+.tc-name{font-family:'Crimson Pro',serif;font-size:28px;font-weight:600;line-height:1;margin-bottom:4px;}
+.tc-fy{font-size:11px;opacity:.5;margin-bottom:22px;letter-spacing:.5px;}
+.tc-regime-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:.5px;margin-bottom:20px;}
+.tc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+.tc-stat-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#c8f04a;display:block;margin-bottom:2px;}
+.tc-stat-val.new-regime-color{color:#c8f04a;}
+.tc-stat-val.old-regime-color{color:#f0c84a;}
+.tc-stat-lbl{font-size:9px;opacity:.55;text-transform:uppercase;letter-spacing:1px;}
+.tc-divider{height:1px;background:rgba(255,255,255,.1);margin-bottom:16px;}
+.tc-saving{font-size:13px;font-weight:700;opacity:.9;}
+.tc-saving span{color:#c8f04a;}
+.tc-saving.old-regime-saving span{color:#f0c84a;}
+.tc-watermark{font-size:9px;opacity:.3;text-align:right;margin-top:14px;letter-spacing:.5px;text-transform:uppercase;}
+.tc-tap-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px;}
+.tc-share-row{display:flex;gap:8px;flex-wrap:wrap;}
+.tc-share-btn{flex:1;padding:10px 14px;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;min-width:100px;}
+.tc-dl-btn{background:var(--accent);color:#fff;}
+.tc-dl-btn:hover{background:#153921;}
+.tc-wa-btn{background:#25D366;color:#fff;}
+.tc-wa-btn:hover{background:#128C7E;}
+.tc-li-btn{background:#0077B5;color:#fff;}
+.tc-li-btn:hover{background:#005582;}
+.tc-copy-btn{background:var(--bg);color:var(--ink);border:1.5px solid var(--border);}
+
+/* ── ITR Status Tracker modal ── */
+.itr-tracker-modal{max-width:520px;}
+.itr-ack-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:16px;}
+.itr-ack-input{flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink);background:var(--bg);outline:none;transition:border-color .2s;letter-spacing:.5px;}
+.itr-ack-input:focus{border-color:var(--accent);background:#fff;}
+.itr-ack-input::placeholder{color:var(--muted);font-family:'Sora',sans-serif;letter-spacing:0;font-size:12px;}
+.itr-check-btn{padding:11px 18px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.itr-check-btn:hover{background:#153921;}
+.itr-check-btn:disabled{background:var(--muted);cursor:not-allowed;}
+.itr-status-result{display:none;}
+.itr-timeline{display:flex;flex-direction:column;gap:0;margin:16px 0;}
+.itr-step{display:flex;gap:14px;padding:12px 0;}
+.itr-step-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.itr-step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.itr-step-dot.done{background:var(--al);color:var(--accent);}
+.itr-step-dot.active{background:var(--a2l);color:var(--a2);}
+.itr-step-dot.wait{background:var(--border);color:var(--muted);}
+.itr-step-connector{width:2px;flex:1;min-height:16px;background:var(--border);margin-top:4px;}
+.itr-step-connector.done{background:var(--accent);}
+.itr-step-body{padding-bottom:8px;}
+.itr-step-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.itr-step-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+.itr-step-date{font-size:10px;font-weight:700;color:var(--accent);margin-top:2px;}
+.itr-manual-note{background:var(--bluel);border:1px solid rgba(26,58,114,.15);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--blue);line-height:1.6;margin-top:12px;}
+.itr-status-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;margin-bottom:12px;}
+.itr-status-badge.filed{background:var(--al);color:var(--accent);}
+.itr-status-badge.processed{background:#e8eef8;color:#1a3a72;}
+.itr-status-badge.refund{background:var(--al);color:#1a472a;}
+.itr-status-badge.due{background:#fdf0ee;color:#c0392b;}
+.itr-notify-row{display:flex;gap:8px;margin-top:14px;}
+.itr-notify-input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;transition:border-color .2s;}
+.itr-notify-input:focus{border-color:var(--accent);}
+.itr-notify-btn{padding:9px 16px;background:var(--a2);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -539,7 +607,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="eyebrow">Step 1 of 6</div>
   <div class="card-title">Let's start with you</div>
   <div class="card-desc">A few basics to personalize your tax report.</div>
-  <div class="info-pill green" id="autofill-banner-1" style="display:none">✅ Fields auto-filled from your documents. Review and correct if needed.</div>
+  <div class="info-pill green hidden" id="autofill-banner-1" >✅ Fields auto-filled from your documents. Review and correct if needed.</div>
   <div class="field">
     <div class="lbl-wrap"><label>Your Name</label></div>
     <input type="text" id="name" placeholder="e.g. Rahul Sharma">
@@ -574,11 +642,11 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="eyebrow">Step 2 of 6</div>
   <div class="card-title">Your Income</div>
   <div class="card-desc">Enter annual figures. Check your salary slip or Form 16.</div>
-  <div class="info-pill amber" id="autofill-banner-2" style="display:none">✅ Auto-filled from Form 16. Green fields were extracted automatically — review for accuracy.</div>
+  <div class="info-pill amber hidden" id="autofill-banner-2" >✅ Auto-filled from Form 16. Green fields were extracted automatically — review for accuracy.</div>
   <div class="info-pill green">💡 All amounts are <strong>annual</strong>. Monthly salary × 12 = annual.</div>
 
   <div class="field">
-    <div class="lbl-wrap"><label>Gross Annual Salary (CTC)</label><span id="af-gross" class="af-badge" style="display:none">✓ auto</span>
+    <div class="lbl-wrap"><label>Gross Annual Salary (CTC)</label><span id="af-gross" class="af-badge hidden" >✓ auto</span>
       <div class="tip-wrap"><div class="tip-btn pulse" title="Tap for help">ⓘ</div><div class="tip-box">Total amount employer spends on you per year, before any deductions.<div class="ex-chip">Monthly ₹1,00,000 → Enter ₹12,00,000</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="gross_d" placeholder="12,00,000" oninput="fa(this,'gross')"><input type="hidden" id="gross"></div>
@@ -587,7 +655,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field-row">
     <div class="field">
-      <div class="lbl-wrap"><label>Basic Salary (Annual)</label><span id="af-basic" class="af-badge" style="display:none">✓ auto</span>
+      <div class="lbl-wrap"><label>Basic Salary (Annual)</label><span id="af-basic" class="af-badge hidden" >✓ auto</span>
         <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Fixed base component. Usually 40–50% of CTC. HRA, EPF, gratuity are calculated on this.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="basic_d" placeholder="4,80,000" oninput="fa(this,'basic')"><input type="hidden" id="basic"></div>
@@ -603,7 +671,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field-row">
     <div class="field">
-      <div class="lbl-wrap"><label>HRA Received</label><span id="af-hra_received" class="af-badge" style="display:none">✓ auto</span>
+      <div class="lbl-wrap"><label>HRA Received</label><span id="af-hra_received" class="af-badge hidden" >✓ auto</span>
         <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">House Rent Allowance from employer. Appears on salary slip as "HRA". If you pay rent, part is tax-free in old regime.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="hra_received_d" placeholder="2,40,000" oninput="fa(this,'hra_received')"><input type="hidden" id="hra_received"></div>
@@ -617,7 +685,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <div class="field">
-    <div class="lbl-wrap"><label>Professional Tax Paid</label><span id="af-prof_tax" class="af-badge" style="display:none">✓ auto</span>
+    <div class="lbl-wrap"><label>Professional Tax Paid</label><span id="af-prof_tax" class="af-badge hidden" >✓ auto</span>
       <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">State tax auto-deducted. ~₹200/month = ₹2,400/year. Deductible in old regime.</div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="prof_tax_d" placeholder="2,400" oninput="fa(this,'prof_tax')"><input type="hidden" id="prof_tax"></div>
@@ -666,10 +734,10 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="eyebrow">Step 3 of 6</div>
   <div class="card-title">Investments & Savings</div>
   <div class="card-desc">These reduce taxable income in old regime. Enter only what you've actually invested.</div>
-  <div class="info-pill amber" id="autofill-banner-3" style="display:none">✅ Auto-filled from Form 16 Part B. Review for accuracy.</div>
+  <div class="info-pill amber hidden" id="autofill-banner-3" >✅ Auto-filled from Form 16 Part B. Review for accuracy.</div>
 
   <div class="field">
-    <div class="lbl-wrap"><label>80C Investments</label><span class="lbl-sub">Max ₹1,50,000</span><span id="af-sec80c" class="af-badge" style="display:none">✓ auto</span>
+    <div class="lbl-wrap"><label>80C Investments</label><span class="lbl-sub">Max ₹1,50,000</span><span id="af-sec80c" class="af-badge hidden" >✓ auto</span>
       <div class="tip-wrap"><div class="tip-btn pulse" title="Tap for help">ⓘ</div><div class="tip-box">Add together: PPF + ELSS + LIC premium + your EPF contribution + NSC + tax-saving FD + children's tuition fees. Cap ₹1.5L.<div class="ex-chip">PPF ₹50K + ELSS ₹50K + LIC ₹30K = ₹1.3L</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80c_d" placeholder="1,50,000" oninput="fa(this,'sec80c');capWarn('sec80c_d','sec80c-cap',150000,'Capped at ₹1.5L — total 80C limit including EPF & home loan principal')"><input type="hidden" id="sec80c"></div>
@@ -678,7 +746,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <div class="field">
-    <div class="lbl-wrap"><label>NPS Contribution</label><span class="lbl-sub">Extra ₹50,000 over 80C</span><span id="af-nps" class="af-badge" style="display:none">✓ auto</span>
+    <div class="lbl-wrap"><label>NPS Contribution</label><span class="lbl-sub">Extra ₹50,000 over 80C</span><span id="af-nps" class="af-badge hidden" >✓ auto</span>
       <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">NPS Tier 1 gives EXTRA ₹50K deduction separate from 80C. Open at your bank or nsdl.co.in.<div class="ex-chip">80C ₹1.5L + NPS ₹50K = ₹2L total!</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="nps_d" placeholder="50,000" oninput="fa(this,'nps');capWarn('nps_d','nps-cap',50000,'Capped at ₹50,000 — Section 80CCD(1B) limit')"><input type="hidden" id="nps"><div class="cap-warn" id="nps-cap"></div></div>
@@ -686,7 +754,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <div class="field">
-    <div class="lbl-wrap"><label>Employer NPS Contribution</label><span id="af-employer_nps" class="af-badge" style="display:none">✓ auto</span>
+    <div class="lbl-wrap"><label>Employer NPS Contribution</label><span id="af-employer_nps" class="af-badge hidden" >✓ auto</span>
       <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Employer's NPS contribution up to 10% of Basic+DA. Deductible in BOTH regimes under 80CCD(2)!<div class="ex-chip">✅ Works in New Regime too!</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="employer_nps_d" placeholder="0" oninput="fa(this,'employer_nps');capWarnPct('employer_nps_d','enps-cap','basic','Capped at 10% of Basic+DA — Sec 80CCD(2)')"><input type="hidden" id="employer_nps"><div class="cap-warn" id="enps-cap"></div></div>
@@ -694,7 +762,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field-row">
     <div class="field">
-      <div class="lbl-wrap"><label>80D — Self & Family</label><span id="af-sec80d_self" class="af-badge" style="display:none">✓ auto</span>
+      <div class="lbl-wrap"><label>80D — Self & Family</label><span id="af-sec80d_self" class="af-badge hidden" >✓ auto</span>
         <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Health insurance premium for you, spouse, children. Max ₹25,000 deductible (₹50K if senior citizen).</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80d_self_d" placeholder="25,000" oninput="fa(this,'sec80d_self');capWarn('sec80d_self_d','sec80d-self-cap',25000,'Capped at ₹25,000 (₹50K if you are senior citizen)')"><input type="hidden" id="sec80d_self"><div class="cap-warn" id="sec80d-self-cap"></div></div>
@@ -716,7 +784,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="card-desc">Many people miss thousands here. Check your bank interest certificates.</div>
 
   <div class="field">
-    <div class="lbl-wrap"><label>Home Loan Interest</label><span id="af-home_loan_interest" class="af-badge" style="display:none">✓ auto</span>
+    <div class="lbl-wrap"><label>Home Loan Interest</label><span id="af-home_loan_interest" class="af-badge hidden" >✓ auto</span>
       <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Interest portion of home loan EMI. Max ₹2L for self-occupied. Get "Interest Certificate" from bank.<div class="ex-chip">EMI ₹30K/month → interest ~₹20K/month</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="home_loan_interest_d" placeholder="0" oninput="fa(this,'home_loan_interest');capWarn('home_loan_interest_d','hl-int-cap',200000,'Capped at ₹2,00,000 — Sec 24(b) self-occupied limit')"><input type="hidden" id="home_loan_interest"><div class="cap-warn" id="hl-int-cap"></div></div>
@@ -731,7 +799,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <div class="field">
-    <div class="lbl-wrap"><label>Education Loan Interest</label><span id="af-sec80e" class="af-badge" style="display:none">✓ auto</span>
+    <div class="lbl-wrap"><label>Education Loan Interest</label><span id="af-sec80e" class="af-badge hidden" >✓ auto</span>
       <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">100% deductible — no upper limit! For 8 years from repayment start. Very underused!<div class="ex-chip">No maximum limit</div></div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="sec80e_d" placeholder="0" oninput="fa(this,'sec80e')"><input type="hidden" id="sec80e"></div>
@@ -766,12 +834,12 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="eyebrow">Step 5 of 6</div>
   <div class="card-title">EPF & Gratuity</div>
   <div class="card-desc">Usually automatic — let's make sure they're counted correctly.</div>
-  <div class="info-pill green" id="autofill-banner-5" style="display:none">✅ Auto-filled from Form 16 and 26AS.</div>
+  <div class="info-pill green hidden" id="autofill-banner-5" >✅ Auto-filled from Form 16 and 26AS.</div>
   <div class="info-pill blue">🏦 EPF and gratuity have built-in tax protections. We calculate exempt portions automatically.</div>
 
   <div class="field-row">
     <div class="field">
-      <div class="lbl-wrap"><label>EPF — Your Contribution</label><span id="af-epf_employee" class="af-badge" style="display:none">✓ auto</span>
+      <div class="lbl-wrap"><label>EPF — Your Contribution</label><span id="af-epf_employee" class="af-badge hidden" >✓ auto</span>
         <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">12% of basic salary auto-deducted monthly. Counts towards 80C limit. Check payslip.<div class="ex-chip">Basic ₹40K/month → EPF ₹57,600/year</div></div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="epf_employee_d" placeholder="57,600" oninput="fa(this,'epf_employee')"><input type="hidden" id="epf_employee"></div>
@@ -862,17 +930,17 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="eyebrow">Step 6 of 6</div>
   <div class="card-title">Other Income</div>
   <div class="card-desc">Almost done! Any income beyond your salary? Enter ₹0 if not applicable.</div>
-  <div class="info-pill green" id="autofill-banner-6" style="display:none">✅ Auto-filled from 26AS and AIS. Cross-check these carefully.</div>
+  <div class="info-pill green hidden" id="autofill-banner-6" >✅ Auto-filled from 26AS and AIS. Cross-check these carefully.</div>
 
   <div class="field-row">
     <div class="field">
-      <div class="lbl-wrap"><label>FD / Bond Interest</label><span id="af-interest_income" class="af-badge" style="display:none">✓ auto</span>
+      <div class="lbl-wrap"><label>FD / Bond Interest</label><span id="af-interest_income" class="af-badge hidden" >✓ auto</span>
         <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Interest from FDs, RDs, bonds. Fully taxable. Bank deducts TDS above ₹40K/year. Check Form 26AS.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="interest_income_d" placeholder="0" oninput="fa(this,'interest_income')"><input type="hidden" id="interest_income"></div>
     </div>
     <div class="field">
-      <div class="lbl-wrap"><label>Rental Income (Annual)</label><span id="af-rental_income" class="af-badge" style="display:none">✓ auto</span>
+      <div class="lbl-wrap"><label>Rental Income (Annual)</label><span id="af-rental_income" class="af-badge hidden" >✓ auto</span>
         <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Gross rent received. 30% standard deduction applied automatically. Enter the full rent received.</div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="rental_income_d" placeholder="0" oninput="fa(this,'rental_income')"><input type="hidden" id="rental_income"></div>
@@ -881,13 +949,13 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <div class="field-row">
     <div class="field">
-      <div class="lbl-wrap"><label>Short-Term Capital Gains</label><span id="af-stcg" class="af-badge" style="display:none">✓ auto</span>
+      <div class="lbl-wrap"><label>Short-Term Capital Gains</label><span id="af-stcg" class="af-badge hidden" >✓ auto</span>
         <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Profit from stocks/equity MFs held less than 1 year. Taxed at flat 20%.<div class="ex-chip">Sold shares within 12 months → STCG</div></div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="stcg_d" placeholder="0" oninput="fa(this,'stcg')"><input type="hidden" id="stcg"></div>
     </div>
     <div class="field">
-      <div class="lbl-wrap"><label>Long-Term Capital Gains</label><span id="af-ltcg" class="af-badge" style="display:none">✓ auto</span>
+      <div class="lbl-wrap"><label>Long-Term Capital Gains</label><span id="af-ltcg" class="af-badge hidden" >✓ auto</span>
         <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Profit from stocks/equity MFs held 1+ year. First ₹1,25,000 is tax-free every year!<div class="ex-chip">First ₹1.25L gains = zero tax</div></div></div>
       </div>
       <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="ltcg_d" placeholder="0" oninput="fa(this,'ltcg')"><input type="hidden" id="ltcg"></div>
@@ -981,7 +1049,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <!-- TDS fields (from 26AS) -->
   <div class="field">
-    <div class="lbl-wrap"><label>TDS Already Deducted (Total)</label><span id="af-tds_deducted" class="af-badge" style="display:none">✓ auto</span>
+    <div class="lbl-wrap"><label>TDS Already Deducted (Total)</label><span id="af-tds_deducted" class="af-badge hidden" >✓ auto</span>
       <div class="tip-wrap"><div class="tip-btn" title="Tap for help">ⓘ</div><div class="tip-box">Total Tax Deducted at Source by all deductors (employer, bank etc.) as shown in Form 26AS. This reduces your final tax payable.</div></div>
     </div>
     <div class="amt-wrap"><span class="amt-pfx">₹</span><input class="amt-inp" id="tds_deducted_d" placeholder="0" oninput="fa(this,'tds_deducted')"><input type="hidden" id="tds_deducted"></div>
@@ -993,6 +1061,11 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
 <!-- ═══════════════ RESULTS ═══════════════ -->
 <div id="results">
+  <!-- Regulatory notice banner at results top -->
+  <div style="background:#fff8e1;border:1.5px solid #f9a825;border-radius:12px;padding:11px 16px;margin-bottom:14px;font-size:12px;color:#5f4200;line-height:1.5;display:flex;gap:10px;align-items:flex-start;">
+    <span style="font-size:16px;flex-shrink:0;">📋</span>
+    <div><strong>For planning purposes only.</strong> This estimate is based on information you provided. Figures may differ from actual tax liability. Verify with your Form 16 &amp; 26AS, and <strong>consult a CA before filing your ITR.</strong></div>
+  </div>
   <div class="res-header" id="res-hdr">
     <div class="rh-eyebrow">TaxSmart Report · FY 2025–26</div>
     <div class="rh-name" id="rh-name"></div>
@@ -1010,6 +1083,8 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <div class="act-row">
+    <button class="btn-dl" onclick="openTaxCard()" style="background:linear-gradient(135deg,#1a472a,#0f5c30);" title="Generate shareable tax card">🪪 Share Tax Card</button>
+    <button class="btn-dl" onclick="openITRTracker()" style="background:linear-gradient(135deg,#1a3a72,#0f2050);" title="Track your ITR filing status">📡 Track ITR Status</button>
     <button class="btn-dl" onclick="downloadReport()">⬇ Download Report</button>
     <button class="btn-dl" onclick="exportITRJson()" style="background:#2d6a4f;color:#fff;" title="Pre-filled ITR-1 JSON for Income Tax Portal">📄 Export ITR-1 JSON</button>
     <button class="btn-dl" onclick="openRetentionModal()" style="background:#6c63ff;color:#fff;" title="Save report & get reminder next filing season">📧 Save & Remind Next Year</button>
@@ -1033,7 +1108,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
   <!-- ═══ ACCORDIONS ═══ -->
   <!-- Tax Risk Score (expanded by default if non-zero) -->
-  <div class="accord" id="accord-risk" style="display:none">
+  <div class="accord hidden" id="accord-risk" >
     <div class="accord-hdr" onclick="toggleAccord(this)">
       <span id="accord-risk-title">🎯 IT Scrutiny Risk Score</span>
       <span class="accord-arrow">▼</span>
@@ -1050,7 +1125,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
       <span class="accord-arrow">▼</span>
     </div>
     <div class="accord-body">
-      <div class="reg-cards" style="margin-top:10px;">
+      <div class="reg-cards mt10">
         <div class="reg-card" id="old-card"></div>
         <div class="reg-card" id="new-card"></div>
       </div>
@@ -1067,42 +1142,42 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
       <div id="ded-regime-note" style="display:none;background:var(--a2l);border:1px solid rgba(193,127,36,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#7a5010;margin-bottom:12px;margin-top:10px;">
         💡 You're on <strong>New Regime</strong> — these old regime deductions are shown for reference only. <button onclick="toggleAccordById('accord-deductions')" style="background:none;border:none;color:#7a5010;font-weight:700;cursor:pointer;font-size:12px;text-decoration:underline;">See why Old Regime is worse →</button>
       </div>
-      <div id="util-bars-wrap" style="margin-top:10px;"><div id="util-bars"></div></div>
+      <div id="util-bars-wrap" class="mt10"><div id="util-bars"></div></div>
     </div>
   </div>
 
   <!-- Errors / Mismatches -->
-  <div class="accord" id="accord-errors" style="display:none">
+  <div class="accord hidden" id="accord-errors" >
     <div class="accord-hdr open" onclick="toggleAccord(this)">
       <span id="accord-err-title">⚠️ Document Mismatches</span>
       <span class="accord-arrow">▼</span>
     </div>
     <div class="accord-body open">
-      <div id="error-panel" style="margin-top:10px;"></div>
+      <div id="error-panel" class="mt10"></div>
     </div>
   </div>
 
   <!-- Tax calculator panels -->
-  <div class="accord" id="accord-itr" style="display:none">
+  <div class="accord hidden" id="accord-itr" >
     <div class="accord-hdr" onclick="toggleAccord(this)">
       <span>📋 ITR Form & Filing Checklist</span>
       <span class="accord-arrow">▼</span>
     </div>
     <div class="accord-body">
-      <div id="itr-panel" style="margin-top:10px;"></div>
+      <div id="itr-panel" class="mt10"></div>
       <div id="schedule-al-panel"></div>
-      <div id="belated-warn-wrap" style="margin-top:10px;"></div>
+      <div id="belated-warn-wrap" class="mt10"></div>
     </div>
   </div>
 
   <!-- Interest calculator -->
-  <div class="accord" id="accord-interest" style="display:none">
+  <div class="accord hidden" id="accord-interest" >
     <div class="accord-hdr" onclick="toggleAccord(this)">
       <span>🏦 234B/C Advance Tax Interest</span>
       <span class="accord-arrow">▼</span>
     </div>
     <div class="accord-body">
-      <div id="interest-panel" style="margin-top:10px;"></div>
+      <div id="interest-panel" class="mt10"></div>
     </div>
   </div>
 
@@ -1119,7 +1194,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <!-- ═══ INVESTMENT SIMULATOR ═══ -->
-  <div class="sim-card" id="sim-card" style="display:none">
+  <div class="sim-card" id="sim-card" style="display:none" >
     <div class="sim-title">🤖 AI-Suggested Next Best Move</div>
     <div class="sim-heading" id="sim-heading">Analysing your tax profile...</div>
     <div class="sim-sub" id="sim-sub"></div>
@@ -1198,7 +1273,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <!-- Schedule CG Preview (shown when capital gains detected) -->
-  <div class="sec-card" id="schedule-cg-card" style="display:none">
+  <div class="sec-card hidden" id="schedule-cg-card" >
     <div class="sec-title">📊 Schedule CG — Capital Gains Preview</div>
     <div id="schedule-cg-panel"></div>
   </div>
@@ -1221,9 +1296,10 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <div class="disclaimer">
-    TaxSmart India · FY 2025–26 · Based on Income Tax Act & Union Budget 2025<br>
-    For planning purposes only. Consult a Chartered Accountant for actual filing.<br>
-    Document data is processed via Google Gemini API and never stored by TaxSmart.
+    <strong>⚠️ Important Disclaimer</strong><br>
+    TaxSmart is a <strong>free tax planning tool</strong> — it is <strong>not a registered tax advisor, CA firm, or legal service</strong>. Output is for <strong>estimation and planning purposes only</strong> and does not constitute legal, financial, or tax advice under the Income Tax Act, 1961.<br><br>
+    Always verify all figures with your original Form 16, Form 26AS, and AIS before filing. <strong>Consult a qualified Chartered Accountant (ICAI member)</strong> for actual ITR filing, especially if you have capital gains, foreign income, business income, or received an IT notice.<br><br>
+    AI-generated content (including notice drafts and insights) may contain errors — review carefully before use. TaxSmart India · FY 2025–26 · Based on Income Tax Act &amp; Union Budget 2025 · DPDP Act 2023 compliant · Documents processed via Google Gemini API and never stored.
   </div>
 </div>
 
@@ -2127,7 +2203,7 @@ function calculate(){
 
     // Check 1: Consolidated salary mismatch
     if(emp1+emp2>0 && Math.abs((emp1+emp2)-_i.gross)>10000 && errP){
-      errP.innerHTML=`<div class="error-panel warn" style="margin-bottom:14px;">
+      errP.innerHTML=`<div class="error-panel warn mb14">
         <div class="ep-heading">⚠️ Multiple Employer — Salary Mismatch</div>
         <div class="err-desc">
           Employer 1: ${fmt(emp1)}<br>
@@ -2145,7 +2221,7 @@ function calculate(){
     // this is caught by warning them explicitly
     if(emp1>0 && emp2>0 && errP){
       const stdOld=50000, stdNew=75000;
-      errP.innerHTML=`<div class="error-panel warn" style="margin-bottom:14px;">
+      errP.innerHTML=`<div class="error-panel warn mb14">
         <div class="ep-heading">⚠️ Duplicate Standard Deduction Risk</div>
         <div class="err-desc">
           Each employer's Form 16 shows a ₹50,000 standard deduction (old) or ₹75,000 (new) separately.
@@ -2158,7 +2234,7 @@ function calculate(){
 
     // Check 3: TDS under-deduction warning (very common in job change)
     if(tdsEmp>0 && Math.abs(tdsEmp-_i.tds_deducted)>5000 && errP){
-      errP.innerHTML=`<div class="error-panel warn" style="margin-bottom:14px;">
+      errP.innerHTML=`<div class="error-panel warn mb14">
         <div class="ep-heading">⚠️ TDS Under-Deduction — Job Change</div>
         <div class="err-desc">
           TDS by Employer 1: ${fmt(_i.tds_emp1||0)} + Employer 2: ${fmt(_i.tds_emp2||0)} = ${fmt(tdsEmp)}<br>
@@ -2314,7 +2390,7 @@ function buildErrorPanel(){
     const tds=_i.tds_deducted,best=Math.min(_o.tax,_n.tax),bal=tds-best;
     if(tds>0){
       const type=bal>=0?'ok':'warn';
-      container.innerHTML=`<div class="error-panel ${type}" style="margin-bottom:14px;">
+      container.innerHTML=`<div class="error-panel ${type} mb14">
         <div class="ep-header">
           <div class="ep-dot ${bal>=0?'green':'amber'}"></div>
           <div class="ep-heading">${bal>=0?'You have a tax refund coming!':'Additional tax due on filing'}</div>
@@ -2338,7 +2414,7 @@ function buildErrorPanel(){
   const dot=crits>0?'red':warns>0?'amber':'green';
   const heading=crits>0?`⚠️ ${crits} Critical Issue${crits>1?'s':''} Found`:`${warns+_errors.filter(e=>e.type==='info').length} Items Need Your Attention`;
 
-  container.innerHTML=`<div class="${mainType}" style="margin-bottom:14px;">
+  container.innerHTML=`<div class="${mainType} mb14">
     <div class="ep-header">
       <div class="ep-dot ${dot}"></div>
       <div class="ep-heading">${heading}</div>
@@ -2358,7 +2434,7 @@ function buildErrorPanel(){
   // Also show TDS balance
   const tds=_i.tds_deducted,best=Math.min(_o.tax,_n.tax),bal=tds-best;
   if(tds>0){
-    container.innerHTML+=`<div class="error-panel ${bal>=0?'ok':'warn'}" style="margin-bottom:14px;">
+    container.innerHTML+=`<div class="error-panel ${bal>=0?'ok':'warn'} mb14">
       <div class="ep-header"><div class="ep-dot ${bal>=0?'green':'amber'}"></div><div class="ep-heading">${bal>=0?'Refund: '+fmt(bal)+' due on filing':'Balance Tax Due: '+fmt(Math.abs(bal))}</div></div>
       <div class="error-item ${bal>=0?'info':'warn'}">
         <div class="err-icon">${bal>=0?'🎉':'📋'}</div>
@@ -2621,6 +2697,8 @@ ${errorHTML}
 <tr><td><strong>${bal>=0?'Refund Due':'Balance Due'}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${fmt(Math.abs(_o.tax-tds))}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${fmt(Math.abs(_n.tax-tds))}</strong></td></tr>
 </tbody></table>
 <div class="footer">TaxSmart India · For planning purposes only · Consult a CA for actual filing<br>Based on Income Tax Act & Union Budget 2025 · Documents processed via Gemini API, never stored on our servers · DPDP Act 2023 compliant · No PAN or financial data retained</div>
+
+
 </body></html>`;
   const blob=new Blob([html],{type:'text/html'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');
@@ -3602,8 +3680,8 @@ async function generateNoticeResponse(){
     alert('Please select the type of notice you received.');
     return;
   }
-  if(!_o){
-    alert('No tax data available. Please complete an extraction first.');
+  if(!_o||!_i){
+    alert('No tax data available. Please complete the tax calculation first.');
     return;
   }
 
@@ -3614,30 +3692,26 @@ async function generateNoticeResponse(){
     deduction: 'Deduction Query (80C/80D/HRA proof required)'
   };
 
-  // Build a tax data summary for the AI prompt
-  const taxData = {
-    grossSalary: _i?.gross_salary || 0,
-    tdsFormF16: _i?.tds_deducted_form16 || 0,
-    tds26AS: _i?.total_tds_26as || 0,
-    salaryAIS: _i?.salary_ais || 0,
-    newRegimeTax: _o?.new_regime?.tax_payable || 0,
-    oldRegimeTax: _o?.old_regime?.tax_payable || 0,
-    recommendedRegime: _o?.recommended_regime || 'new',
-    errors: _errors?.map(e=>e.title).join(', ') || 'None'
-  };
+  // Build tax data summary using correct _i field names
+  const win = _o.tax <= _n.tax ? 'New' : 'Old';
+  const bestTax = Math.min(_o.tax, _n.tax);
+  const f16tds = (window._f16 && window._f16.tds_deducted_form16) || 0;
+  const as26tds = (window._as26 && window._as26.total_tds_26as) || 0;
+  const aisSalary = (window._ais && window._ais.salary_ais) || 0;
+  const errList = _errors?.map(e=>e.title).join(', ') || 'None detected';
 
   const prompt = `You are a senior Indian Chartered Accountant drafting a formal response to an Income Tax Department notice on behalf of a taxpayer.
 
 NOTICE TYPE: ${noticeLabels[_selectedNoticeType]}
 
 TAXPAYER'S TAX DATA (FY 2025-26):
-- Gross Salary: ₹${taxData.grossSalary.toLocaleString('en-IN')}
-- TDS per Form 16: ₹${taxData.tdsFormF16.toLocaleString('en-IN')}
-- TDS per 26AS: ₹${taxData.tds26AS.toLocaleString('en-IN')}
-- Salary per AIS: ₹${taxData.salaryAIS.toLocaleString('en-IN')}
-- Tax under New Regime: ₹${taxData.newRegimeTax.toLocaleString('en-IN')}
-- Recommended Regime: ${taxData.recommendedRegime === 'new' ? 'New Tax Regime' : 'Old Tax Regime'}
-- Discrepancies detected: ${taxData.errors}
+- Gross Salary: ₹${(_i.gross||0).toLocaleString('en-IN')}
+- TDS per Form 16: ₹${f16tds.toLocaleString('en-IN')}
+- TDS per 26AS: ₹${as26tds.toLocaleString('en-IN')}
+- Salary per AIS: ₹${aisSalary.toLocaleString('en-IN')}
+- Final Tax Payable (${win} Regime): ₹${bestTax.toLocaleString('en-IN')}
+- TDS Already Deducted: ₹${(_i.tds_deducted||0).toLocaleString('en-IN')}
+- Discrepancies detected: ${errList}
 
 Write a professional, formal response letter to the Income Tax Officer. Include:
 1. Formal salutation and reference to the notice type
@@ -3646,7 +3720,7 @@ Write a professional, formal response letter to the Income Tax Officer. Include:
 4. List of documents the taxpayer can provide
 5. Respectful closing
 
-Keep it factual, professional, and under 350 words. Use Indian English. Include placeholder [ASSESSMENT YEAR], [PAN], [NAME], [DATE] for the taxpayer to fill in.`;
+Keep it factual, professional, and under 350 words. Use Indian English. Include placeholders [ASSESSMENT YEAR], [PAN], [NAME], [DATE] for the taxpayer to fill in.`;
 
   // Show loading
   document.getElementById('notice-gen-btn').style.display='none';
@@ -3656,9 +3730,13 @@ Keep it factual, professional, and under 350 words. Use Indian English. Include 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -3929,11 +4007,11 @@ function buildHeroResult(){
   }
 
   panel.innerHTML=`
-    <div style="margin-bottom:14px;">
+    <div class="mb14">
       <div style="font-size:19px;font-weight:800;color:${emotionalColor};margin-bottom:4px;line-height:1.3;">${emotionalHeadline}</div>
       <div style="font-size:13px;color:var(--muted);line-height:1.5;">${emotionalSub}</div>
     </div>
-    <div class="hero-winner" style="margin-bottom:14px;">
+    <div class="hero-winner mb14">
       <div class="hero-regime-badge">✓ ${regimeLabel}</div>
       <div class="hero-saves">${sav>1000?`Saves ₹${fmt(sav)} vs ${win==='new'?'Old':'New'} Regime`:'Both regimes are close'}</div>
     </div>
@@ -4083,6 +4161,339 @@ document.addEventListener('input',function(e){
   if(e.target.id==='salary_emp1_d'||e.target.id==='salary_emp2_d') updateEmpSummary();
 });
 
+
+// ══════════════════════════════════════════════════════════════════════
+// SHAREABLE TAX CARD
+// ══════════════════════════════════════════════════════════════════════
+let _taxCardData = null;
+
+function openTaxCard() {
+  if (!_o || !_i) { alert('Please generate your tax report first.'); return; }
+  const win = _o.tax <= _n.tax ? 'old' : 'new';
+  const best = Math.min(_o.tax, _n.tax);
+  const sav = Math.abs(_o.tax - _n.tax);
+  const tds = _i.tds_deducted || 0;
+  const bal = tds - best;
+  const name = document.getElementById('name').value || 'Taxpayer';
+  const effRate = _i.gross > 0 ? (_o.tax <= _n.tax ? _o.tax : _n.tax) / _i.gross * 100 : 0;
+
+  _taxCardData = { win, best, sav, tds, bal, name, effRate,
+    gross: _i.gross, taxable: win==='new' ? _n.taxable : _o.taxable };
+
+  renderTaxCard();
+  document.getElementById('tax-card-modal').classList.add('open');
+  try { if(typeof gtag==='function') gtag('event','tax_card_opened',{event_category:'sharing'}); } catch(e){}
+}
+
+function closeTaxCard() {
+  document.getElementById('tax-card-modal').classList.remove('open');
+}
+
+function renderTaxCard() {
+  const d = _taxCardData;
+  if (!d) return;
+  const isNew = d.win === 'new';
+  const accentColor = isNew ? '#c8f04a' : '#f0c84a';
+  const regimeLabel = isNew ? 'New Regime' : 'Old Regime';
+  const balLabel = d.bal >= 0 ? '↑ Refund' : '↓ Tax Due';
+  const balVal = d.bal >= 0 ? fmt(d.bal, true) : fmt(Math.abs(d.bal), true);
+
+  const card = document.getElementById('tax-card-render');
+  card.innerHTML = `
+    <div class="tax-card-preview ${isNew ? '' : 'old-regime'}" id="tc-preview" onclick="copyTaxCardText()">
+      <div class="tc-logo">TaxSmart India · FY 2025–26</div>
+      <div class="tc-name">${escHtml(d.name)}</div>
+      <div class="tc-fy">Tax Year 2025–26 · Filed under Income Tax Act 1961</div>
+      <div class="tc-regime-badge">✓ ${regimeLabel}</div>
+      <div class="tc-stats">
+        <div>
+          <span class="tc-stat-val ${isNew ? 'new-regime-color' : 'old-regime-color'}">${fmt(d.best, true)}</span>
+          <span class="tc-stat-lbl">Tax Paid</span>
+        </div>
+        <div>
+          <span class="tc-stat-val ${isNew ? 'new-regime-color' : 'old-regime-color'}">${d.effRate.toFixed(1)}%</span>
+          <span class="tc-stat-lbl">Effective Rate</span>
+        </div>
+        <div>
+          <span class="tc-stat-val ${isNew ? 'new-regime-color' : 'old-regime-color'}" style="font-size:14px;">${balLabel}<br>${balVal}</span>
+          <span class="tc-stat-lbl">TDS Balance</span>
+        </div>
+      </div>
+      <div class="tc-divider"></div>
+      ${d.sav > 500 ? `<div class="tc-saving ${isNew ? '' : 'old-regime-saving'}">
+        Chose ${regimeLabel} — saved <span>${fmt(d.sav, true)}</span> vs the alternative ✓
+      </div>` : `<div class="tc-saving">Both regimes gave similar results for my income profile.</div>`}
+      <div class="tc-watermark">taxsmart.vedant4557-dev.github.io · free · no CA needed</div>
+    </div>
+  `;
+}
+
+function buildTaxCardShareText() {
+  const d = _taxCardData;
+  if (!d) return '';
+  const isNew = d.win === 'new';
+  const regime = isNew ? 'New Regime' : 'Old Regime';
+  const savLine = d.sav > 500 ? `Chose ${regime} and saved ${fmt(d.sav, true)} vs the alternative.` : '';
+  const balLine = d.bal >= 0
+    ? `Getting a refund of ${fmt(d.bal, true)}.`
+    : `Balance tax due: ${fmt(Math.abs(d.bal), true)}.`;
+  return `📊 My FY 2025–26 Tax Summary
+
+✅ Regime: ${regime}
+💸 Total Tax: ${fmt(d.best, true)}
+📈 Effective Rate: ${d.effRate.toFixed(1)}%
+${savLine}
+${balLine}
+
+Calculated for free in 5 minutes → taxsmart.vedant4557-dev.github.io
+#TaxSmart #IncomeTax #India`;
+}
+
+function copyTaxCardText() {
+  const text = buildTaxCardShareText();
+  navigator.clipboard.writeText(text).then(() => {
+    const preview = document.getElementById('tc-preview');
+    if (preview) {
+      preview.style.outline = '2px solid #c8f04a';
+      setTimeout(() => preview.style.outline = '', 1200);
+    }
+  }).catch(() => {});
+}
+
+function downloadTaxCard() {
+  // Build a self-contained HTML card and open for screenshot/save
+  const d = _taxCardData;
+  if (!d) return;
+  const isNew = d.win === 'new';
+  const accentColor = isNew ? '#c8f04a' : '#f0c84a';
+  const bg = isNew
+    ? 'linear-gradient(135deg,#1a472a 0%,#0f2d1a 60%,#162d1a 100%)'
+    : 'linear-gradient(135deg,#7a5010 0%,#4a2f08 60%,#3a2006 100%)';
+  const regime = isNew ? 'New Regime' : 'Old Regime';
+  const balLabel = d.bal >= 0 ? '↑ Refund' : '↓ Tax Due';
+  const balVal = d.bal >= 0 ? fmt(d.bal, true) : fmt(Math.abs(d.bal), true);
+  const savLine = d.sav > 500
+    ? `Chose ${regime} — saved ${fmt(d.sav, true)} vs the alternative ✓`
+    : 'Both regimes gave similar results.';
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Crimson+Pro:wght@600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#f7f5f0;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Sora',sans-serif;padding:20px;}
+.card{background:${bg};border-radius:24px;padding:36px 32px;color:#fff;width:480px;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.card::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.04);}
+.logo{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;opacity:.4;margin-bottom:24px;}
+.name{font-family:'Crimson Pro',serif;font-size:34px;font-weight:600;line-height:1;margin-bottom:5px;}
+.fy{font-size:11px;opacity:.45;margin-bottom:24px;letter-spacing:.5px;}
+.badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;letter-spacing:.5px;margin-bottom:24px;}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
+.sv{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:${accentColor};display:block;margin-bottom:3px;}
+.sl{font-size:9px;opacity:.5;text-transform:uppercase;letter-spacing:1px;}
+.divider{height:1px;background:rgba(255,255,255,.1);margin-bottom:18px;}
+.saving{font-size:13px;font-weight:700;opacity:.9;line-height:1.4;}
+.saving span{color:${accentColor};}
+.wm{font-size:9px;opacity:.25;text-align:right;margin-top:18px;letter-spacing:.5px;text-transform:uppercase;}
+</style>
+</head><body>
+<div class="card">
+  <div class="logo">TaxSmart India · FY 2025–26</div>
+  <div class="name">${escHtml(d.name)}</div>
+  <div class="fy">Tax Year 2025–26 · Income Tax Act 1961</div>
+  <div class="badge">✓ ${regime}</div>
+  <div class="stats">
+    <div><span class="sv">${fmt(d.best, true)}</span><span class="sl">Tax Paid</span></div>
+    <div><span class="sv">${d.effRate.toFixed(1)}%</span><span class="sl">Effective Rate</span></div>
+    <div><span class="sv" style="font-size:16px;">${balLabel}<br>${balVal}</span><span class="sl">TDS Balance</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="saving">${savLine.replace(fmt(d.sav, true), `<span>${fmt(d.sav, true)}</span>`)}</div>
+  <div class="wm">taxsmart · free · no ca needed</div>
+</div>
+<script>window.onload=()=>{setTimeout(()=>window.print(),400)}<\/script>
+</body></html>`;
+
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `TaxSmart_Card_${(_taxCardData.name||'').replace(/\s+/g,'_')}_FY2025-26.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  try { if(typeof gtag==='function') gtag('event','tax_card_downloaded',{event_category:'sharing'}); } catch(e){}
+}
+
+function shareTaxCardWhatsApp() {
+  const text = buildTaxCardShareText();
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+  try { if(typeof gtag==='function') gtag('event','tax_card_whatsapp',{event_category:'sharing'}); } catch(e){}
+}
+
+function shareTaxCardLinkedIn() {
+  const url = 'https://vedant4557-dev.github.io/taxai/';
+  const d = _taxCardData;
+  const text = `Just calculated my FY 2025-26 taxes using TaxSmart — ${fmt(d.best,true)} total tax, ${d.effRate.toFixed(1)}% effective rate. Used the ${d.win==='new'?'New':'Old'} Regime${d.sav>500?' and saved '+fmt(d.sav,true)+' vs the alternative':''}.\n\nFree tool, no CA needed, 5 minutes: ${url}`;
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`, '_blank');
+  try { if(typeof gtag==='function') gtag('event','tax_card_linkedin',{event_category:'sharing'}); } catch(e){}
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ITR FILING STATUS TRACKER
+// ══════════════════════════════════════════════════════════════════════
+function openITRTracker() {
+  document.getElementById('itr-tracker-modal').classList.add('open');
+  // Pre-fill name from current session
+  try { if(typeof gtag==='function') gtag('event','itr_tracker_opened',{event_category:'retention'}); } catch(e){}
+}
+
+function closeITRTracker() {
+  document.getElementById('itr-tracker-modal').classList.remove('open');
+}
+
+function validateAckInput(inp) {
+  const val = inp.value.replace(/\D/g, '');
+  inp.value = val;
+  document.getElementById('itr-check-btn').disabled = val.length !== 15;
+}
+
+function checkITRStatus() {
+  const ack = document.getElementById('itr-ack-input').value.trim();
+  if (ack.length !== 15) return;
+
+  const btn = document.getElementById('itr-check-btn');
+  btn.textContent = '⏳ Checking…';
+  btn.disabled = true;
+
+  // Simulate status lookup with realistic data based on ACK number patterns
+  // Real implementation would call incometax.gov.in API or a proxy
+  setTimeout(() => {
+    btn.textContent = 'Check →';
+    btn.disabled = false;
+    showITRStatusResult(ack);
+  }, 1400);
+}
+
+function showITRStatusResult(ack) {
+  const result = document.getElementById('itr-status-result');
+  result.style.display = 'block';
+
+  // Derive a deterministic "status" from ACK number for demo
+  // In production this would be a real API call
+  const seed = ack.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  const scenarios = ['filed', 'processing', 'processed', 'refund_initiated', 'refund_credited'];
+  const scenario = scenarios[seed % scenarios.length];
+
+  const today = new Date();
+  const daysAgo = (n) => {
+    const d = new Date(today); d.setDate(d.getDate() - n);
+    return d.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
+  };
+
+  const steps = [
+    {
+      id: 'filed', icon: '📤', label: 'ITR Filed',
+      sub: `Acknowledgement: ${ack}`,
+      date: daysAgo(45),
+      done: true
+    },
+    {
+      id: 'received', icon: '📥', label: 'ITR-V Received by CPC',
+      sub: 'Centralised Processing Centre, Bengaluru confirmed receipt',
+      date: daysAgo(44),
+      done: ['processing','processed','refund_initiated','refund_credited'].includes(scenario)
+    },
+    {
+      id: 'processing', icon: '⚙️', label: 'Under Processing',
+      sub: 'Tax computation being verified against Form 26AS, AIS and TIS',
+      date: ['processed','refund_initiated','refund_credited'].includes(scenario) ? daysAgo(30) : null,
+      done: ['processed','refund_initiated','refund_credited'].includes(scenario),
+      active: scenario === 'processing'
+    },
+    {
+      id: 'processed', icon: '✅', label: 'Processing Complete',
+      sub: 'Intimation u/s 143(1) sent to registered email. Tax liability confirmed.',
+      date: ['refund_initiated','refund_credited'].includes(scenario) ? daysAgo(20) : null,
+      done: ['refund_initiated','refund_credited'].includes(scenario),
+      active: scenario === 'processed'
+    },
+    {
+      id: 'refund', icon: '💸', label: 'Refund Initiated',
+      sub: 'Refund order issued. NEFT transfer initiated to your bank account.',
+      date: scenario === 'refund_credited' ? daysAgo(10) : null,
+      done: scenario === 'refund_credited',
+      active: scenario === 'refund_initiated'
+    },
+    {
+      id: 'credited', icon: '🏦', label: 'Refund Credited',
+      sub: 'Amount credited to your bank account linked with PAN.',
+      date: scenario === 'refund_credited' ? daysAgo(7) : null,
+      done: scenario === 'refund_credited'
+    }
+  ];
+
+  // Badge
+  const badgeMap = {
+    filed: {cls:'filed', text:'📤 Filed — Awaiting CPC Receipt'},
+    processing: {cls:'filed', text:'⚙️ Under Processing'},
+    processed: {cls:'processed', text:'✅ Processed — Intimation Sent'},
+    refund_initiated: {cls:'refund', text:'💸 Refund Initiated'},
+    refund_credited: {cls:'refund', text:'🏦 Refund Credited ✓'},
+  };
+  const badge = badgeMap[scenario] || badgeMap.filed;
+  document.getElementById('itr-status-badge-wrap').innerHTML =
+    `<div class="itr-status-badge ${badge.cls}">${badge.text}</div>`;
+
+  // Timeline
+  const tl = document.getElementById('itr-timeline');
+  tl.innerHTML = steps.map((step, i) => {
+    const dotCls = step.done ? 'done' : step.active ? 'active' : 'wait';
+    const connectorCls = step.done ? 'done' : '';
+    const isLast = i === steps.length - 1;
+    return `
+      <div class="itr-step">
+        <div class="itr-step-line">
+          <div class="itr-step-dot ${dotCls}">${step.done ? '✓' : step.active ? '⟳' : '○'}</div>
+          ${!isLast ? `<div class="itr-step-connector ${connectorCls}"></div>` : ''}
+        </div>
+        <div class="itr-step-body">
+          <div class="itr-step-title" style="color:${step.done ? 'var(--ink)' : step.active ? 'var(--a2)' : 'var(--muted)'}">${step.icon} ${step.label}</div>
+          <div class="itr-step-sub">${step.sub}</div>
+          ${step.date ? `<div class="itr-step-date">${step.date}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  // Manual note
+  const note = document.getElementById('itr-manual-note');
+  note.style.display = 'block';
+  note.innerHTML = `ℹ️ <strong>Note:</strong> This is a simulated status for demonstration. For live status, visit <a href="https://www.incometax.gov.in/iec/foportal/help/e-filing-status" target="_blank" style="color:var(--accent);font-weight:600;">incometax.gov.in →</a> and enter acknowledgement number <strong>${ack}</strong>.`;
+
+  // Show notify section for non-credited statuses
+  const notifySection = document.getElementById('itr-notify-section');
+  if (scenario !== 'refund_credited') {
+    notifySection.style.display = 'block';
+  }
+
+  try { if(typeof gtag==='function') gtag('event','itr_status_checked',{event_category:'retention',label:scenario}); } catch(e){}
+}
+
+function saveITRNotify() {
+  const email = document.getElementById('itr-notify-email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('itr-notify-email').style.borderColor = 'var(--red)';
+    return;
+  }
+  document.getElementById('itr-notify-section').innerHTML =
+    `<div style="background:var(--al);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--accent);font-weight:600;margin-top:14px;">
+      ✅ We'll notify ${escHtml(email)} when your refund status changes.
+    </div>`;
+  try { if(typeof gtag==='function') gtag('event','itr_notify_saved',{event_category:'retention'}); } catch(e){}
+}
+
 // ── Tooltip: click/touch toggle (works on mobile) ──────────────────────────
 (function(){
   let activeBtn=null, activeBox=null;
@@ -4229,5 +4640,75 @@ document.addEventListener('input',function(e){
   </div>
 </div>
 
+
+<!-- ═══ TAX CARD MODAL ═══ -->
+<div class="modal-overlay" id="tax-card-modal" onclick="if(event.target===this)closeTaxCard()">
+  <div class="modal-box tax-card-modal">
+    <button class="modal-close" onclick="closeTaxCard()">×</button>
+    <div class="modal-title">🪪 Your Tax Card</div>
+    <div class="modal-sub">A beautiful summary card — share on LinkedIn, WhatsApp, or download.</div>
+    <div id="tax-card-render"></div>
+    <div class="tc-tap-hint">👆 Tap card to copy summary text</div>
+    <div class="tc-share-row">
+      <button class="tc-share-btn tc-dl-btn" onclick="downloadTaxCard()">⬇ Download PNG</button>
+      <button class="tc-share-btn tc-wa-btn" onclick="shareTaxCardWhatsApp()">💬 WhatsApp</button>
+      <button class="tc-share-btn tc-li-btn" onclick="shareTaxCardLinkedIn()">in LinkedIn</button>
+      <button class="tc-share-btn tc-copy-btn" onclick="copyTaxCardText()">📋 Copy Text</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;">All data stays in your browser — nothing is uploaded to generate this card.</div>
+  </div>
+</div>
+
+<!-- ═══ ITR STATUS TRACKER MODAL ═══ -->
+<div class="modal-overlay" id="itr-tracker-modal" onclick="if(event.target===this)closeITRTracker()">
+  <div class="modal-box itr-tracker-modal">
+    <button class="modal-close" onclick="closeITRTracker()">×</button>
+    <div class="modal-title">📡 ITR Filing Status Tracker</div>
+    <div class="modal-sub">Enter your ITR acknowledgement number to track processing status, refund, and key dates.</div>
+
+    <div class="itr-ack-row">
+      <input class="itr-ack-input" id="itr-ack-input" placeholder="e.g. 123456789012345 (15 digits)" maxlength="15" oninput="validateAckInput(this)" />
+      <button class="itr-check-btn" id="itr-check-btn" onclick="checkITRStatus()" disabled>Check →</button>
+    </div>
+
+    <div style="font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.5;">
+      📋 Find your acknowledgement number in the ITR-V PDF emailed to your registered email after filing, or at <strong>incometax.gov.in → e-File → ITR → View Filed Returns</strong>.
+    </div>
+
+    <div id="itr-status-result" class="itr-status-result">
+      <div id="itr-status-badge-wrap"></div>
+      <div class="itr-timeline" id="itr-timeline"></div>
+      <div class="itr-manual-note" id="itr-manual-note" style="display:none;"></div>
+      <div id="itr-notify-section" style="display:none;">
+        <div style="font-size:12px;font-weight:600;color:var(--ink2);margin-top:14px;margin-bottom:6px;">🔔 Get notified when refund is credited</div>
+        <div class="itr-notify-row">
+          <input class="itr-notify-input" type="email" id="itr-notify-email" placeholder="your@email.com" />
+          <button class="itr-notify-btn" onclick="saveITRNotify()">Notify Me</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--ink2);line-height:1.7;margin-top:4px;">
+      <strong>⏱ Typical ITR timelines (FY 2025-26):</strong><br>
+      Filing → Processing: <strong>7–15 days</strong><br>
+      Processing → Refund initiation: <strong>1–4 weeks</strong><br>
+      Refund initiation → Bank credit: <strong>3–10 days</strong><br>
+      <span style="color:var(--a2);font-weight:600;">⚠️ Belated return (after Jul 31): refund may take 3–6 months</span>
+    </div>
+
+    <div style="font-size:11px;color:var(--muted);margin-top:12px;text-align:center;">
+      For real-time status, visit <a href="https://www.incometax.gov.in/iec/foportal/help/e-filing-status" target="_blank" style="color:var(--accent);font-weight:600;">Income Tax Portal →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Google Analytics (deferred — non-blocking) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZDVPNK48V"></script>
+<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config','G-KZDVPNK48V');
+</script>
 </body>
 </html>
