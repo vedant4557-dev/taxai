@@ -3,17 +3,17 @@
 let _taxCardData = null;
 
 function openTaxCard() {
-  if (!_o || !_i) { alert('Please generate your tax report first.'); return; }
-  const win = _o.tax <= _n.tax ? 'old' : 'new';
-  const best = Math.min(_o.tax, _n.tax);
-  const sav = Math.abs(_o.tax - _n.tax);
-  const tds = _i.tds_deducted || 0;
+  if (!window._o || !window._i) { alert('Please generate your tax report first.'); return; }
+  const win = window._o.tax <= window._n.tax ? 'old' : 'new';
+  const best = Math.min(window._o.tax, window._n.tax);
+  const sav = Math.abs(window._o.tax - window._n.tax);
+  const tds = window._i.tds_deducted || 0;
   const bal = tds - best;
   const name = document.getElementById('name').value || 'Taxpayer';
-  const effRate = _i.gross > 0 ? (_o.tax <= _n.tax ? _o.tax : _n.tax) / _i.gross * 100 : 0;
+  const effRate = window._i.gross > 0 ? (window._o.tax <= window._n.tax ? window._o.tax : window._n.tax) / window._i.gross * 100 : 0;
 
   _taxCardData = { win, best, sav, tds, bal, name, effRate,
-    gross: _i.gross, taxable: win==='new' ? _n.taxable : _o.taxable };
+    gross: window._i.gross, taxable: win==='new' ? window._n.taxable : window._o.taxable };
 
   renderTaxCard();
   document.getElementById('tax-card-modal').classList.add('open');
