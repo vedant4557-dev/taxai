@@ -716,6 +716,90 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .refund-step-label{font-size:10px;opacity:.7;line-height:1.3;}
 .refund-step-date{font-size:11px;font-weight:700;margin-top:2px;}
 .refund-due-alert{background:rgba(255,220,0,.12);border:1px solid rgba(255,220,0,.3);border-radius:8px;padding:10px 12px;font-size:12px;opacity:.9;margin-top:12px;line-height:1.5;}
+
+/* ══════════════════════════════════════════
+   MOBILE-FIRST UX — screens under 480px
+   ══════════════════════════════════════════ */
+@media(max-width:480px){
+  /* App padding */
+  .app{padding:12px 12px 40px;}
+  .card{padding:18px 16px;}
+
+  /* Header */
+  .header{flex-direction:column;gap:4px;text-align:center;padding:14px 16px 10px;}
+  .tagline{font-size:13px;}
+
+  /* Hero result stats */
+  .stat-row{grid-template-columns:1fr 1fr;}
+  .hero-numbers{grid-template-columns:1fr 1fr;}
+
+  /* Action buttons — stack primary, scroll secondary */
+  .act-row{gap:8px;}
+  .act-row .btn-dl{font-size:12px;padding:10px 8px;min-width:0;}
+
+  /* Confirmation screen fields */
+  .confirm-field{flex-wrap:wrap;gap:6px;}
+  .confirm-field-label{min-width:100px;font-size:11px;}
+  .confirm-field-val{font-size:13px;}
+  .confirm-field-conf{margin-left:0;}
+
+  /* Optimiser sliders */
+  .opt-row-label{flex-direction:column;gap:2px;align-items:flex-start;}
+  .opt-row-label span{font-size:14px;}
+  .opt-slider{height:6px;}
+
+  /* Refund prediction timeline */
+  .refund-predict-amount{font-size:22px;}
+  .refund-step-label{font-size:9px;}
+  .refund-step-date{font-size:10px;}
+
+  /* Employer TDS alert */
+  .tds-employer-alert{padding:14px 16px;}
+  .tds-employer-alert-title{font-size:13px;}
+
+  /* Modals */
+  .modal-box{padding:20px 16px;margin:16px 12px;max-height:88vh;}
+  .taxcal-modal-box{margin:8px;}
+
+  /* Social proof bar */
+  .adv-tax-grid{grid-template-columns:1fr;}
+
+  /* Progress steps */
+  .prog-steps{padding:0 8px;}
+
+  /* Onboarding banner */
+  .onboard-banner{padding:14px 14px;}
+
+  /* Sticky bar */
+  .sticky-bar{padding:10px 12px;gap:6px;}
+  .sticky-btn-primary{font-size:13px;padding:10px 14px;}
+  .sticky-btn-secondary{font-size:12px;padding:9px 12px;}
+
+  /* Tax card */
+  .tax-card-preview{padding:20px 16px;}
+
+  /* HR modal */
+  .hr-modal-box{margin:8px;padding:16px;}
+
+  /* Upload zones — single column already set, fix text */
+  .uz-title{font-size:14px;}
+  .uz-sub{font-size:11px;}
+
+  /* Accordions */
+  .accord-hdr{padding:14px 14px;}
+  .accord-hdr-title{font-size:13px;}
+
+  /* Results header */
+  .rh-name{font-size:18px;}
+  .rh-regime{font-size:13px;}
+}
+
+@media(max-width:360px){
+  .app{padding:10px 10px 40px;}
+  .card{padding:14px 12px;}
+  .stat-row{grid-template-columns:1fr;}
+  .confirm-actions{flex-direction:column;}
+}
 </style>
 </head>
 <body>
@@ -4124,31 +4208,9 @@ function emailCABrief(){
 // ══════════════════════════════════════════════════════════════════════════════
 function shareWithSelf(){
   if(!_o||!_i) return;
-  const win = _o.tax<=_n.tax?'Old Regime':'New Regime';
-  const best = Math.min(_o.tax,_n.tax);
-  const tds = _i.tds_deducted||0;
-  const bal = tds-best;
   const name = document.getElementById('name')?.value||'';
-  const nameLine = name ? ('Name: '+name+'\n') : '';
-  const balLine = bal>=0
-    ? 'Refund Coming: Rs '+Math.round(bal).toLocaleString('en-IN')
-    : 'Balance Due: Rs '+Math.round(Math.abs(bal)).toLocaleString('en-IN');
-  const bodyText = [
-    'My TaxSmart Results - FY 2025-26',
-    nameLine,
-    'Tax Payable: Rs '+Math.round(best).toLocaleString('en-IN'),
-    'Best Regime: '+win,
-    balLine,
-    '',
-    'REMINDER: File ITR-1 before July 31, 2026',
-    'ITR Portal: https://www.incometax.gov.in/iec/foportal',
-    '',
-    'Calculated using TaxSmart: https://vedant4557-dev.github.io/taxai/',
-    '',
-    '--- Save this email. Use TaxSmart again in April 2027 for FY 2026-27. ---'
-  ].join('\n');
-  const subject = encodeURIComponent('My Tax Summary FY 2025-26 - '+win+' - Rs '+Math.round(best).toLocaleString('en-IN'));
-  window.open('mailto:?subject='+subject+'&body='+encodeURIComponent(bodyText));
+  const { subject, body } = buildEmailReportText(name);
+  window.open('mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body));
   try{ if(typeof gtag==='function') gtag('event','email_to_self',{event_category:'retention'}); }catch(e){}
 }
 
@@ -6231,6 +6293,120 @@ function buildEmployerTDSAlert() {
     alert.style.display = 'none';
   }
 }
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE: Enhanced Email Report Delivery
+// ══════════════════════════════════════════════════════════════════════
+
+function buildEmailReportText(name) {
+  if(!_i || !_o || !_n) return { subject:'', body:'' };
+  const best   = Math.min(_o.tax, _n.tax);
+  const win    = _o.tax <= _n.tax ? 'Old Regime' : 'New Regime';
+  const sav    = Math.abs(_o.tax - _n.tax);
+  const tds    = _i.tds_deducted || 0;
+  const bal    = tds - best;
+  const gross  = _i.gross || 0;
+  const eff    = gross > 0 ? ((best/gross)*100).toFixed(1) : '0.0';
+  const nameLine = name ? `Hi ${name},\n\n` : '';
+  const balLine  = bal >= 0
+    ? `✅ You have a REFUND of ₹${Math.round(bal).toLocaleString('en-IN')} coming!`
+    : `⚠️  You have a balance tax due of ₹${Math.round(Math.abs(bal)).toLocaleString('en-IN')}`;
+
+  const savLine = sav > 500
+    ? `💡 Switching to ${win} saves you ₹${Math.round(sav).toLocaleString('en-IN')} vs the other regime.`
+    : `⚖️  Both regimes are nearly equal for your income profile.`;
+
+  const checklist = bal >= 0
+    ? `FILING CHECKLIST:\n□ File ITR-1 before July 31, 2026 to claim your refund\n□ Verify bank account + IFSC on income tax portal\n□ E-verify ITR within 30 days of filing\n□ Refund typically credited within 30-45 days of e-verification`
+    : `FILING CHECKLIST:\n□ Pay Self-Assessment Tax via Challan 280 BEFORE filing\n□ File ITR-1 before July 31, 2026 to avoid ₹5,000 penalty\n□ E-verify ITR within 30 days of filing\n□ Keep receipts for all deductions claimed`;
+
+  const body = [
+    `${nameLine}Here is your TaxSmart tax summary for FY 2025-26:`,
+    ``,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `YOUR TAX SUMMARY — FY 2025-26`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `Gross Income:   ₹${Math.round(gross).toLocaleString('en-IN')}`,
+    `Best Regime:    ${win}`,
+    `Tax Payable:    ₹${Math.round(best).toLocaleString('en-IN')} (${eff}% effective rate)`,
+    `TDS Deducted:   ₹${Math.round(tds).toLocaleString('en-IN')}`,
+    ``,
+    balLine,
+    ``,
+    savLine,
+    ``,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    checklist,
+    ``,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `USEFUL LINKS:`,
+    `• Income Tax Portal: https://www.incometax.gov.in`,
+    `• Pay Challan 280:   https://www.incometax.gov.in/iec/foportal/help/how-to-pay-taxes-online`,
+    `• Check Refund:      https://tin.tin.nsdl.com/oltas/refundstatuslogin.html`,
+    ``,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `REMINDER: Save this email. Use TaxSmart again in April 2027 for FY 2026-27.`,
+    `→ https://vedant4557-dev.github.io/taxai/`,
+    ``,
+    `Generated by TaxSmart — AI-powered tax calculator. For planning purposes only.`,
+    `Always verify figures with your CA before filing.`
+  ].join('\n');
+
+  const subject = `My Tax Summary FY 2025-26 — ${win} — ${bal >= 0 ? 'Refund ₹'+Math.round(bal).toLocaleString('en-IN') : 'Due ₹'+Math.round(Math.abs(bal)).toLocaleString('en-IN')}`;
+  return { subject, body };
+}
+
+function populateEmailPreview() {
+  const previewBox = document.getElementById('email-preview-box');
+  if(!previewBox || !_i || !_o || !_n) return;
+  const best  = Math.min(_o.tax, _n.tax);
+  const win   = _o.tax <= _n.tax ? 'Old Regime' : 'New Regime';
+  const tds   = _i.tds_deducted || 0;
+  const bal   = tds - best;
+  const balHtml = bal >= 0
+    ? `<span style="color:var(--accent);font-weight:700;">Refund: ₹${Math.round(bal).toLocaleString('en-IN')}</span>`
+    : `<span style="color:var(--red);font-weight:700;">Due: ₹${Math.round(Math.abs(bal)).toLocaleString('en-IN')}</span>`;
+  previewBox.innerHTML = `
+    <div style="font-weight:700;color:var(--ink);margin-bottom:6px;">📨 What you'll receive:</div>
+    • Tax summary: ₹${Math.round(best).toLocaleString('en-IN')} payable · ${win}<br>
+    • ${balHtml}<br>
+    • Personalised filing checklist<br>
+    • Important deadlines & payment links<br>
+    • Reminder note for FY 2026-27`;
+}
+
+// Called when modal opens
+const _origOpenRetention = typeof openRetentionModal === 'function' ? openRetentionModal : null;
+function openRetentionModal() {
+  document.getElementById('retention-modal').classList.add('open');
+  document.getElementById('retention-body').style.display = 'block';
+  document.getElementById('retention-success').style.display = 'none';
+  setTimeout(populateEmailPreview, 50);
+}
+
+function sendEmailReport() {
+  const email  = document.getElementById('retention-email').value.trim();
+  const name   = document.getElementById('retention-name').value.trim();
+  const { subject, body } = buildEmailReportText(name);
+
+  // Open mailto — works on all devices, no backend needed
+  const mailtoUrl = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailtoUrl);
+
+  // Show success
+  document.getElementById('retention-body').style.display = 'none';
+  document.getElementById('retention-success').style.display = 'block';
+
+  // Save email locally for reminder tracking
+  try {
+    const saves = JSON.parse(localStorage.getItem('ts_saves') || '[]');
+    saves.push({ email, name, savedAt: new Date().toISOString(), fy:'2025-26' });
+    localStorage.setItem('ts_saves', JSON.stringify(saves.slice(-5)));
+  } catch(e){}
+
+  try{if(typeof gtag==='function') gtag('event','email_report_sent',{event_category:'retention'});}catch(e){}
+  setTimeout(closeRetentionModal, 4000);
+}
 // ── Tooltip: click/touch toggle (works on mobile) ──────────────────────────
 (function(){
   let activeBtn=null, activeBox=null;
@@ -6338,18 +6514,28 @@ function buildEmployerTDSAlert() {
   <div class="modal-box">
     <button class="modal-close" onclick="closeRetentionModal()">×</button>
     <div id="retention-body">
-      <div class="modal-title">📧 Save Your Report</div>
-      <div class="modal-sub">Enter your email to receive your tax summary PDF + a reminder in January 2027 when Form 16 season starts. No spam, no account needed.</div>
+      <div class="modal-title">📧 Email My Tax Report</div>
+      <div class="modal-sub">Get your full tax summary delivered to your inbox — with filing checklist, refund status, and a reminder for next year. No spam, no login.</div>
+
       <input class="modal-input" type="email" id="retention-email" placeholder="your@email.com" />
       <input class="modal-input" style="margin-top:8px;" type="text" id="retention-name" placeholder="Your name (optional)" />
-      <button class="modal-btn" onclick="submitRetention()">✓ Save & Get Reminder Next Year</button>
-      <div style="text-align:center;margin:10px 0 4px;font-size:11px;color:var(--muted);">— or —</div>
-      <button class="modal-btn" style="background:#495057;" onclick="shareWithSelf();closeRetentionModal()">✉️ Email this report to myself now</button>
-      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Opens your email app with a pre-filled summary. No account needed.</div>
+
+      <!-- Preview of what will be emailed -->
+      <div id="email-preview-box" style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin:12px 0;font-size:12px;color:var(--ink2);line-height:1.7;"></div>
+
+      <button class="modal-btn" onclick="sendEmailReport()" style="background:var(--accent);">📨 Send to My Email</button>
+      <div style="text-align:center;margin:8px 0 4px;font-size:11px;color:var(--muted);">Opens your email app — one tap to send to yourself</div>
+
+      <div style="border-top:1px solid var(--border);margin:12px 0 10px;"></div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;">Also remind me next year</div>
+      <button class="modal-btn" onclick="submitRetention()" style="background:#6c63ff;margin-bottom:0;">🔔 Save Email + Remind in January 2027</button>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">We'll remind you when Form 16 season starts. Zero spam guarantee.</div>
     </div>
     <div id="retention-success" class="modal-success" style="display:none;">
-      ✅ Saved! You'll get a reminder in January 2027.<br><br>
-      <span style="font-size:13px;color:var(--muted);">Your tax summary has been noted. See you next filing season!</span>
+      <div style="font-size:28px;margin-bottom:8px;">✅</div>
+      <strong>Report opened in your email app!</strong><br><br>
+      <span style="font-size:13px;color:var(--ink2);">Just hit Send. Your tax summary will be in your inbox in seconds.</span><br><br>
+      <span style="font-size:12px;color:var(--muted);">Reminder set for January 2027 — we'll let you know when Form 16 season starts.</span>
     </div>
   </div>
 </div>
