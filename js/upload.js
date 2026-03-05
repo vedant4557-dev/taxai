@@ -1,6 +1,6 @@
 // FILE UPLOAD
 // =====================================================================================================================================================================
-const _files={f16:null,'26as':null,ais:null};
+window._files={f16:null,'26as':null,ais:null};
 
 function handleFile(input,key){
   const file=input.files[0];
@@ -18,7 +18,7 @@ function handleFile(input,key){
   // Document format detection — async, non-blocking
   validateDocumentBeforeUpload(file, key).then(ok => {
     if(!ok){ input.value=''; return; }
-    _files[key]=file;
+    window._files[key]=file;
     const zone=document.getElementById('zone-'+key);
     if(zone){
       zone.classList.add('uploaded');
@@ -42,7 +42,7 @@ function handleDrop(ev,key){
     alert('Please drop a PDF file.');
     return;
   }
-  _files[key]=file;
+  window._files[key]=file;
   if(zone){
     zone.classList.add('uploaded');
     zone.style.borderColor='var(--accent)';
@@ -54,16 +54,16 @@ function handleDrop(ev,key){
   updateExtractBtn();
 }
 function updateExtractBtn(){
-  const any=_files.f16||_files['26as']||_files.ais;
+  const any=window._files.f16||window._files['26as']||window._files.ais;
   const btn=document.getElementById('extract-btn');
   const lbl=document.getElementById('extract-btn-label');
   if(any){
     btn.disabled=false;
     if(lbl){
       const parts=[];
-      if(_files.f16)parts.push('Form 16');
-      if(_files['26as'])parts.push('26AS');
-      if(_files.ais)parts.push('AIS');
+      if(window._files.f16)parts.push('Form 16');
+      if(window._files['26as'])parts.push('26AS');
+      if(window._files.ais)parts.push('AIS');
       lbl.textContent='Extract from '+parts.join(' + ');
     }
   } else {
