@@ -1,8 +1,8 @@
 // EXTRACTION ENGINE
 // =====================================================================================================================================================================
-let _extractedData={};
-let _errors=[];
-let _auditTrail=[];
+window._extractedData={};
+window._errors=[];
+window._auditTrail=[];
 
 async function fileToBase64(file){
   return new Promise((res,rej)=>{
@@ -54,18 +54,18 @@ async function runExtraction(){
   // Build FormData payload
   function buildFormData(){
     const fd = new FormData();
-    if(_files.f16)     fd.append('f16',   _files.f16);
-    if(_files['26as']) fd.append('as26',  _files['26as']);
-    if(_files.ais)     fd.append('ais',   _files.ais);
+    if(window._files.f16)     fd.append('f16',   window._files.f16);
+    if(window._files['26as']) fd.append('as26',  window._files['26as']);
+    if(window._files.ais)     fd.append('ais',   window._files.ais);
     return fd;
   }
 
   // Build JSON+base64 payload (for sandboxed environments)
   async function buildJsonPayload(){
     const payload={};
-    if(_files.f16)     payload.f16  = await fileToB64(_files.f16);
-    if(_files['26as']) payload.as26 = await fileToB64(_files['26as']);
-    if(_files.ais)     payload.ais  = await fileToB64(_files.ais);
+    if(window._files.f16)     payload.f16  = await fileToB64(window._files.f16);
+    if(window._files['26as']) payload.as26 = await fileToB64(window._files['26as']);
+    if(window._files.ais)     payload.ais  = await fileToB64(window._files.ais);
     return payload;
   }
 
@@ -119,9 +119,9 @@ async function runExtraction(){
   }
 
   try{
-    if(_files.f16)    setEpState('f16',  'spin','Reading salary breakup and TDS…');
-    if(_files['26as'])setEpState('26as','spin','Reading TDS credits…');
-    if(_files.ais)    setEpState('ais',  'spin','Reading full income picture…');
+    if(window._files.f16)    setEpState('f16',  'spin','Reading salary breakup and TDS…');
+    if(window._files['26as'])setEpState('26as','spin','Reading TDS credits…');
+    if(window._files.ais)    setEpState('ais',  'spin','Reading full income picture…');
     setEpState('cross','spin','Checking for errors and mismatches…');
 
     let data, lastErr;
@@ -145,30 +145,30 @@ async function runExtraction(){
 
     const f16Data=data.f16Data||{}, as26Data=data.as26Data||{}, aisData=data.aisData||{};
 
-    if(_files.f16)    setEpState('f16',  Object.keys(f16Data).length>2?'done':'err',
+    if(window._files.f16)    setEpState('f16',  Object.keys(f16Data).length>2?'done':'err',
       Object.keys(f16Data).length>2?'Extracted: salary, deductions, TDS paid':'Could not read — fill manually');
-    if(_files['26as'])setEpState('26as', Object.keys(as26Data).length>2?'done':'err',
+    if(window._files['26as'])setEpState('26as', Object.keys(as26Data).length>2?'done':'err',
       Object.keys(as26Data).length>2?'Extracted: TDS from all deductors':'Could not read — fill manually');
-    if(_files.ais)    setEpState('ais',  Object.keys(aisData).length>2?'done':'err',
+    if(window._files.ais)    setEpState('ais',  Object.keys(aisData).length>2?'done':'err',
       Object.keys(aisData).length>2?'Extracted: interest, capital gains, rental':'Could not read — fill manually');
 
-    _errors=data.errors||[];
-    setEpState('cross','done',`Found ${_errors.length} item(s) to review`);
-    _extractedData={...f16Data,...as26Data,...aisData};
+    window._errors=data.errors||[];
+    setEpState('cross','done',`Found ${window._errors.length} item(s) to review`);
+    window._extractedData={...f16Data,...as26Data,...aisData};
     window._f16=f16Data; window._as26=as26Data; window._ais=aisData;
     // Audit trail entry
-    const docNames=[_files.f16?'Form 16':'',_files['26as']?'Form 26AS':'',_files.ais?'AIS':''].filter(Boolean).join(', ');
-    _auditTrail.push({time:new Date(),event:'Documents uploaded & extracted',detail:docNames,icon:'📄'});
+    const docNames=[window._files.f16?'Form 16':'',window._files['26as']?'Form 26AS':'',window._files.ais?'AIS':''].filter(Boolean).join(', ');
+    window._auditTrail.push({time:new Date(),event:'Documents uploaded & extracted',detail:docNames,icon:'📄'});
 
     // Fix 6: Compute and store data confidence indicator
     const totalExpectedFields=['gross_salary','tds_deducted_form16','sec80c','basic_salary','hra_received','total_tds_26as','salary_income_26as','interest_income_ais','ltcg_ais','stcg_ais'];
-    const filledFields=totalExpectedFields.filter(f=>_extractedData[f]&&_extractedData[f]>0);
+    const filledFields=totalExpectedFields.filter(f=>window._extractedData[f]&&window._extractedData[f]>0);
     const confidencePct=Math.round(filledFields.length/totalExpectedFields.length*100);
     const manualCount=Math.max(0,totalExpectedFields.length-filledFields.length);
     window._extractionConfidence={pct:confidencePct,filled:filledFields.length,total:totalExpectedFields.length,manual:manualCount};
 
     setTimeout(()=>{
-      showConfirmationScreen(_extractedData, f16Data, as26Data, aisData);
+      showConfirmationScreen(window._extractedData, f16Data, as26Data, aisData);
       if(Object.keys(as26Data).length>2||Object.keys(aisData).length>2){
         const b=document.getElementById('autofill-banner-6');if(b)b.style.display='flex';
       }
@@ -203,13 +203,13 @@ async function runExtraction(){
       hint='Please fill the form manually — it only takes 3 minutes. All fields have tooltips (?) to guide you.';
     }
 
-    ['f16','26as','ais'].forEach(k=>{if(_files[k])setEpState(k,'err','Could not read — please fill manually');});
+    ['f16','26as','ais'].forEach(k=>{if(window._files[k])setEpState(k,'err','Could not read — please fill manually');});
     setEpState('cross','err',userMsg);
 
     // Partial autofill fallback — fill whatever was extracted before failure
-    if(_extractedData && Object.keys(_extractedData).length > 0){
-      autoFillForm(_extractedData);
-      const partialCount = Object.keys(_extractedData).filter(k=>_extractedData[k]>0).length;
+    if(window._extractedData && Object.keys(window._extractedData).length > 0){
+      autoFillForm(window._extractedData);
+      const partialCount = Object.keys(window._extractedData).filter(k=>window._extractedData[k]>0).length;
       if(partialCount > 0){
         const pb = document.createElement('div');
         pb.className='confirm-partial-banner';
@@ -368,12 +368,12 @@ function autoFillForm(data){
 // Generates a pre-filled ITR-1 JSON structure matching IT Dept schema
 // User can review and upload to income tax portal or share with CA
 function exportITRJson(){
-  if(!_i||!_o||!_n){alert('Please generate your tax report first.');return;}
+  if(!window._i||!window._o||!window._n){alert('Please generate your tax report first.');return;}
 
-  const win=_o.tax<_n.tax?'old':'new';
-  const best=win==='old'?_o:_n;
+  const win=window._o.tax<window._n.tax?'old':'new';
+  const best=win==='old'?window._o:window._n;
   const bestTax=best.tax;
-  const tds=_i.tds_deducted||0;
+  const tds=window._i.tds_deducted||0;
   const refund=Math.max(0,tds-bestTax);
   const balDue=Math.max(0,bestTax-tds);
 
@@ -392,7 +392,7 @@ function exportITRJson(){
     },
 
     "PersonalInfo": {
-      "Name": _i.name || "",
+      "Name": window._i.name || "",
       "PAN": "",  // Do not pre-fill PAN in exported file for security
       "AssesseeType": "Individual",
       "ResidentialStatus": "Resident",
@@ -404,61 +404,61 @@ function exportITRJson(){
     "FilingRegime": {
       "SelectedRegime": win === 'new' ? "NewTaxRegime" : "OldTaxRegime",
       "RecommendedBy": "TaxSmart",
-      "TaxSavingVsAlternative": Math.abs(_o.tax - _n.tax)
+      "TaxSavingVsAlternative": Math.abs(window._o.tax - window._n.tax)
     },
 
     "IncomeDetails": {
       "IncomeFromSalary": {
-        "GrossSalary": _i.gross || 0,
-        "BasicSalary": _i.basic || 0,
-        "HRAReceived": _i.hra_received || 0,
-        "HRAExemptClaimed": win==='old' ? (_o.deds?.hra||0) : 0,
+        "GrossSalary": window._i.gross || 0,
+        "BasicSalary": window._i.basic || 0,
+        "HRAReceived": window._i.hra_received || 0,
+        "HRAExemptClaimed": win==='old' ? (window._o.deds?.hra||0) : 0,
         "StandardDeduction": win==='new' ? 75000 : 50000,
-        "ProfessionalTax": win==='old' ? (_i.prof_tax||0) : 0,
+        "ProfessionalTax": win==='old' ? (window._i.prof_tax||0) : 0,
         "NetSalaryIncome": best.taxable + (win==='old' ? (best.deds?.totalDed||0) : 0)
       },
       "IncomeFromHouseProperty": {
-        "RentalIncome": _i.rental_income||0,
-        "StandardDeduction30Pct": Math.round((_i.rental_income||0)*0.3),
-        "NetHousePropertyIncome": Math.round((_i.rental_income||0)*0.7)
+        "RentalIncome": window._i.rental_income||0,
+        "StandardDeduction30Pct": Math.round((window._i.rental_income||0)*0.3),
+        "NetHousePropertyIncome": Math.round((window._i.rental_income||0)*0.7)
       },
       "IncomeFromOtherSources": {
-        "InterestFromSavings": _i.savings_interest||0,
-        "InterestFromFD": _i.interest_income||0,
+        "InterestFromSavings": window._i.savings_interest||0,
+        "InterestFromFD": window._i.interest_income||0,
         "DividendIncome": 0,
-        "GamingIncome": _i.gaming_income||0
+        "GamingIncome": window._i.gaming_income||0
       },
       "CapitalGains": {
-        "LTCG_112A": _i.ltcg||0,
+        "LTCG_112A": window._i.ltcg||0,
         "LTCG_Exempt": 125000,
-        "LTCG_Taxable": Math.max(0,(_i.ltcg||0)-125000),
-        "STCG_111A": _i.stcg||0,
-        "CryptoVDA": _i.crypto||0
+        "LTCG_Taxable": Math.max(0,(window._i.ltcg||0)-125000),
+        "STCG_111A": window._i.stcg||0,
+        "CryptoVDA": window._i.crypto||0
       }
     },
 
     "DeductionsChapterVIA": win==='old' ? {
-      "Sec80C": Math.min((_i.sec80c||0)+(_i.epf_employee||0)+(_i.home_loan_principal||0), 150000),
-      "Sec80CCD_1B_NPS": Math.min(_i.nps||0, 50000),
-      "Sec80CCD_2_EmployerNPS": Math.min(_i.employer_nps||0, (_i.basic||0)*0.1),
-      "Sec80D_Self": Math.min(_i.sec80d_self||0, (_i.age||0)>=60?50000:25000),
-      "Sec80D_Parents": Math.min(_i.sec80d_parents||0, 50000),
-      "Sec80E_EducationLoan": _i.sec80e||0,
-      "Sec80TTA_SavingsInterest": Math.min(_i.savings_interest||0, (_i.age||0)>=60?50000:10000),
-      "Sec80G_Donations": Math.round((_i.sec80g||0)*0.5),
-      "Sec80U_Disability": Math.min(_i.sec80u||0, 125000),
-      "Sec24B_HomeLoanInterest": Math.min(_i.home_loan_interest||0, 200000),
+      "Sec80C": Math.min((window._i.sec80c||0)+(window._i.epf_employee||0)+(window._i.home_loan_principal||0), 150000),
+      "Sec80CCD_1B_NPS": Math.min(window._i.nps||0, 50000),
+      "Sec80CCD_2_EmployerNPS": Math.min(window._i.employer_nps||0, (window._i.basic||0)*0.1),
+      "Sec80D_Self": Math.min(window._i.sec80d_self||0, (window._i.age||0)>=60?50000:25000),
+      "Sec80D_Parents": Math.min(window._i.sec80d_parents||0, 50000),
+      "Sec80E_EducationLoan": window._i.sec80e||0,
+      "Sec80TTA_SavingsInterest": Math.min(window._i.savings_interest||0, (window._i.age||0)>=60?50000:10000),
+      "Sec80G_Donations": Math.round((window._i.sec80g||0)*0.5),
+      "Sec80U_Disability": Math.min(window._i.sec80u||0, 125000),
+      "Sec24B_HomeLoanInterest": Math.min(window._i.home_loan_interest||0, 200000),
       "TotalDeductions": best.deds?.totalDed||0
     } : {
-      "Sec80CCD_2_EmployerNPS": Math.min(_i.employer_nps||0, (_i.basic||0)*0.1),
+      "Sec80CCD_2_EmployerNPS": Math.min(window._i.employer_nps||0, (window._i.basic||0)*0.1),
       "Note": "New Regime: Chapter VI-A deductions not applicable (except 80CCD(2))"
     },
 
     "TaxComputation": {
-      "GrossTotalIncome": _i.gross||0,
+      "GrossTotalIncome": window._i.gross||0,
       "TotalTaxableIncome": best.taxable||0,
       "TaxOnTotalIncome": bestTax,
-      "EffectiveRatePct": _i.gross>0 ? parseFloat(((bestTax/_i.gross)*100).toFixed(2)) : 0,
+      "EffectiveRatePct": window._i.gross>0 ? parseFloat(((bestTax/window._i.gross)*100).toFixed(2)) : 0,
       "Rebate87A": best.taxable<=500000&&win==='old' ? Math.min(12500,bestTax) : (best.taxable<=1200000&&win==='new' ? bestTax : 0),
       "Surcharge": 0,  // see cessBreakdown for actual value
       "HealthAndEducationCess4Pct": Math.round(bestTax*0.04),
