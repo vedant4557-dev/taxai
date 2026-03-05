@@ -25,7 +25,7 @@ async function generateNoticeResponse(){
     alert('Please select the type of notice you received.');
     return;
   }
-  if(!_o||!_i){
+  if(!window._o||!window._i){
     alert('No tax data available. Please complete the tax calculation first.');
     return;
   }
@@ -37,25 +37,25 @@ async function generateNoticeResponse(){
     deduction: 'Deduction Query (80C/80D/HRA proof required)'
   };
 
-  // Build tax data summary using correct _i field names
-  const win = _o.tax <= _n.tax ? 'New' : 'Old';
-  const bestTax = Math.min(_o.tax, _n.tax);
+  // Build tax data summary using correct window._i field names
+  const win = window._o.tax <= window._n.tax ? 'New' : 'Old';
+  const bestTax = Math.min(window._o.tax, window._n.tax);
   const f16tds = (window._f16 && window._f16.tds_deducted_form16) || 0;
   const as26tds = (window._as26 && window._as26.total_tds_26as) || 0;
   const aisSalary = (window._ais && window._ais.salary_ais) || 0;
-  const errList = _errors?.map(e=>e.title).join(', ') || 'None detected';
+  const errList = window._errors?.map(e=>e.title).join(', ') || 'None detected';
 
   const prompt = `You are a senior Indian Chartered Accountant drafting a formal response to an Income Tax Department notice on behalf of a taxpayer.
 
 NOTICE TYPE: ${noticeLabels[_selectedNoticeType]}
 
 TAXPAYER'S TAX DATA (FY 2025-26):
-- Gross Salary: ₹${(_i.gross||0).toLocaleString('en-IN')}
+- Gross Salary: ₹${(window._i.gross||0).toLocaleString('en-IN')}
 - TDS per Form 16: ₹${f16tds.toLocaleString('en-IN')}
 - TDS per 26AS: ₹${as26tds.toLocaleString('en-IN')}
 - Salary per AIS: ₹${aisSalary.toLocaleString('en-IN')}
 - Final Tax Payable (${win} Regime): ₹${bestTax.toLocaleString('en-IN')}
-- TDS Already Deducted: ₹${(_i.tds_deducted||0).toLocaleString('en-IN')}
+- TDS Already Deducted: ₹${(window._i.tds_deducted||0).toLocaleString('en-IN')}
 - Discrepancies detected: ${errList}
 
 Write a professional, formal response letter to the Income Tax Officer. Include:
@@ -124,9 +124,9 @@ function buildAuditTrail(){
   const panel=document.getElementById('audit-trail');
   const items=document.getElementById('audit-trail-items');
   if(!panel||!items)return;
-  if(_auditTrail.length===0){panel.style.display='none';return;}
+  if(window._auditTrail.length===0){panel.style.display='none';return;}
   panel.style.display='block';
-  items.innerHTML=_auditTrail.map((e,i)=>{
+  items.innerHTML=window._auditTrail.map((e,i)=>{
     const t=e.time;
     const timeStr=t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
     const vNum=`v${i+1}`;
@@ -147,11 +147,11 @@ function buildAuditTrail(){
 function buildWhatsNext(){
   const panel=document.getElementById('whats-next');
   const list=document.getElementById('next-steps-list');
-  if(!panel||!list||!_o||!_n||!_i) return;
+  if(!panel||!list||!window._o||!window._n||!window._i) return;
 
-  const win=_o.tax<_n.tax?'old':'new';
-  const bestTax=Math.min(_o.tax,_n.tax);
-  const tds=_i.tds_deducted||0;
+  const win=window._o.tax<window._n.tax?'old':'new';
+  const bestTax=Math.min(window._o.tax,window._n.tax);
+  const tds=window._i.tds_deducted||0;
   const bal=tds-bestTax;
   const steps=[];
 
@@ -183,8 +183,8 @@ function buildWhatsNext(){
   }
 
   // Step 3: Invest to save more (if old regime and deduction room exists)
-  if(win==='old'&&_o.deds){
-    const unused=Math.max(0,150000-(_o.deds.c80c||0));
+  if(win==='old'&&window._o.deds){
+    const unused=Math.max(0,150000-(window._o.deds.c80c||0));
     if(unused>5000){
       steps.push({
         num:'3',color:'#7b5ea7',bg:'#f3eeff',
@@ -273,14 +273,14 @@ function toggleAccordById(id){
 // ── Hero Result panel ─────────────────────────────────────────────────────────
 function buildHeroResult(){
   const panel=document.getElementById('hero-result');
-  if(!panel||!_o||!_n||!_i) return;
+  if(!panel||!window._o||!window._n||!window._i) return;
 
-  const win=_o.tax<_n.tax?'old':'new';
-  const bestTax=Math.min(_o.tax,_n.tax);
-  const sav=Math.abs(_o.tax-_n.tax);
-  const tds=_i.tds_deducted||0;
+  const win=window._o.tax<window._n.tax?'old':'new';
+  const bestTax=Math.min(window._o.tax,window._n.tax);
+  const sav=Math.abs(window._o.tax-window._n.tax);
+  const tds=window._i.tds_deducted||0;
   const bal=tds-bestTax;
-  const eff=_i.gross>0?((bestTax/_i.gross)*100).toFixed(1):'0';
+  const eff=window._i.gross>0?((bestTax/window._i.gross)*100).toFixed(1):'0';
 
   // Generate 3 actionable tips based on user's actual situation
   const tips=[];
@@ -303,7 +303,7 @@ function buildHeroResult(){
   }
 
   // Tip 3: Biggest deduction opportunity
-  const d=win==='old'?_o.deds:null;
+  const d=win==='old'?window._o.deds:null;
   if(d){
     const unused80c=Math.max(0,150000-d.c80c);
     const unusedNps=Math.max(0,50000-d.cnps);
@@ -312,8 +312,8 @@ function buildHeroResult(){
     else tips.push({ico:'✅',text:`Your deductions are well-optimized for the Old Regime.`});
   } else {
     // New regime: tip on employer NPS
-    const cenps=_n&&_n.deds?_n.deds.cenps:0;
-    if((_i.employer_nps||0)<(_i.basic*0.05)) tips.push({ico:'💡',text:`Ask HR to increase <strong>Employer NPS contribution</strong> (Sec 80CCD(2)) — it's deductible in New Regime and reduces your taxable salary.`});
+    const cenps=window._n&&window._n.deds?window._n.deds.cenps:0;
+    if((window._i.employer_nps||0)<(window._i.basic*0.05)) tips.push({ico:'💡',text:`Ask HR to increase <strong>Employer NPS contribution</strong> (Sec 80CCD(2)) — it's deductible in New Regime and reduces your taxable salary.`});
     else tips.push({ico:'✅',text:`New Regime is optimized for your income — no Chapter VI-A deductions needed.`});
   }
 
@@ -321,7 +321,7 @@ function buildHeroResult(){
 
   // Emotional state — determines headline tone
   // "You're All Good" when no errors, refund coming, optimal regime
-  const hasErrors = _errors && _errors.filter(e=>e.severity==='red').length > 0;
+  const hasErrors = window._errors && window._errors.filter(e=>e.severity==='red').length > 0;
   const bigRefund = bal > 5000;
   const bigSaving = sav > 5000;
 
