@@ -564,6 +564,72 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .hr-link-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink);background:#fff;outline:none;margin:10px 0;cursor:text;}
 .hr-link-input:focus{border-color:var(--accent);}
 .hr-copy-link-btn{padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;}
+
+/* ── Tax Calendar Modal ── */
+.taxcal-modal-box{max-width:700px;max-height:92vh;overflow-y:auto;}
+.taxcal-hero{background:linear-gradient(135deg,#0f1e3d,#1a3a72);border-radius:16px;padding:22px 24px;margin-bottom:20px;color:#fff;position:relative;overflow:hidden;}
+.taxcal-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(100,160,255,.07);}
+.taxcal-hero-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;opacity:.5;margin-bottom:6px;font-weight:700;}
+.taxcal-hero-title{font-family:'Crimson Pro',serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+.taxcal-hero-sub{font-size:12px;opacity:.6;line-height:1.5;}
+.taxcal-hero-chips{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.taxcal-chip{padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.3px;}
+.taxcal-chip.blue{background:rgba(100,160,255,.15);color:#7eb8ff;border:1px solid rgba(100,160,255,.2);}
+.taxcal-chip.green{background:rgba(74,240,150,.12);color:#4af096;border:1px solid rgba(74,240,150,.2);}
+.taxcal-chip.amber{background:rgba(240,180,74,.12);color:#f4c04a;border:1px solid rgba(240,180,74,.2);}
+.taxcal-chip.red{background:rgba(255,100,80,.12);color:#ff7b6b;border:1px solid rgba(255,100,80,.2);}
+
+/* Advance Tax Summary */
+.adv-tax-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:480px){.adv-tax-grid{grid-template-columns:1fr;}}
+.adv-tax-card{background:var(--bg);border-radius:14px;border:1.5px solid var(--border);padding:16px;position:relative;overflow:hidden;}
+.adv-tax-card.active{border-color:#1a3a72;background:linear-gradient(135deg,#f0f4ff,#e8efff);}
+.adv-tax-card.paid{border-color:var(--accent);background:var(--al);}
+.adv-tax-card.overdue{border-color:var(--red);background:#fdf0ee;}
+.adv-tax-card-installment{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.adv-tax-card-date{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.adv-tax-card-amount{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--accent);display:block;margin-bottom:2px;}
+.adv-tax-card-pct{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.adv-tax-card-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;}
+.adv-tax-card-status.due{background:var(--a2l);color:var(--a2);}
+.adv-tax-card-status.active{background:#e8efff;color:#1a3a72;}
+.adv-tax-card-status.paid{background:var(--al);color:var(--accent);}
+.adv-tax-card-status.overdue{background:#fdf0ee;color:var(--red);}
+.adv-tax-card-days{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* Calendar timeline */
+.taxcal-section-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--muted);margin:20px 0 12px;}
+.taxcal-timeline{display:flex;flex-direction:column;gap:0;}
+.taxcal-event{display:flex;gap:0;position:relative;}
+.taxcal-event-line{display:flex;flex-direction:column;align-items:center;width:44px;flex-shrink:0;}
+.taxcal-event-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:4px;border:2px solid #fff;box-shadow:0 0 0 2px var(--border);}
+.taxcal-event-dot.done{background:var(--accent);box-shadow:0 0 0 2px var(--accent);}
+.taxcal-event-dot.today{background:#1a3a72;box-shadow:0 0 0 2px #1a3a72;}
+.taxcal-event-dot.upcoming{background:#fff;box-shadow:0 0 0 2px var(--border);}
+.taxcal-event-dot.overdue{background:var(--red);box-shadow:0 0 0 2px var(--red);}
+.taxcal-event-connector{width:2px;flex:1;min-height:20px;}
+.taxcal-event-connector.done{background:var(--accent);}
+.taxcal-event-connector.upcoming{background:var(--border);}
+.taxcal-event-body{flex:1;padding:0 0 20px 12px;}
+.taxcal-event-month{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:2px;}
+.taxcal-event-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.taxcal-event-desc{font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:5px;}
+.taxcal-event-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.taxcal-event-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;}
+.taxcal-event-tag.penalty{background:#fdf0ee;color:var(--red);}
+.taxcal-event-tag.refund{background:var(--al);color:var(--accent);}
+.taxcal-event-tag.notice{background:#fff8e1;color:#b45309;}
+.taxcal-event-tag.adv{background:#e8efff;color:#1a3a72;}
+.taxcal-event-tag.tds{background:#f0f0ff;color:#5b48d9;}
+.taxcal-event-urgent{display:flex;align-items:center;gap:8px;background:#fdf0ee;border:1px solid rgba(192,57,43,.2);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--red);font-weight:600;margin-top:6px;}
+
+/* Penalty calculator */
+.penalty-calc{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-top:16px;}
+.penalty-calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;}
+.penalty-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.penalty-row:last-child{border-bottom:none;font-weight:700;font-size:14px;}
+.penalty-row span:last-child{font-family:'JetBrains Mono',monospace;color:var(--red);}
+.penalty-row.ok span:last-child{color:var(--accent);}
 </style>
 </head>
 <body>
@@ -1239,6 +1305,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <div class="act-row">
+    <button class="btn-dl" onclick="openTaxCalendar()" style="background:linear-gradient(135deg,#1a3a72,#0f265a);" title="Tax calendar & advance tax planner">📅 Tax Calendar</button>
     <button class="btn-dl" onclick="openHRPortal()" style="background:linear-gradient(135deg,#1a3a72,#0f265a);" title="HR/Finance team bulk portal">🏢 HR Portal</button>
     <button class="btn-dl" onclick="openTaxCard()" style="background:linear-gradient(135deg,#1a472a,#0f5c30);" title="Generate shareable tax card">🪪 Share Tax Card</button>
     <button class="btn-dl" onclick="openITRTracker()" style="background:linear-gradient(135deg,#1a3a72,#0f2050);" title="Track your ITR filing status">📡 Track ITR Status</button>
@@ -1457,6 +1524,41 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     TaxSmart is a <strong>free tax planning tool</strong> — it is <strong>not a registered tax advisor, CA firm, or legal service</strong>. Output is for <strong>estimation and planning purposes only</strong> and does not constitute legal, financial, or tax advice under the Income Tax Act, 1961.<br><br>
     Always verify all figures with your original Form 16, Form 26AS, and AIS before filing. <strong>Consult a qualified Chartered Accountant (ICAI member)</strong> for actual ITR filing, especially if you have capital gains, foreign income, business income, or received an IT notice.<br><br>
     AI-generated content (including notice drafts and insights) may contain errors — review carefully before use. TaxSmart India · FY 2025–26 · Based on Income Tax Act &amp; Union Budget 2025 · DPDP Act 2023 compliant · Documents processed via Google Gemini API and never stored.
+  </div>
+</div>
+
+
+<!-- ═══ TAX CALENDAR + ADVANCE TAX MODAL ═══ -->
+<div class="modal-overlay" id="taxcal-modal" onclick="if(event.target===this)closeTaxCalendar()">
+  <div class="modal-box taxcal-modal-box">
+    <button class="modal-close" onclick="closeTaxCalendar()">×</button>
+    <div class="modal-title">📅 Tax Calendar & Advance Tax Planner</div>
+    <div class="modal-sub" id="taxcal-sub">All key deadlines for FY 2025–26, with your personalised advance tax schedule.</div>
+
+    <!-- Hero: Personalised advance tax summary -->
+    <div class="taxcal-hero" id="taxcal-hero">
+      <div class="taxcal-hero-label">Your Advance Tax — FY 2025–26</div>
+      <div class="taxcal-hero-title" id="taxcal-hero-title">Loading…</div>
+      <div class="taxcal-hero-sub" id="taxcal-hero-sub"></div>
+      <div class="taxcal-hero-chips" id="taxcal-hero-chips"></div>
+    </div>
+
+    <!-- 4 Installment Cards -->
+    <div class="taxcal-section-title">Advance Tax Installments</div>
+    <div class="adv-tax-grid" id="adv-tax-grid"><!-- filled by JS --></div>
+
+    <div class="penalty-calc" id="taxcal-penalty-calc">
+      <div class="penalty-calc-title">⚠️ Penalty & Interest Exposure</div>
+      <div id="taxcal-penalty-rows"><!-- filled by JS --></div>
+    </div>
+
+    <!-- Full year timeline -->
+    <div class="taxcal-section-title" style="margin-top:24px;">Full Year Tax Calendar</div>
+    <div class="taxcal-timeline" id="taxcal-timeline"><!-- filled by JS --></div>
+
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+      Deadlines based on Income Tax Act 1961 · FY 2025–26 (AY 2026–27) · Always verify at <a href="https://incometax.gov.in" target="_blank" style="color:var(--accent);">incometax.gov.in</a>
+    </div>
   </div>
 </div>
 
@@ -5317,6 +5419,167 @@ document.addEventListener('DOMContentLoaded', () => {
   renderPayslipZones();
 });
 
+
+// ══════════════════════════════════════════════════════════════════════
+// TAX CALENDAR + ADVANCE TAX PLANNER
+// ══════════════════════════════════════════════════════════════════════
+
+function openTaxCalendar() {
+  document.getElementById('taxcal-modal').classList.add('open');
+  renderTaxCalendar();
+  try { if(typeof gtag==='function') gtag('event','tax_calendar_opened',{event_category:'feature'}); } catch(e){}
+}
+
+function closeTaxCalendar() {
+  document.getElementById('taxcal-modal').classList.remove('open');
+}
+
+function renderTaxCalendar() {
+  const today = new Date();
+  const hasResults = _i && _o && _n;
+
+  // ── Compute tax liability ──────────────────────────────────────────
+  const bestTax   = hasResults ? Math.min(_o.tax, _n.tax) : 0;
+  const tds       = hasResults ? (_i.tds_deducted || 0) : 0;
+  const gross     = hasResults ? (_i.gross || 0) : 0;
+  // Advance tax = tax liability minus TDS already expected
+  // For salaried employees, TDS covers most — advance tax is for other income
+  const otherInc  = hasResults ? ((_i.interest_income||0)+(_i.rental_income||0)+(_i.ltcg||0)+(_i.stcg||0)) : 0;
+  const advTaxLiability = hasResults ? Math.max(0, bestTax - tds) : 0;
+  // Advance tax only if > ₹10,000
+  const needsAdvTax = advTaxLiability > 10000;
+
+  // ── Hero section ──────────────────────────────────────────────────
+  const heroTitle = document.getElementById('taxcal-hero-title');
+  const heroSub   = document.getElementById('taxcal-hero-sub');
+  const heroChips = document.getElementById('taxcal-hero-chips');
+
+  if (!hasResults) {
+    heroTitle.textContent = 'Complete your tax calculation first';
+    heroSub.textContent   = 'Return to the calculator to get your personalised advance tax schedule.';
+    heroChips.innerHTML   = '<span class="taxcal-chip amber">⚠ No data yet</span>';
+  } else if (!needsAdvTax) {
+    heroTitle.textContent = 'No advance tax required';
+    heroSub.textContent   = `Your TDS of ${fmt(tds,true)} covers your full liability of ${fmt(bestTax,true)}. You are fully compliant — no advance tax instalments needed.`;
+    heroChips.innerHTML   = `<span class="taxcal-chip green">✓ TDS covers all tax</span><span class="taxcal-chip blue">Liability: ${fmt(bestTax)}</span>`;
+  } else {
+    heroTitle.textContent = `₹${Math.round(advTaxLiability/1000)}K advance tax due this year`;
+    heroSub.textContent   = `Your estimated tax liability is ${fmt(bestTax,true)}, TDS covers ${fmt(tds,true)}. You need to pay ${fmt(advTaxLiability,true)} as advance tax across 4 installments to avoid Sec 234B/C interest.`;
+    heroChips.innerHTML   = `
+      <span class="taxcal-chip red">₹${Math.round(advTaxLiability/1000)}K due</span>
+      <span class="taxcal-chip blue">Other income: ${fmt(otherInc)}</span>
+      <span class="taxcal-chip amber">Avoid 1% p.m. interest</span>`;
+  }
+
+  // ── 4 Installment Cards ──────────────────────────────────────────
+  // FY 2025-26 dates
+  const installments = [
+    { label:'1st Installment', date:'15 Jun 2025', dateObj: new Date(2025,5,15), pct:15, dueBy:'Jun 15' },
+    { label:'2nd Installment', date:'15 Sep 2025', dateObj: new Date(2025,8,15), pct:45, dueBy:'Sep 15' },
+    { label:'3rd Installment', date:'15 Dec 2025', dateObj: new Date(2025,11,15), pct:75, dueBy:'Dec 15' },
+    { label:'4th Installment', date:'15 Mar 2026', dateObj: new Date(2026,2,15), pct:100, dueBy:'Mar 15' },
+  ];
+
+  // Cumulative amounts
+  const cumAmounts = installments.map(inst => Math.round(advTaxLiability * inst.pct / 100));
+  const instAmounts = cumAmounts.map((cum,i) => i===0 ? cum : cum - cumAmounts[i-1]);
+
+  const grid = document.getElementById('adv-tax-grid');
+  grid.innerHTML = installments.map((inst, i) => {
+    const isPast    = today > inst.dateObj;
+    const isNear    = !isPast && (inst.dateObj - today) < 30*24*3600*1000;
+    const daysLeft  = Math.ceil((inst.dateObj - today) / (24*3600*1000));
+    let statusClass, statusText, cardClass;
+
+    if (isPast) {
+      statusClass = 'overdue'; statusText = '⚠ Due date passed'; cardClass = 'overdue';
+    } else if (isNear) {
+      statusClass = 'active'; statusText = `⚡ Due in ${daysLeft} days`; cardClass = 'active';
+    } else {
+      statusClass = 'due'; statusText = `📅 Due ${inst.dueBy}`; cardClass = '';
+    }
+
+    if (!needsAdvTax) {
+      statusClass = 'paid'; statusText = '✓ Not required'; cardClass = 'paid';
+    }
+
+    return `
+    <div class="adv-tax-card ${cardClass}">
+      <div class="adv-tax-card-installment">${inst.label}</div>
+      <div class="adv-tax-card-date">📅 ${inst.date}</div>
+      <span class="adv-tax-card-amount">${needsAdvTax ? fmt(instAmounts[i],true) : '₹0'}</span>
+      <div class="adv-tax-card-pct">${inst.pct}% of annual liability (cumulative)</div>
+      <div><span class="adv-tax-card-status ${statusClass}">${statusText}</span></div>
+      ${!needsAdvTax ? '' : `<div class="adv-tax-card-days">${isPast ? 'Challan 280 on incometax.gov.in' : `Cumulative due: ${fmt(cumAmounts[i],true)}`}</div>`}
+    </div>`;
+  }).join('');
+
+  // ── Penalty Calculator ────────────────────────────────────────────
+  const penaltyEl = document.getElementById('taxcal-penalty-rows');
+  if (!hasResults || !needsAdvTax) {
+    document.getElementById('taxcal-penalty-calc').style.display = 'none';
+  } else {
+    document.getElementById('taxcal-penalty-calc').style.display = 'block';
+    // Sec 234B: 1% per month on shortfall if advance tax < 90% of assessed tax
+    const ninetyPct = Math.round(advTaxLiability * 0.9);
+    // Assume paid via TDS which handles most — calculate only on shortfall
+    const sec234B   = Math.round(advTaxLiability * 0.01 * 3); // ~3 months avg
+    const sec234C   = Math.round(advTaxLiability * 0.01 * 1); // deferment interest
+    const sec234A   = 0; // late filing — shown separately
+    const total     = sec234B + sec234C;
+
+    penaltyEl.innerHTML = `
+      <div class="penalty-row"><span>Advance tax shortfall (estimated)</span><span>${fmt(advTaxLiability,true)}</span></div>
+      <div class="penalty-row"><span>Sec 234B — 1% p.m. for non-payment</span><span>~${fmt(sec234B,true)}</span></div>
+      <div class="penalty-row"><span>Sec 234C — 1% p.m. for deferment</span><span>~${fmt(sec234C,true)}</span></div>
+      <div class="penalty-row"><span style="color:var(--red)">Total interest if you don't pay</span><span>~${fmt(total,true)}</span></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;">Pay via Challan 280 (ITNS 280) on incometax.gov.in → e-Pay Tax → Income Tax (0021) → Advance Tax (100)</div>`;
+  }
+
+  // ── Full Year Timeline ────────────────────────────────────────────
+  const events = [
+    { date:'Apr 1, 2025',  dateObj: new Date(2025,3,1),  title:'FY 2025–26 Begins',                    desc:'New financial year starts. Review salary structure, declare investments to employer (Form 12BB), choose Old vs New regime for TDS.',                                         tags:['adv'],    type:'done' },
+    { date:'Apr 15, 2025', dateObj: new Date(2025,3,15), title:'Form 12BB Submission',                  desc:'Submit investment declaration to employer. This determines your TDS for the year. Include HRA, 80C, 80D, home loan details.',                                              tags:['tds'],    type:'done' },
+    { date:'Jun 15, 2025', dateObj: new Date(2025,5,15), title:'Advance Tax — 1st Installment (15%)',   desc:`Pay 15% of estimated annual tax liability as advance tax. ${needsAdvTax ? 'Your estimated installment: ' + fmt(instAmounts[0],true) + '.' : 'Not required — TDS covers your liability.'}`,  tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,5,15) < today ? 'done':'upcoming' },
+    { date:'Jul 31, 2025', dateObj: new Date(2025,6,31), title:'ITR Filing Deadline (Salaried)',         desc:'Last date to file Income Tax Return for FY 2024–25 (AY 2025–26) without penalty. Missing this triggers ₹5,000 penalty (Sec 234F) and 1% monthly interest on dues.',      tags:['penalty','refund'], type: new Date(2025,6,31) < today ? 'done':'upcoming' },
+    { date:'Sep 15, 2025', dateObj: new Date(2025,8,15), title:'Advance Tax — 2nd Installment (45%)',   desc:`Cumulative 45% of estimated liability due. ${needsAdvTax ? 'Cumulative amount: ' + fmt(cumAmounts[1],true) + '. Shortfall attracts 1% p.m. Sec 234C interest.' : 'Not required.'}`, tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,8,15) < today ? 'done':'upcoming' },
+    { date:'Oct 15, 2025', dateObj: new Date(2025,9,15), title:'Belated/Revised ITR Deadline',          desc:'Last date to file belated ITR (missed Jul 31) or revise an already-filed return for FY 2024–25. Penalty ₹5,000 applies. After this, no revisions possible.',            tags:['penalty'], type: new Date(2025,9,15) < today ? 'done':'upcoming' },
+    { date:'Nov 30, 2025', dateObj: new Date(2025,10,30),title:'Review & Optimise Before Year-End',     desc:'3 months left to maximise tax savings. Top up 80C (₹1.5L limit), NPS Tier 1 (extra ₹50K under 80CCD(1B)), health insurance (80D). Last chance for major investments.',  tags:['refund'],  type: new Date(2025,10,30) < today ? 'done':'upcoming' },
+    { date:'Dec 15, 2025', dateObj: new Date(2025,11,15), title:'Advance Tax — 3rd Installment (75%)',  desc:`Cumulative 75% due. ${needsAdvTax ? 'Cumulative: ' + fmt(cumAmounts[2],true) + '. If you missed earlier installments, pay full arrears now to limit interest.' : 'Not required.'}`,  tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,11,15) < today ? 'done':'upcoming' },
+    { date:'Jan 15, 2026', dateObj: new Date(2026,0,15), title:'Submit Proof of Investments to Employer', desc:'Submit actual investment proofs (not just declarations) to HR/payroll. If you delay, employer deducts TDS on full salary in Feb–Mar which spikes your take-home dip.',    tags:['tds'],    type: new Date(2026,0,15) < today ? 'done':'upcoming' },
+    { date:'Mar 15, 2026', dateObj: new Date(2026,2,15), title:'Advance Tax — 4th Installment (100%)',  desc:`Final installment — 100% of liability due. ${needsAdvTax ? 'Remaining balance: ' + fmt(instAmounts[3],true) + '. Any shortfall now attracts both 234B and 234C.' : 'Not required for you.'}`, tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2026,2,15) < today ? 'done':'upcoming' },
+    { date:'Mar 28, 2026', dateObj: new Date(2026,2,28), title:'Last Day for 80C Investments (FY 2025–26)', desc:'Final deadline to make tax-saving investments that count for this financial year — ELSS, PPF top-up, 5-year FD, NSC, etc. After Mar 31, it counts for next year.', tags:['refund'],  type: new Date(2026,2,28) < today ? 'done':'upcoming' },
+    { date:'Mar 31, 2026', dateObj: new Date(2026,2,31), title:'FY 2025–26 Ends',                       desc:'Financial year closes. All income, expenses, and investments after this date belong to FY 2026–27. Ensure all deductible payments are made before midnight.',          tags:['refund'],  type: new Date(2026,2,31) < today ? 'done':'upcoming' },
+    { date:'Jun 15, 2026', dateObj: new Date(2026,5,15), title:'Form 16 Deadline for Employers',        desc:'Employers must issue Form 16 (Part A + B) by June 15. If you haven\'t received it by then, you can file with salary slips and 26AS.',                                   tags:['tds'],    type:'upcoming' },
+    { date:'Jul 31, 2026', dateObj: new Date(2026,6,31), title:'ITR Filing Deadline (FY 2025–26)',      desc:'File your income tax return for this financial year. This is the date you are preparing for now. Refunds typically credited within 30–45 days of verified filing.',    tags:['refund','penalty'], type:'upcoming' },
+  ];
+
+  const tagLabels = { penalty:'⚠ Penalty risk', refund:'💰 Refund / savings', adv:'📊 Advance tax', tds:'🏦 TDS / employer', notice:'📬 Notice risk' };
+
+  const timeline = document.getElementById('taxcal-timeline');
+  timeline.innerHTML = events.map((ev, i) => {
+    const isLast    = i === events.length - 1;
+    const isToday   = Math.abs(ev.dateObj - today) < 2*24*3600*1000;
+    const dotClass  = ev.type === 'done' ? 'done' : isToday ? 'today' : ev.dateObj < today ? 'overdue' : 'upcoming';
+    const connClass = ev.type === 'done' ? 'done' : 'upcoming';
+    const isUrgent  = !ev.type.includes('done') && (ev.dateObj - today) > 0 && (ev.dateObj - today) < 15*24*3600*1000;
+
+    return `
+    <div class="taxcal-event">
+      <div class="taxcal-event-line">
+        <div class="taxcal-event-dot ${dotClass}"></div>
+        ${!isLast ? `<div class="taxcal-event-connector ${connClass}"></div>` : ''}
+      </div>
+      <div class="taxcal-event-body">
+        <div class="taxcal-event-month">${ev.date}</div>
+        <div class="taxcal-event-title">${ev.title}</div>
+        <div class="taxcal-event-desc">${ev.desc}</div>
+        <div class="taxcal-event-tags">${(ev.tags||[]).map(t=>`<span class="taxcal-event-tag ${t}">${tagLabels[t]||t}</span>`).join('')}</div>
+        ${isUrgent ? `<div class="taxcal-event-urgent">⚡ Coming up in ${Math.ceil((ev.dateObj-today)/(24*3600*1000))} days — take action now</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
 // ── Tooltip: click/touch toggle (works on mobile) ──────────────────────────
 (function(){
   let activeBtn=null, activeBox=null;
