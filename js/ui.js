@@ -10,7 +10,7 @@ function initStickyBar(){
     const heroVisible = entries[0].isIntersecting;
     if(heroVisible){
       stickyBar.classList.remove('visible');
-    } else if(_o && _i){
+    } else if(window._o && window._i){
       stickyBar.classList.add('visible');
     }
   }, { threshold: 0.1 });
@@ -20,10 +20,10 @@ function initStickyBar(){
 }
 
 function updateStickyBar(){
-  if(!_o || !_i) return;
-  const win = _o.tax <= _n.tax ? 'Old' : 'New';
-  const best = Math.min(_o.tax, _n.tax);
-  const tds = _i.tds_deducted || 0;
+  if(!window._o || !window._i) return;
+  const win = window._o.tax <= window._n.tax ? 'Old' : 'New';
+  const best = Math.min(window._o.tax, window._n.tax);
+  const tds = window._i.tds_deducted || 0;
   const bal = tds - best;
 
   document.getElementById('sticky-regime-label').textContent = `✓ ${win} Regime recommended`;
@@ -47,9 +47,9 @@ function updateStickyBar(){
 }
 
 function stickyPrimaryAction(){
-  if(!_o || !_i) return;
-  const best = Math.min(_o.tax, _n.tax);
-  const bal = (_i.tds_deducted||0) - best;
+  if(!window._o || !window._i) return;
+  const best = Math.min(window._o.tax, window._n.tax);
+  const bal = (window._i.tds_deducted||0) - best;
   if(bal < -1000){
     window.open('https://onlineservices.tin.egov-nsdl.com/etaxnew/tdsnontds.jsp','_blank');
   } else {
@@ -62,25 +62,25 @@ function stickyPrimaryAction(){
 // CA SHARE BRIEF — professional tax summary for Chartered Accountants
 // ══════════════════════════════════════════════════════════════════════════════
 function buildCABrief(){
-  if(!_o||!_i||!_n) return '';
-  const win = _o.tax<=_n.tax?'Old Regime':'New Regime';
-  const best = Math.min(_o.tax,_n.tax);
-  const sav = Math.abs(_o.tax-_n.tax);
-  const tds = _i.tds_deducted||0;
+  if(!window._o||!window._i||!window._n) return '';
+  const win = window._o.tax<=window._n.tax?'Old Regime':'New Regime';
+  const best = Math.min(window._o.tax,window._n.tax);
+  const sav = Math.abs(window._o.tax-window._n.tax);
+  const tds = window._i.tds_deducted||0;
   const bal = tds-best;
   const name = document.getElementById('name')?.value||'Client';
   const pan = document.getElementById('pan_number')?.value||'[PAN]';
-  const errLines = (_errors&&_errors.length)
-    ? _errors.map(function(e){ return '  - '+(e.title||'')+(e.desc?': '+e.desc:''); }).join('\n')
+  const errLines = (window._errors&&window._errors.length)
+    ? window._errors.map(function(e){ return '  - '+(e.title||'')+(e.desc?': '+e.desc:''); }).join('\n')
     : '  None detected';
-  const dedLines = (_o&&_o.deds) ? [
+  const dedLines = (window._o&&window._o.deds) ? [
     '  Standard Deduction: Rs 50,000',
-    _o.deds.c80c>0 ? '  80C: Rs '+Math.round(_o.deds.c80c).toLocaleString('en-IN') : '',
-    _o.deds.cnps>0 ? '  NPS 80CCD(1B): Rs '+Math.round(_o.deds.cnps).toLocaleString('en-IN') : '',
-    _o.deds.c80d>0 ? '  80D Health: Rs '+Math.round(_o.deds.c80d).toLocaleString('en-IN') : '',
-    _o.deds.chl>0  ? '  Home Loan Sec24: Rs '+Math.round(_o.deds.chl).toLocaleString('en-IN') : ''
+    window._o.deds.c80c>0 ? '  80C: Rs '+Math.round(window._o.deds.c80c).toLocaleString('en-IN') : '',
+    window._o.deds.cnps>0 ? '  NPS 80CCD(1B): Rs '+Math.round(window._o.deds.cnps).toLocaleString('en-IN') : '',
+    window._o.deds.c80d>0 ? '  80D Health: Rs '+Math.round(window._o.deds.c80d).toLocaleString('en-IN') : '',
+    window._o.deds.chl>0  ? '  Home Loan Sec24: Rs '+Math.round(window._o.deds.chl).toLocaleString('en-IN') : ''
   ].filter(Boolean).join('\n') : '  As per Form 16';
-  const itrForm = ((_i.ltcg_ais||0)+(_i.stcg_ais||0)>100000||(_i.foreign_income||0)>0)?'ITR-2':'ITR-1';
+  const itrForm = ((window._i.ltcg_ais||0)+(window._i.stcg_ais||0)>100000||(window._i.foreign_income||0)>0)?'ITR-2':'ITR-1';
   const balLine = bal>=0
     ? 'REFUND DUE: Rs '+Math.round(bal).toLocaleString('en-IN')
     : 'BALANCE TAX DUE: Rs '+Math.round(Math.abs(bal)).toLocaleString('en-IN');
@@ -100,13 +100,13 @@ function buildCABrief(){
     'PAN: '+pan,
     '',
     'INCOME SUMMARY',
-    '  Gross Salary: Rs '+Math.round(_i.gross||0).toLocaleString('en-IN'),
-    '  Taxable Income (New Regime): Rs '+Math.round(_n.ti||0).toLocaleString('en-IN'),
-    '  Taxable Income (Old Regime): Rs '+Math.round(_o.ti||0).toLocaleString('en-IN'),
+    '  Gross Salary: Rs '+Math.round(window._i.gross||0).toLocaleString('en-IN'),
+    '  Taxable Income (New Regime): Rs '+Math.round(window._n.ti||0).toLocaleString('en-IN'),
+    '  Taxable Income (Old Regime): Rs '+Math.round(window._o.ti||0).toLocaleString('en-IN'),
     '',
     'TAX COMPUTATION',
-    '  New Regime Tax: Rs '+Math.round(_n.tax||0).toLocaleString('en-IN'),
-    '  Old Regime Tax: Rs '+Math.round(_o.tax||0).toLocaleString('en-IN'),
+    '  New Regime Tax: Rs '+Math.round(window._n.tax||0).toLocaleString('en-IN'),
+    '  Old Regime Tax: Rs '+Math.round(window._o.tax||0).toLocaleString('en-IN'),
     '  RECOMMENDED: '+win+' (saves Rs '+Math.round(sav).toLocaleString('en-IN')+')',
     '  Final Tax Payable: Rs '+Math.round(best).toLocaleString('en-IN'),
     '',
@@ -169,7 +169,7 @@ function emailCABrief(){
 // ENHANCED EMAIL RETENTION — sends report to self via mailto (no backend needed)
 // ══════════════════════════════════════════════════════════════════════════════
 function shareWithSelf(){
-  if(!_o||!_i) return;
+  if(!window._o||!window._i) return;
   const name = document.getElementById('name')?.value||'';
   const { subject, body } = buildEmailReportText(name);
   window.open('mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body));
@@ -177,11 +177,11 @@ function shareWithSelf(){
 }
 
 function shareWhatsApp() {
-  if (!_i || !_o || !_n) return;
-  const best = Math.min(_o.tax, _n.tax);
-  const win = _o.tax <= _n.tax ? 'Old' : 'New';
-  const sav = Math.abs(_o.tax - _n.tax);
-  const tds = _i.tds_deducted || 0;
+  if (!window._i || !window._o || !window._n) return;
+  const best = Math.min(window._o.tax, window._n.tax);
+  const win = window._o.tax <= window._n.tax ? 'Old' : 'New';
+  const sav = Math.abs(window._o.tax - window._n.tax);
+  const tds = window._i.tds_deducted || 0;
   const bal = tds - best;
   const name = document.getElementById('name')?.value || '';
 
@@ -196,8 +196,8 @@ function shareWhatsApp() {
 🏆 Best Regime: *${win} Regime* (saves ${fmt(sav)})
 ${balLine}
 
-📊 Old Regime: ${fmt(_o.tax)}
-📊 New Regime: ${fmt(_n.tax)}
+📊 Old Regime: ${fmt(window._o.tax)}
+📊 New Regime: ${fmt(window._n.tax)}
 
 _Calculated using TaxSmart — Free Indian Tax Calculator_
 🔗 https://vedant4557-dev.github.io/taxai/`;
@@ -210,15 +210,15 @@ _Calculated using TaxSmart — Free Indian Tax Calculator_
 // ── Edge case scenario detector (frontend) ───────────────────────────────────
 // Detects complex situations from the input data and warns users before they start filing
 function detectEdgeCases(){
-  if(!_i) return [];
+  if(!window._i) return [];
   const flags = [];
-  if((_i.foreign_income||0) > 0)
+  if((window._i.foreign_income||0) > 0)
     flags.push({ icon:'🌍', sev:'red', msg:'Foreign income detected — you need ITR-2, not ITR-1. Consult a CA.' });
-  if((_i.ltcg||0) + (_i.stcg||0) > 1_00_000)
-    flags.push({ icon:'📈', sev:'amber', msg:`Capital gains ₹${fmtL((_i.ltcg||0)+(_i.stcg||0))} — likely requires ITR-2.` });
-  if((_i.crypto||0) > 0)
-    flags.push({ icon:'₿', sev:'amber', msg:`Crypto/VDA income ₹${fmtL(_i.crypto)} taxed at 30% flat. Use Schedule VDA in ITR-2.` });
-  if((_i.rental_income||0) > 0)
+  if((window._i.ltcg||0) + (window._i.stcg||0) > 1_00_000)
+    flags.push({ icon:'📈', sev:'amber', msg:`Capital gains ₹${fmtL((window._i.ltcg||0)+(window._i.stcg||0))} — likely requires ITR-2.` });
+  if((window._i.crypto||0) > 0)
+    flags.push({ icon:'₿', sev:'amber', msg:`Crypto/VDA income ₹${fmtL(window._i.crypto)} taxed at 30% flat. Use Schedule VDA in ITR-2.` });
+  if((window._i.rental_income||0) > 0)
     flags.push({ icon:'🏠', sev:'blue', msg:`Rental income declared — ensure TDS deducted by tenant (if >₹50K/month) is in your 26AS.` });
   return flags;
 }
@@ -251,9 +251,9 @@ async function submitRetention(){
     fy: 'FY 2025-26',
     name: name || 'TaxSmart User',
     email,
-    regime: _o?.recommended_regime === 'new' ? 'New Regime' : 'Old Regime',
-    tax: _o?.new_regime?.tax_payable ?? 0,
-    refund: (_o?.new_regime?.tds_credit ?? 0) - (_o?.new_regime?.tax_payable ?? 0),
+    regime: window._o?.recommended_regime === 'new' ? 'New Regime' : 'Old Regime',
+    tax: window._o?.new_regime?.tax_payable ?? 0,
+    refund: (window._o?.new_regime?.tds_credit ?? 0) - (window._o?.new_regime?.tax_payable ?? 0),
     savedAt: new Date().toISOString()
   };
 
