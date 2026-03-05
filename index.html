@@ -2060,6 +2060,11 @@ function handleFile(input,key){
     input.value='';
     return;
   }
+  if(file.size > 10 * 1024 * 1024){
+    alert(`This file is ${(file.size/1024/1024).toFixed(1)}MB — maximum allowed is 10MB.\n\nTip: Open your PDF in Preview (Mac) or Adobe Reader and re-save/export to reduce file size.`);
+    input.value='';
+    return;
+  }
   // Document format detection — async, non-blocking
   validateDocumentBeforeUpload(file, key).then(ok => {
     if(!ok){ input.value=''; return; }
