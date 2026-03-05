@@ -25,9 +25,9 @@ function showConfirmationScreen(data, f16Data, as26Data, aisData) {
 
   // Partial banner if some docs failed
   const failed = [];
-  if(_files.f16 && Object.keys(f16Data).length <= 2) failed.push('Form 16');
-  if(_files['26as'] && Object.keys(as26Data).length <= 2) failed.push('Form 26AS');
-  if(_files.ais && Object.keys(aisData).length <= 2) failed.push('AIS');
+  if(window._files.f16 && Object.keys(f16Data).length <= 2) failed.push('Form 16');
+  if(window._files['26as'] && Object.keys(as26Data).length <= 2) failed.push('Form 26AS');
+  if(window._files.ais && Object.keys(aisData).length <= 2) failed.push('AIS');
 
   const partialBanner = document.getElementById('confirm-partial-banner');
   if(failed.length > 0) {
@@ -100,7 +100,7 @@ function confirmAndProceed() {
     setTimeout(()=>applyFieldConfidence(_pendingExtractedData, window._f16||{}, window._as26||{}, window._ais||{}), 200);
   }
   document.getElementById('confirm-screen').classList.remove('show');
-  cur=1; showStep(1);
+  window.cur=1; showStep(1);
   ['autofill-banner-1','autofill-banner-2','autofill-banner-3','autofill-banner-5']
     .forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});
   try{if(typeof gtag==='function') gtag('event','extraction_confirmed',{event_category:'funnel'});}catch(e){}
@@ -263,14 +263,14 @@ async function validateDocumentBeforeUpload(file, type) {
 // FEATURE 3: Salary Tax Optimiser
 // ══════════════════════════════════════════════════════════════════════
 function initOptimiser() {
-  if(!_i || !_o || !_n) return;
+  if(!window._i || !window._o || !window._n) return;
   const panel = document.getElementById('optimiser-panel');
   if(panel) panel.style.display = 'block';
 
   // Set sliders to current values
-  document.getElementById('opt-80c').value = Math.min(_i.sec80c || 0, 150000);
-  document.getElementById('opt-nps').value = Math.min(_i.nps || 0, 50000);
-  document.getElementById('opt-80d').value = Math.min(_i.sec80d_self || 0, 50000);
+  document.getElementById('opt-80c').value = Math.min(window._i.sec80c || 0, 150000);
+  document.getElementById('opt-nps').value = Math.min(window._i.nps || 0, 50000);
+  document.getElementById('opt-80d').value = Math.min(window._i.sec80d_self || 0, 50000);
   updateOptimiser();
 }
 
@@ -283,7 +283,7 @@ function toggleOptimiser() {
 }
 
 function updateOptimiser() {
-  if(!_i || !_o || !_n) return;
+  if(!window._i || !window._o || !window._n) return;
 
   const new80c  = parseInt(document.getElementById('opt-80c').value) || 0;
   const newNps  = parseInt(document.getElementById('opt-nps').value) || 0;
@@ -294,7 +294,7 @@ function updateOptimiser() {
   document.getElementById('opt-80d-val').textContent  = '₹' + new80d.toLocaleString('en-IN');
 
   // Current best tax
-  const currentBest = Math.min(_o.tax, _n.tax);
+  const currentBest = Math.min(window._o.tax, window._n.tax);
 
   // What-if calculation with modified inputs
   const modInputs = {..._i, sec80c: new80c, nps: newNps, sec80d_self: new80d};
@@ -387,7 +387,7 @@ function buildRefundPrediction(tdsBalance) {
 // ══════════════════════════════════════════════════════════════════════
 function buildEmployerTDSAlert() {
   const alert = document.getElementById('tds-employer-alert');
-  if(!alert || !_i) return;
+  if(!alert || !window._i) return;
 
   // Get TDS values from extraction
   const tdsF16  = window._f16 ? (window._f16.tds_deducted_form16 || 0) : 0;
@@ -421,13 +421,13 @@ function buildEmployerTDSAlert() {
 // ══════════════════════════════════════════════════════════════════════
 
 function buildEmailReportText(name) {
-  if(!_i || !_o || !_n) return { subject:'', body:'' };
-  const best   = Math.min(_o.tax, _n.tax);
-  const win    = _o.tax <= _n.tax ? 'Old Regime' : 'New Regime';
-  const sav    = Math.abs(_o.tax - _n.tax);
-  const tds    = _i.tds_deducted || 0;
+  if(!window._i || !window._o || !window._n) return { subject:'', body:'' };
+  const best   = Math.min(window._o.tax, window._n.tax);
+  const win    = window._o.tax <= window._n.tax ? 'Old Regime' : 'New Regime';
+  const sav    = Math.abs(window._o.tax - window._n.tax);
+  const tds    = window._i.tds_deducted || 0;
   const bal    = tds - best;
-  const gross  = _i.gross || 0;
+  const gross  = window._i.gross || 0;
   const eff    = gross > 0 ? ((best/gross)*100).toFixed(1) : '0.0';
   const nameLine = name ? `Hi ${name},\n\n` : '';
   const balLine  = bal >= 0
@@ -480,10 +480,10 @@ function buildEmailReportText(name) {
 
 function populateEmailPreview() {
   const previewBox = document.getElementById('email-preview-box');
-  if(!previewBox || !_i || !_o || !_n) return;
-  const best  = Math.min(_o.tax, _n.tax);
-  const win   = _o.tax <= _n.tax ? 'Old Regime' : 'New Regime';
-  const tds   = _i.tds_deducted || 0;
+  if(!previewBox || !window._i || !window._o || !window._n) return;
+  const best  = Math.min(window._o.tax, window._n.tax);
+  const win   = window._o.tax <= window._n.tax ? 'Old Regime' : 'New Regime';
+  const tds   = window._i.tds_deducted || 0;
   const bal   = tds - best;
   const balHtml = bal >= 0
     ? `<span style="color:var(--accent);font-weight:700;">Refund: ₹${Math.round(bal).toLocaleString('en-IN')}</span>`
