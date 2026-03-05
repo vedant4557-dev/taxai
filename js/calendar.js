@@ -13,15 +13,15 @@ function closeTaxCalendar() {
 
 function renderTaxCalendar() {
   const today = new Date();
-  const hasResults = _i && _o && _n;
+  const hasResults = window._i && window._o && window._n;
 
   // ── Compute tax liability ──────────────────────────────────────────
-  const bestTax   = hasResults ? Math.min(_o.tax, _n.tax) : 0;
-  const tds       = hasResults ? (_i.tds_deducted || 0) : 0;
-  const gross     = hasResults ? (_i.gross || 0) : 0;
+  const bestTax   = hasResults ? Math.min(window._o.tax, window._n.tax) : 0;
+  const tds       = hasResults ? (window._i.tds_deducted || 0) : 0;
+  const gross     = hasResults ? (window._i.gross || 0) : 0;
   // Advance tax = tax liability minus TDS already expected
   // For salaried employees, TDS covers most — advance tax is for other income
-  const otherInc  = hasResults ? ((_i.interest_income||0)+(_i.rental_income||0)+(_i.ltcg||0)+(_i.stcg||0)) : 0;
+  const otherInc  = hasResults ? ((window._i.interest_income||0)+(window._i.rental_income||0)+(window._i.ltcg||0)+(window._i.stcg||0)) : 0;
   const advTaxLiability = hasResults ? Math.max(0, bestTax - tds) : 0;
   // Advance tax only if > ₹10,000
   const needsAdvTax = advTaxLiability > 10000;
