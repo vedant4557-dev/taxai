@@ -100,7 +100,7 @@ function validateAndCalculate() {
 // ── Tax Risk Score ───────────────────────────────────────────────────────────
 function buildRiskScore(){
   const panel=document.getElementById('risk-score-panel');
-  if(!panel||!_i) return;
+  if(!panel||!window._i) return;
 
   const flags=[];
   let score=0;
@@ -121,45 +121,45 @@ function buildRiskScore(){
 
   // ── Flag 2: AIS income not declared in ITR
   const aisInt=window._ais&&window._ais.interest_income_ais||0;
-  const declaredInt=_i.interest_income||0;
+  const declaredInt=window._i.interest_income||0;
   if(aisInt>0&&declaredInt<aisInt*0.7){
     score+=3;
     flags.push({level:'red',icon:'🔴',text:`AIS shows interest income of ${fmt(aisInt)} but you've declared only ${fmt(declaredInt)}. IT Dept gets AIS from all banks — undeclared interest is a common scrutiny trigger.`});
   }
 
   // ── Flag 3: Large 80G donations vs income
-  const donations=_i.sec80g||0;
-  if(donations>0&&donations>_i.gross*0.3){
+  const donations=window._i.sec80g||0;
+  if(donations>0&&donations>window._i.gross*0.3){
     score+=2;
-    flags.push({level:'red',icon:'🔴',text:`80G donations of ${fmt(donations)} are ${Math.round(donations/_i.gross*100)}% of your gross income. Unusually large donation claims frequently trigger scrutiny.`});
+    flags.push({level:'red',icon:'🔴',text:`80G donations of ${fmt(donations)} are ${Math.round(donations/window._i.gross*100)}% of your gross income. Unusually large donation claims frequently trigger scrutiny.`});
   } else if(donations>100000){
     score+=1;
     flags.push({level:'amber',icon:'🟡',text:`80G donations of ${fmt(donations)} — keep donation receipts and Form 10BE ready in case of notice.`});
   }
 
   // ── Flag 4: HRA claimed but no rent paid
-  const hraClaimed=_o.deds&&_o.deds.hra||0;
-  if(hraClaimed>0&&(_i.rent_paid||0)<1000){
+  const hraClaimed=window._o.deds&&window._o.deds.hra||0;
+  if(hraClaimed>0&&(window._i.rent_paid||0)<1000){
     score+=2;
     flags.push({level:'red',icon:'🔴',text:`HRA exemption claimed (${fmt(hraClaimed)}) but rent paid appears to be ₹0. Landlord PAN required for rent >₹1L/year. False HRA claims are heavily scrutinised.`});
   }
 
   // ── Flag 5: High TDS but low declared salary (potential income suppression)
-  if(as26tds>0&&_i.gross>0&&as26tds>_i.gross*0.35){
+  if(as26tds>0&&window._i.gross>0&&as26tds>window._i.gross*0.35){
     score+=2;
-    flags.push({level:'amber',icon:'🟡',text:`TDS (${fmt(as26tds)}) is very high relative to declared salary (${fmt(_i.gross)}). Ensure all income sources are included.`});
+    flags.push({level:'amber',icon:'🟡',text:`TDS (${fmt(as26tds)}) is very high relative to declared salary (${fmt(window._i.gross)}). Ensure all income sources are included.`});
   }
 
   // ── Flag 6: Crypto income declared (high scrutiny sector)
-  if((_i.crypto||0)>50000){
+  if((window._i.crypto||0)>50000){
     score+=1;
-    flags.push({level:'amber',icon:'🟡',text:`Crypto/VDA income of ${fmt(_i.crypto)} declared. IT Dept receives data from exchanges — ensure you've declared ALL VDA transactions, not just profitable ones.`});
+    flags.push({level:'amber',icon:'🟡',text:`Crypto/VDA income of ${fmt(window._i.crypto)} declared. IT Dept receives data from exchanges — ensure you've declared ALL VDA transactions, not just profitable ones.`});
   }
 
   // ── Flag 7: Job change — under-deducted TDS
-  if(_i.changed_jobs==='yes'){
-    const tdsEmp=(_i.tds_emp1||0)+(_i.tds_emp2||0);
-    const totalTax=Math.min(_o.tax,_n.tax);
+  if(window._i.changed_jobs==='yes'){
+    const tdsEmp=(window._i.tds_emp1||0)+(window._i.tds_emp2||0);
+    const totalTax=Math.min(window._o.tax,window._n.tax);
     if(tdsEmp>0&&tdsEmp<totalTax*0.7){
       score+=2;
       flags.push({level:'amber',icon:'🟡',text:`Job change detected with combined TDS of ${fmt(tdsEmp)} against total tax of ${fmt(totalTax)}. Large balance due increases scrutiny probability.`});
@@ -167,9 +167,9 @@ function buildRiskScore(){
   }
 
   // ── Flag 8: Online gaming income (new high-scrutiny category)
-  if((_i.gaming_income||0)>10000){
+  if((window._i.gaming_income||0)>10000){
     score+=1;
-    flags.push({level:'amber',icon:'🟡',text:`Online gaming/lottery income of ${fmt(_i.gaming_income)} declared. IT Dept gets platform data under Sec 285BA — match your declared amount against your gaming app's tax statement.`});
+    flags.push({level:'amber',icon:'🟡',text:`Online gaming/lottery income of ${fmt(window._i.gaming_income)} declared. IT Dept gets platform data under Sec 285BA — match your declared amount against your gaming app's tax statement.`});
   }
 
   // ── Positive signals (reduce perception of risk)
@@ -179,7 +179,7 @@ function buildRiskScore(){
   if(f16tds>0&&as26tds>0&&Math.abs(f16tds-as26tds)<500){
     flags.push({level:'green',icon:'🟢',text:'TDS matches perfectly between Form 16 and 26AS. ✓'});
   }
-  if(_i.tds_deducted>0&&Math.abs(_i.tds_deducted-Math.min(_o.tax,_n.tax))<10000){
+  if(window._i.tds_deducted>0&&Math.abs(window._i.tds_deducted-Math.min(window._o.tax,window._n.tax))<10000){
     flags.push({level:'green',icon:'🟢',text:'TDS closely matches tax liability — minimal chance of demand notice.'});
   }
 
@@ -188,16 +188,16 @@ function buildRiskScore(){
   if(f16tds>0&&as26tds>0&&Math.abs(f16tds-as26tds)>5000)contributions.push({label:'TDS mismatch',pts:'+3',color:'#c0392b'});
   else if(f16tds>0&&as26tds>0&&Math.abs(f16tds-as26tds)>1000)contributions.push({label:'Minor TDS diff',pts:'+1',color:'#c17f24'});
   const aisInt2=window._ais&&window._ais.interest_income_ais||0;
-  if(aisInt2>0&&(_i.interest_income||0)<aisInt2*0.7)contributions.push({label:'Undeclared interest income',pts:'+3',color:'#c0392b'});
-  const donations2=_i.sec80g||0;
-  if(donations2>_i.gross*0.3)contributions.push({label:'High 80G donations',pts:'+2',color:'#c0392b'});
+  if(aisInt2>0&&(window._i.interest_income||0)<aisInt2*0.7)contributions.push({label:'Undeclared interest income',pts:'+3',color:'#c0392b'});
+  const donations2=window._i.sec80g||0;
+  if(donations2>window._i.gross*0.3)contributions.push({label:'High 80G donations',pts:'+2',color:'#c0392b'});
   else if(donations2>100000)contributions.push({label:'Large donations',pts:'+1',color:'#c17f24'});
-  if((_o.deds&&_o.deds.hra||0)>0&&(_i.rent_paid||0)<1000)contributions.push({label:'HRA without rent',pts:'+2',color:'#c0392b'});
-  if((_i.crypto||0)>50000)contributions.push({label:'Crypto income',pts:'+1',color:'#c17f24'});
-  if(_i.changed_jobs==='yes'){const te=(_i.tds_emp1||0)+(_i.tds_emp2||0);if(te>0&&te<Math.min(_o.tax,_n.tax)*0.7)contributions.push({label:'Job change TDS gap',pts:'+2',color:'#c17f24'});}
-  if((_i.gaming_income||0)>10000)contributions.push({label:'Gaming income',pts:'+1',color:'#c17f24'});
+  if((window._o.deds&&window._o.deds.hra||0)>0&&(window._i.rent_paid||0)<1000)contributions.push({label:'HRA without rent',pts:'+2',color:'#c0392b'});
+  if((window._i.crypto||0)>50000)contributions.push({label:'Crypto income',pts:'+1',color:'#c17f24'});
+  if(window._i.changed_jobs==='yes'){const te=(window._i.tds_emp1||0)+(window._i.tds_emp2||0);if(te>0&&te<Math.min(window._o.tax,window._n.tax)*0.7)contributions.push({label:'Job change TDS gap',pts:'+2',color:'#c17f24'});}
+  if((window._i.gaming_income||0)>10000)contributions.push({label:'Gaming income',pts:'+1',color:'#c17f24'});
   if(f16tds>0&&as26tds>0&&Math.abs(f16tds-as26tds)<500)contributions.push({label:'TDS match',pts:'−1',color:'#2d6a4f'});
-  if(_i.tds_deducted>0&&Math.abs(_i.tds_deducted-Math.min(_o.tax,_n.tax))<10000)contributions.push({label:'TDS matches liability',pts:'−1',color:'#2d6a4f'});
+  if(window._i.tds_deducted>0&&Math.abs(window._i.tds_deducted-Math.min(window._o.tax,window._n.tax))<10000)contributions.push({label:'TDS matches liability',pts:'−1',color:'#2d6a4f'});
   const contribHtml=contributions.length>0
     ?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px;"><span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;align-self:center;">Score factors:</span>'+contributions.map(c=>`<span style="background:${c.color}18;color:${c.color};border:1px solid ${c.color}40;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;">${c.label} <strong>${c.pts}</strong></span>`).join('')+'</div>':'';
   score=Math.min(score,10);
@@ -233,8 +233,8 @@ function buildRiskScore(){
 function buildScheduleCG(){
   const card=document.getElementById('schedule-cg-card');
   const panel=document.getElementById('schedule-cg-panel');
-  if(!card||!panel||!_i)return;
-  const ltcg=_i.ltcg||0, stcg=_i.stcg||0;
+  if(!card||!panel||!window._i)return;
+  const ltcg=window._i.ltcg||0, stcg=window._i.stcg||0;
   if(ltcg+stcg<1){card.style.display='none';return;}
   card.style.display='block';
   const ltcgExempt=Math.min(ltcg,125000);
@@ -249,8 +249,8 @@ function buildScheduleCG(){
 
 function buildScheduleAL(){
   const panel=document.getElementById('schedule-al-panel');
-  if(!panel||!_i) return;
-  if(_i.gross<=5000000){panel.innerHTML='';return;}
+  if(!panel||!window._i) return;
+  if(window._i.gross<=5000000){panel.innerHTML='';return;}
 
   panel.innerHTML=`
     <div class="itr-panel" style="border-color:var(--a2);">
@@ -270,7 +270,7 @@ function buildScheduleAL(){
 
 // ── ITR Form Recommender ────────────────────────────────────────────────────
 function buildITRPanel() {
-  const i = _i, panel = document.getElementById('itr-panel');
+  const i = window._i, panel = document.getElementById('itr-panel');
   if (!panel) return;
 
   const reasons = [];
@@ -334,11 +334,11 @@ function buildITRPanel() {
 // ── Section 234B / 234C Interest Calculator ─────────────────────────────────
 function buildInterestPanel() {
   const panel = document.getElementById('interest-panel');
-  if (!panel || !_i || !_o || !_n) return;
+  if (!panel || !window._i || !window._o || !window._n) return;
 
-  const best = Math.min(_o.tax, _n.tax);
-  const tds = _i.tds_deducted || 0;
-  const advanceTaxPaid = _i.advance_tax || 0;
+  const best = Math.min(window._o.tax, window._n.tax);
+  const tds = window._i.tds_deducted || 0;
+  const advanceTaxPaid = window._i.advance_tax || 0;
   const balDue = best - tds - advanceTaxPaid;
 
   if (balDue <= 10000) {
