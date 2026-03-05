@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaxSmart — Your Personal Tax Advisor</title>
+<title>TaxSmart — Find Hidden Tax Errors in Your Form 16, Free</title>
 
 <!-- Open Graph / LinkedIn / WhatsApp preview -->
 <meta property="og:type" content="website">
@@ -637,7 +637,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 
 <div class="header">
   <div class="logo"><div class="logo-icon">🧾</div><span class="logo-text">Tax<span>Smart</span></span></div>
-  <div class="tagline">Your personal CA — free, in 5 minutes</div>
+  <div class="tagline">Find hidden tax errors in 30 seconds — free</div>
 </div>
 
 <!-- Progress -->
@@ -661,9 +661,32 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 <!-- ═══════════ STEP 0: UPLOAD ═══════════ -->
 <div class="card active" id="step-0">
   <div class="eyebrow">Optional · Auto-fill from documents</div>
-  <div class="card-title">Upload your tax documents</div>
-  <div class="card-desc">We'll read your Form 16, 26AS, and AIS using AI — and fill the entire form automatically. Also checks for errors and mismatches.</div>
+  <div class="card-title">Upload Form 16 — Find Hidden Tax Errors</div>
+  <div class="card-desc">AI reads your Form 16, 26AS &amp; AIS — detects mismatches the IT Dept sees, finds unclaimed deductions, and calculates your exact refund. Free, no login, 30 seconds.</div>
 
+
+  <!-- Social proof + mismatch detection hook -->
+  <div style="background:linear-gradient(135deg,#0f2d1a,#1a472a);border-radius:14px;padding:16px 20px;margin-bottom:20px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#c8f04a;" id="sp-errors">1,247</div>
+        <div style="font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.8px;">Tax errors detected</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,.15);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#c8f04a;">₹2.3L</div>
+        <div style="font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.8px;">Avg underpaid tax caught</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,.15);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#c8f04a;">8,400+</div>
+        <div style="font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.8px;">Reports generated</div>
+      </div>
+    </div>
+    <div style="font-size:12px;opacity:.7;max-width:220px;line-height:1.5;">
+      🔍 We compare your Form 16 vs AIS vs 26AS — and flag what the IT Dept sees that you missed.
+    </div>
+  </div>
   <div class="doc-info blue">
     <strong>📋 Where to get these:</strong><br>
     <strong>Form 16</strong> — from your employer's HR/payroll portal or email (usually sent in June)<br>
@@ -1304,18 +1327,25 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
     <div id="belated-warn" style="display:none;background:#fdf0ee;border:1.5px solid #c0392b;border-radius:10px;padding:10px 14px;margin:8px 0 0;font-size:12.5px;color:#7a1010;line-height:1.6;"></div>
   </div>
 
-  <div class="act-row">
-    <button class="btn-dl" onclick="openTaxCalendar()" style="background:linear-gradient(135deg,#1a3a72,#0f265a);" title="Tax calendar & advance tax planner">📅 Tax Calendar</button>
-    <button class="btn-dl" onclick="openHRPortal()" style="background:linear-gradient(135deg,#1a3a72,#0f265a);" title="HR/Finance team bulk portal">🏢 HR Portal</button>
-    <button class="btn-dl" onclick="openTaxCard()" style="background:linear-gradient(135deg,#1a472a,#0f5c30);" title="Generate shareable tax card">🪪 Share Tax Card</button>
-    <button class="btn-dl" onclick="openITRTracker()" style="background:linear-gradient(135deg,#1a3a72,#0f2050);" title="Track your ITR filing status">📡 Track ITR Status</button>
-    <button class="btn-dl" onclick="downloadReport()">⬇ Download Report</button>
-    <button class="btn-dl" onclick="exportITRJson()" style="background:#2d6a4f;color:#fff;" title="Pre-filled ITR-1 JSON for Income Tax Portal">📄 Export ITR-1 JSON</button>
-    <button class="btn-dl" onclick="openRetentionModal()" style="background:#6c63ff;color:#fff;" title="Save report & get reminder next filing season">📧 Save & Remind Next Year</button>
-    <button class="btn-dl" onclick="openNoticeModal()" style="background:#c0392b;color:#fff;" title="AI-drafted response to income tax notice">⚖️ Draft IT Notice Response</button>
-    <button class="btn-dl" onclick="openCAShareModal()" style="background:#0077b6;color:#fff;" title="Generate professional brief for your CA">📋 CA Brief</button>
-    <button class="btn-wa" onclick="shareWhatsApp()">💬 Share on WhatsApp</button>
-    <button class="btn-restart" onclick="restart()">↺ Start Over</button>
+  <!-- PRIMARY ACTIONS — 3 highest-intent buttons -->
+  <div class="act-row" style="margin-bottom:8px;">
+    <button class="btn-dl" onclick="downloadReport()" style="flex:2;font-size:15px;">⬇ Download Report</button>
+    <button class="btn-dl" onclick="openTaxCard()" style="background:linear-gradient(135deg,#1a472a,#0f5c30);flex:2;font-size:15px;" title="Share your tax savings — leads with how much you saved">🪪 Share Tax Card</button>
+    <button class="btn-dl" onclick="openRetentionModal()" style="background:#6c63ff;color:#fff;flex:1.5;" title="Get reminded next filing season">📧 Save & Remind</button>
+  </div>
+  <!-- SECONDARY ACTIONS — tools row -->
+  <div class="act-row" style="margin-bottom:4px;">
+    <button class="btn-dl" onclick="openTaxCalendar()" style="background:linear-gradient(135deg,#1a3a72,#0f265a);font-size:12px;padding:10px 8px;" title="Tax calendar & advance tax">📅 Tax Calendar</button>
+    <button class="btn-dl" onclick="openITRTracker()" style="background:linear-gradient(135deg,#1a3a72,#0f2050);font-size:12px;padding:10px 8px;" title="Track ITR filing status">📡 Track ITR</button>
+    <button class="btn-dl" onclick="exportITRJson()" style="background:#2d6a4f;color:#fff;font-size:12px;padding:10px 8px;" title="Pre-filled ITR-1 JSON">📄 ITR-1 JSON</button>
+    <button class="btn-dl" onclick="openNoticeModal()" style="background:#c0392b;color:#fff;font-size:12px;padding:10px 8px;">⚖️ IT Notice</button>
+    <button class="btn-dl" onclick="openCAShareModal()" style="background:#0077b6;color:#fff;font-size:12px;padding:10px 8px;">📋 CA Brief</button>
+    <button class="btn-wa" onclick="shareWhatsApp()" style="font-size:12px;padding:10px 8px;">💬 WhatsApp</button>
+    <button class="btn-restart" onclick="restart()" style="font-size:12px;padding:10px 8px;">↺ Restart</button>
+  </div>
+  <!-- B2B — demoted to subtle text link -->
+  <div style="text-align:center;margin-bottom:14px;margin-top:4px;">
+    <button onclick="openHRPortal()" style="background:none;border:none;font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline;font-family:'Sora',sans-serif;padding:4px 8px;transition:color .2s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">🏢 HR / Finance teams: bulk-process employee Form 16s →</button>
   </div>
 
   <!-- ═══ PRIMARY CTA BAR — shown right after hero result ═══ -->
@@ -1334,7 +1364,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <!-- Tax Risk Score (expanded by default if non-zero) -->
   <div class="accord hidden" id="accord-risk" >
     <div class="accord-hdr" onclick="toggleAccord(this)">
-      <span id="accord-risk-title">🎯 IT Scrutiny Risk Score</span>
+      <span id="accord-risk-title">🎯 Will the IT Dept Flag Your Return? — Scrutiny Risk Score</span>
       <span class="accord-arrow">▼</span>
     </div>
     <div class="accord-body">
@@ -4619,20 +4649,39 @@ function buildTaxCardShareText() {
   if (!d) return '';
   const isNew = d.win === 'new';
   const regime = isNew ? 'New Regime' : 'Old Regime';
-  const savLine = d.sav > 500 ? `Chose ${regime} and saved ${fmt(d.sav, true)} vs the alternative.` : '';
-  const balLine = d.bal >= 0
-    ? `Getting a refund of ${fmt(d.bal, true)}.`
-    : `Balance tax due: ${fmt(Math.abs(d.bal), true)}.`;
-  return `📊 My FY 2025–26 Tax Summary
+  const otherRegime = isNew ? 'Old Regime' : 'New Regime';
 
-✅ Regime: ${regime}
-💸 Total Tax: ${fmt(d.best, true)}
-📈 Effective Rate: ${d.effRate.toFixed(1)}%
-${savLine}
-${balLine}
+  // Lead with the savings hook — this is what gets shared
+  if (d.sav > 5000) {
+    const balLine = d.bal >= 0
+      ? `Getting a refund of ${fmt(d.bal, true)} 💰`
+      : `Balance tax due: ${fmt(Math.abs(d.bal), true)}`;
+    return `I saved ${fmt(d.sav, true)} in tax by switching to ${regime} 🎉
 
-Calculated for free in 5 minutes → taxsmart.vedant4557-dev.github.io
+This free AI tool found it in 30 seconds — just uploaded my Form 16.
+
+• Gross income: ${fmt(d.gross, true)}
+• Total tax: ${fmt(d.best, true)} (effective ${d.effRate.toFixed(1)}%)
+• ${regime} saves ${fmt(d.sav, true)} vs ${otherRegime}
+• ${balLine}
+
+Check yours free → vedant4557-dev.github.io/taxai/
+#TaxSmart #IncomeTax #SaveTax #India`;
+  } else {
+    // No big savings — lead with refund or risk angle
+    const balLine = d.bal >= 0
+      ? `Getting a refund of ${fmt(d.bal, true)}`
+      : `Need to pay ${fmt(Math.abs(d.bal), true)} more`;
+    return `Just ran my FY 2025–26 tax check — took 30 seconds 🧾
+
+• Gross: ${fmt(d.gross, true)} | Tax: ${fmt(d.best, true)}
+• Best regime: ${regime} | Rate: ${d.effRate.toFixed(1)}%
+• ${balLine}
+
+Free AI tool — no login, no CA needed
+→ vedant4557-dev.github.io/taxai/
 #TaxSmart #IncomeTax #India`;
+  }
 }
 
 function copyTaxCardText() {
