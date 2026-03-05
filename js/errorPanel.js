@@ -70,9 +70,9 @@ function buildRecon(){
 
 function buildErrorPanel(){
   const container=document.getElementById('error-panel');
-  if(_errors.length===0){
+  if(window._errors.length===0){
     // Also add a refund/due notification
-    const tds=_i.tds_deducted,best=Math.min(_o.tax,_n.tax),bal=tds-best;
+    const tds=window._i.tds_deducted,best=Math.min(window._o.tax,window._n.tax),bal=tds-best;
     if(tds>0){
       const type=bal>=0?'ok':'warn';
       container.innerHTML=`<div class="error-panel ${type} mb14">
@@ -93,19 +93,19 @@ function buildErrorPanel(){
     return;
   }
 
-  const crits=_errors.filter(e=>e.type==='crit').length;
-  const warns=_errors.filter(e=>e.type==='warn').length;
+  const crits=window._errors.filter(e=>e.type==='crit').length;
+  const warns=window._errors.filter(e=>e.type==='warn').length;
   const mainType=crits>0?'error-panel':warns>0?'error-panel warn':'error-panel ok';
   const dot=crits>0?'red':warns>0?'amber':'green';
-  const heading=crits>0?`⚠️ ${crits} Critical Issue${crits>1?'s':''} Found`:`${warns+_errors.filter(e=>e.type==='info').length} Items Need Your Attention`;
+  const heading=crits>0?`⚠️ ${crits} Critical Issue${crits>1?'s':''} Found`:`${warns+window._errors.filter(e=>e.type==='info').length} Items Need Your Attention`;
 
   container.innerHTML=`<div class="${mainType} mb14">
     <div class="ep-header">
       <div class="ep-dot ${dot}"></div>
       <div class="ep-heading">${heading}</div>
-      <div class="ep-count">${_errors.length} item${_errors.length>1?'s':''}</div>
+      <div class="ep-count">${window._errors.length} item${window._errors.length>1?'s':''}</div>
     </div>
-    ${_errors.map(e=>`
+    ${window._errors.map(e=>`
       <div class="error-item ${e.type==='crit'?'crit':e.type==='warn'?'warn':'info'}">
         <div class="err-icon">${e.icon}</div>
         <div>
@@ -117,7 +117,7 @@ function buildErrorPanel(){
   </div>`;
 
   // Also show TDS balance
-  const tds=_i.tds_deducted,best=Math.min(_o.tax,_n.tax),bal=tds-best;
+  const tds=window._i.tds_deducted,best=Math.min(window._o.tax,window._n.tax),bal=tds-best;
   if(tds>0){
     container.innerHTML+=`<div class="error-panel ${bal>=0?'ok':'warn'} mb14">
       <div class="ep-header"><div class="ep-dot ${bal>=0?'green':'amber'}"></div><div class="ep-heading">${bal>=0?'Refund: '+fmt(bal)+' due on filing':'Balance Tax Due: '+fmt(Math.abs(bal))}</div></div>
