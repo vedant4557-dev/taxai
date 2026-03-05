@@ -1,13 +1,13 @@
 // NAVIGATION
 // =====================================================================================================================================================================
-let cur=1;const TOT=6;
+window.cur=1;const TOT=6;
 const snames=['Upload Docs','Basic Info','Income','Investments','Loans','EPF & Gratuity','Other Income'];
 
-function ns(f){cur=f+1;showStep(cur);}
-function ps(f){cur=f-1;showStep(cur);}
+function ns(f){window.cur=f+1;showStep(window.cur);}
+function ps(f){window.cur=f-1;showStep(window.cur);}
 function jumpTo(n){
   if(n===0){showUpload();return;}
-  if(n<=cur){cur=n;showStep(n);}
+  if(n<=window.cur){window.cur=n;showStep(n);}
 }
 function showUpload(){
   document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
@@ -37,10 +37,10 @@ function showStep(n){
   document.getElementById('step-name').textContent=snames[n];
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function restart(){cur=1;_extractedData={};_errors=[];showUpload();}
+function restart(){window.cur=1;window._extractedData={};window._errors=[];showUpload();}
 function setTog(el,fld,val){el.parentElement.querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById(fld).value=val;}
 function showCond(id,show){const el=document.getElementById(id);if(show)el.classList.add('show');else el.classList.remove('show');}
-function skipToStep1(){document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));cur=1;showStep(1);}
+function skipToStep1(){document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));window.cur=1;showStep(1);}
 
 // =====================================================================================================================================================================
 
