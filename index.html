@@ -671,6 +671,51 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 /* ── ToS page link in footer ── */
 .tos-link{color:var(--accent);font-weight:600;text-decoration:none;}
 .tos-link:hover{text-decoration:underline;}
+
+/* ── Confidence badges on autofilled form fields ── */
+.amt-inp.conf-low{border-color:var(--red)!important;background:#fdf0ee!important;}
+.amt-inp.conf-med{border-color:#f9a825!important;background:#fff8e1!important;}
+.conf-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:6px;vertical-align:middle;}
+.conf-tag.med{background:#fff8e1;color:#b45309;}
+.conf-tag.low{background:#fdf0ee;color:var(--red);}
+
+/* ── Employer TDS Alert ── */
+.tds-employer-alert{background:linear-gradient(135deg,#3d0000,#7a1010);color:#fff;border-radius:14px;padding:18px 20px;margin-bottom:16px;display:none;}
+.tds-employer-alert-title{font-size:15px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.tds-employer-alert-body{font-size:12px;opacity:.85;line-height:1.6;margin-bottom:12px;}
+.tds-employer-alert-action{font-size:12px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 14px;color:#fff;font-weight:700;line-height:1.5;}
+
+/* ── Salary Optimiser Panel ── */
+.optimiser-panel{background:var(--white);border-radius:16px;border:1.5px solid var(--border);padding:0;overflow:hidden;margin-bottom:12px;}
+.optimiser-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#f0faf3,#e8f5ec);}
+.optimiser-title{font-size:14px;font-weight:700;color:var(--accent);}
+.optimiser-body{padding:18px 20px;display:none;}
+.optimiser-body.open{display:block;}
+.opt-row{margin-bottom:18px;}
+.opt-row-label{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:6px;display:flex;justify-content:space-between;}
+.opt-row-label span{font-family:'JetBrains Mono',monospace;color:var(--accent);}
+.opt-slider{width:100%;accent-color:var(--accent);cursor:pointer;}
+.opt-saving{font-size:13px;font-weight:700;color:var(--accent);background:var(--al);border-radius:8px;padding:8px 12px;margin-top:6px;display:flex;align-items:center;gap:6px;}
+.opt-saving.none{color:var(--muted);background:var(--bg);}
+.opt-total{background:linear-gradient(135deg,#1a472a,#0f2d1a);color:#fff;border-radius:10px;padding:14px 16px;margin-top:12px;}
+.opt-total-label{font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.opt-total-val{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:#c8f04a;}
+.opt-total-sub{font-size:11px;opacity:.6;margin-top:2px;}
+
+/* ── Refund Prediction ── */
+.refund-predict{background:linear-gradient(135deg,#0f2d1a,#1a472a);border-radius:14px;padding:18px 20px;margin-bottom:12px;color:#fff;display:none;}
+.refund-predict-title{font-size:13px;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.refund-predict-amount{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#c8f04a;margin-bottom:4px;}
+.refund-predict-timeline{display:flex;gap:0;margin-top:14px;position:relative;}
+.refund-predict-timeline::before{content:'';position:absolute;top:14px;left:0;right:0;height:2px;background:rgba(255,255,255,.2);}
+.refund-step{flex:1;text-align:center;position:relative;z-index:1;}
+.refund-step-dot{width:12px;height:12px;border-radius:50%;margin:0 auto 6px;border:2px solid rgba(255,255,255,.3);}
+.refund-step-dot.done{background:#c8f04a;border-color:#c8f04a;}
+.refund-step-dot.active{background:#fff;border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.2);}
+.refund-step-dot.future{background:transparent;border-color:rgba(255,255,255,.3);}
+.refund-step-label{font-size:10px;opacity:.7;line-height:1.3;}
+.refund-step-date{font-size:11px;font-weight:700;margin-top:2px;}
+.refund-due-alert{background:rgba(255,220,0,.12);border:1px solid rgba(255,220,0,.3);border-radius:8px;padding:10px 12px;font-size:12px;opacity:.9;margin-top:12px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -1423,6 +1468,24 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   </div>
 
   <!-- ═══ PRIMARY CTA BAR — shown right after hero result ═══ -->
+  <!-- Employer TDS Deposit Alert -->
+  <div class="tds-employer-alert" id="tds-employer-alert">
+    <div class="tds-employer-alert-title">🚨 Your employer may NOT have deposited your TDS</div>
+    <div class="tds-employer-alert-body" id="tds-employer-alert-body"></div>
+    <div class="tds-employer-alert-action">
+      📋 Action required: Ask your HR/payroll to reconcile TDS deposits. Check 26AS on incometax.gov.in — only TDS reflected there can be claimed as credit. If employer hasn't deposited, you may get an IT notice even though TDS was deducted from your salary.
+    </div>
+  </div>
+
+  <!-- Refund Prediction -->
+  <div class="refund-predict" id="refund-predict">
+    <div class="refund-predict-title">💰 Your Expected Refund</div>
+    <div class="refund-predict-amount" id="refund-predict-amount">₹0</div>
+    <div id="refund-predict-sub" style="font-size:13px;opacity:.7;margin-bottom:4px;"></div>
+    <div class="refund-predict-timeline" id="refund-timeline"></div>
+    <div class="refund-due-alert" id="refund-due-alert"></div>
+  </div>
+
   <div id="primary-cta-bar" style="display:none;margin-bottom:16px;"></div>
 
   <!-- ═══ SIMPLE / ADVANCED MODE TOGGLE ═══ -->
@@ -1435,6 +1498,37 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div id="hero-result" class="hero-result"></div>
 
   <!-- ═══ ACCORDIONS ═══ -->
+  <!-- Salary Tax Optimiser -->
+  <div class="optimiser-panel" id="optimiser-panel" style="display:none;">
+    <div class="optimiser-header" onclick="toggleOptimiser()">
+      <div class="optimiser-title">💡 Tax Savings Optimiser — What if you invested more?</div>
+      <span id="optimiser-chevron">▼</span>
+    </div>
+    <div class="optimiser-body" id="optimiser-body">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Drag the sliders to see how additional investments reduce your tax. Changes don't affect your saved report.</div>
+      <div class="opt-row">
+        <div class="opt-row-label">80C Investments (ELSS, PPF, LIC…) <span id="opt-80c-val">₹0</span></div>
+        <input type="range" class="opt-slider" id="opt-80c" min="0" max="150000" step="5000" oninput="updateOptimiser()">
+        <div class="opt-saving" id="opt-80c-save"></div>
+      </div>
+      <div class="opt-row">
+        <div class="opt-row-label">NPS Tier 1 — 80CCD(1B) <span id="opt-nps-val">₹0</span></div>
+        <input type="range" class="opt-slider" id="opt-nps" min="0" max="50000" step="2500" oninput="updateOptimiser()">
+        <div class="opt-saving" id="opt-nps-save"></div>
+      </div>
+      <div class="opt-row">
+        <div class="opt-row-label">Health Insurance — 80D <span id="opt-80d-val">₹0</span></div>
+        <input type="range" class="opt-slider" id="opt-80d" min="0" max="50000" step="2500" oninput="updateOptimiser()">
+        <div class="opt-saving" id="opt-80d-save"></div>
+      </div>
+      <div class="opt-total">
+        <div class="opt-total-label">Total additional tax savings</div>
+        <div class="opt-total-val" id="opt-total-saving">₹0</div>
+        <div class="opt-total-sub" id="opt-total-sub">Adjust sliders above to see savings</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Tax Risk Score (expanded by default if non-zero) -->
   <div class="accord hidden" id="accord-risk" >
     <div class="accord-hdr" onclick="toggleAccord(this)">
@@ -1882,17 +1976,21 @@ function handleFile(input,key){
     input.value='';
     return;
   }
-  _files[key]=file;
-  const zone=document.getElementById('zone-'+key);
-  if(zone){
-    zone.classList.add('uploaded');
-    zone.style.borderColor='var(--accent)';
-    zone.style.background='var(--al)';
-    zone.style.borderStyle='solid';
-  }
-  const fn=document.getElementById('fn-'+key);
-  if(fn)fn.textContent=file.name;
-  updateExtractBtn();
+  // Document format detection — async, non-blocking
+  validateDocumentBeforeUpload(file, key).then(ok => {
+    if(!ok){ input.value=''; return; }
+    _files[key]=file;
+    const zone=document.getElementById('zone-'+key);
+    if(zone){
+      zone.classList.add('uploaded');
+      zone.style.borderColor='var(--accent)';
+      zone.style.background='var(--al)';
+      zone.style.borderStyle='solid';
+    }
+    const fn=document.getElementById('fn-'+key);
+    if(fn)fn.textContent=file.name;
+    updateExtractBtn();
+  });
 }
 function handleDrop(ev,key){
   ev.preventDefault();
@@ -2767,6 +2865,9 @@ function calculate(){
   buildScheduleCG();
   buildHeroResult();
   buildWhatsNext();
+  buildRefundPrediction(tdsBalance);
+  buildEmployerTDSAlert();
+  initOptimiser();
   // Fix 3: show context note on deductions accordion when new regime wins
   const dedNote=document.getElementById('ded-regime-note');
   if(dedNote)dedNote.style.display=win==='new'?'block':'none';
@@ -5813,6 +5914,7 @@ function showConfirmationScreen(data, f16Data, as26Data, aisData) {
 function confirmAndProceed() {
   if(_pendingExtractedData) {
     autoFillForm(_pendingExtractedData);
+    setTimeout(()=>applyFieldConfidence(_pendingExtractedData, window._f16||{}, window._as26||{}, window._ais||{}), 200);
   }
   document.getElementById('confirm-screen').classList.remove('show');
   cur=1; showStep(1);
@@ -5893,6 +5995,241 @@ function runValidationWarnings(inputData) {
       }
     }
   });
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE 1: Confidence badges carried through to form fields
+// ══════════════════════════════════════════════════════════════════════
+function applyFieldConfidence(data, f16Data, as26Data, aisData) {
+  // Fields that need special confidence treatment
+  const fieldChecks = [
+    { formId:'gross_d',    val: data.gross_salary,        maxSane: 10000000 },
+    { formId:'basic_d',    val: data.basic_salary,        maxSane: 8000000  },
+    { formId:'sec80c_d',   val: data.sec80c,              maxSane: 150000   },
+    { formId:'tds_deducted_d', val: data.tds_deducted_form16 || data.total_tds_26as, maxSane: null },
+  ];
+
+  const gross = data.gross_salary || 0;
+  const tds26 = data.total_tds_26as || 0;
+  const tdsF16 = data.tds_deducted_form16 || 0;
+
+  fieldChecks.forEach(fc => {
+    const el = document.getElementById(fc.formId);
+    if(!el || !fc.val) return;
+    el.classList.remove('conf-low','conf-med');
+
+    // Remove old conf tags
+    const existing = el.parentNode.querySelector('.conf-tag');
+    if(existing) existing.remove();
+
+    let level = null;
+    if(fc.maxSane && fc.val > fc.maxSane) level = 'low';
+    else if(fc.formId === 'tds_deducted_d' && tds26 > 0 && tdsF16 > 0 && Math.abs(tds26 - tdsF16) > 5000) level = 'med';
+    else if(fc.val > 5000000) level = 'med';
+
+    if(level) {
+      el.classList.add('conf-' + level);
+      const tag = document.createElement('span');
+      tag.className = `conf-tag ${level}`;
+      tag.textContent = level === 'low' ? '⚠ Verify' : '~ Check';
+      el.parentNode.insertBefore(tag, el.nextSibling);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE 2: Document format detection (client-side pre-check)
+// ══════════════════════════════════════════════════════════════════════
+async function checkDocumentFormat(file, expectedType) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result.toLowerCase();
+      const hints = {
+        f16:   ['form 16','employer','tds certificate','salary','deductor','pan of deductee'],
+        '26as':['form 26as','annual tax statement','traces','tds/tcs credit','deductor name'],
+        ais:   ['annual information statement','ais','sft','interest received','dividend'],
+      };
+      const keywords = hints[expectedType] || [];
+      const matched = keywords.filter(kw => text.includes(kw)).length;
+      resolve({ ok: matched >= 1, matched, total: keywords.length });
+    };
+    reader.onerror = () => resolve({ ok: true }); // if can't read, allow
+    // Read first 8KB of text (PDFs embed readable text)
+    reader.readAsText(file.slice(0, 8000));
+  });
+}
+
+async function validateDocumentBeforeUpload(file, type) {
+  if(!file || file.type !== 'application/pdf') return true; // non-PDF already handled
+  const result = await checkDocumentFormat(file, type);
+  if(!result.ok) {
+    const typeNames = { f16:'Form 16', '26as':'Form 26AS', ais:'AIS' };
+    const confirmed = confirm(
+      `⚠️ This file doesn't look like a ${typeNames[type]}.\n\n` +
+      `It may be a bank statement, payslip, or other document.\n\n` +
+      `Upload anyway? (AI extraction may fail or return wrong values)`
+    );
+    return confirmed;
+  }
+  return true;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE 3: Salary Tax Optimiser
+// ══════════════════════════════════════════════════════════════════════
+function initOptimiser() {
+  if(!_i || !_o || !_n) return;
+  const panel = document.getElementById('optimiser-panel');
+  if(panel) panel.style.display = 'block';
+
+  // Set sliders to current values
+  document.getElementById('opt-80c').value = Math.min(_i.sec80c || 0, 150000);
+  document.getElementById('opt-nps').value = Math.min(_i.nps || 0, 50000);
+  document.getElementById('opt-80d').value = Math.min(_i.sec80d_self || 0, 50000);
+  updateOptimiser();
+}
+
+function toggleOptimiser() {
+  const body = document.getElementById('optimiser-body');
+  const chev = document.getElementById('optimiser-chevron');
+  const isOpen = body.classList.toggle('open');
+  chev.textContent = isOpen ? '▲' : '▼';
+  if(isOpen) updateOptimiser();
+}
+
+function updateOptimiser() {
+  if(!_i || !_o || !_n) return;
+
+  const new80c  = parseInt(document.getElementById('opt-80c').value) || 0;
+  const newNps  = parseInt(document.getElementById('opt-nps').value) || 0;
+  const new80d  = parseInt(document.getElementById('opt-80d').value) || 0;
+
+  document.getElementById('opt-80c-val').textContent = '₹' + new80c.toLocaleString('en-IN');
+  document.getElementById('opt-nps-val').textContent  = '₹' + newNps.toLocaleString('en-IN');
+  document.getElementById('opt-80d-val').textContent  = '₹' + new80d.toLocaleString('en-IN');
+
+  // Current best tax
+  const currentBest = Math.min(_o.tax, _n.tax);
+
+  // What-if calculation with modified inputs
+  const modInputs = {..._i, sec80c: new80c, nps: newNps, sec80d_self: new80d};
+  const modOld = compOld(modInputs);
+  const modNew = compNew(modInputs);
+  const modBest = Math.min(modOld.tax, modNew.tax);
+
+  // Per-slider savings (marginal)
+  function sliderSaving(fieldKey, newVal) {
+    const base = {..._i};
+    const mod  = {..._i, [fieldKey]: newVal};
+    const baseBest = Math.min(compOld(base).tax, compNew(base).tax);
+    const modBest2 = Math.min(compOld(mod).tax, compNew(mod).tax);
+    return Math.max(0, Math.round(baseBest - modBest2));
+  }
+
+  const save80c = sliderSaving('sec80c', new80c);
+  const saveNps  = sliderSaving('nps', newNps);
+  const save80d  = sliderSaving('sec80d_self', new80d);
+  const totalSaving = Math.max(0, Math.round(currentBest - modBest));
+
+  const savingEl = (id, saving, extra80c) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(saving > 0) {
+      el.className = 'opt-saving';
+      el.textContent = `✓ Saves ₹${saving.toLocaleString('en-IN')} in tax`;
+    } else {
+      el.className = 'opt-saving none';
+      el.textContent = extra80c ? 'Already at maximum — no additional saving' : 'No additional saving at this level';
+    }
+  };
+
+  savingEl('opt-80c-save', save80c, new80c >= 150000);
+  savingEl('opt-nps-save', saveNps, newNps >= 50000);
+  savingEl('opt-80d-save', save80d, new80d >= 50000);
+
+  document.getElementById('opt-total-saving').textContent = '₹' + totalSaving.toLocaleString('en-IN');
+  document.getElementById('opt-total-sub').textContent = totalSaving > 0
+    ? `You could save ₹${totalSaving.toLocaleString('en-IN')} more by optimising these investments`
+    : 'Your investments are already well-optimised — great job!';
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE 4: Refund Prediction with Timeline
+// ══════════════════════════════════════════════════════════════════════
+function buildRefundPrediction(tdsBalance) {
+  const panel = document.getElementById('refund-predict');
+  if(!panel) return;
+
+  if(tdsBalance <= 0) {
+    panel.style.display = 'none';
+    return;
+  }
+
+  panel.style.display = 'block';
+  document.getElementById('refund-predict-amount').textContent = '₹' + Math.round(tdsBalance).toLocaleString('en-IN');
+  document.getElementById('refund-predict-sub').textContent = 'expected refund after filing ITR';
+
+  const today = new Date();
+  const deadline = new Date(2026, 6, 31); // Jul 31 2026
+  const daysToDeadline = Math.ceil((deadline - today) / (24*3600*1000));
+  const isBeforeDeadline = today < deadline;
+
+  // Timeline steps
+  const steps = [
+    { label:'File ITR', date:'by Jul 31', dot: today < deadline ? 'active' : 'done' },
+    { label:'ITR Verified', date:'+7–15 days', dot:'future' },
+    { label:'Processing', date:'+15–30 days', dot:'future' },
+    { label:'Refund Credit', date:'+30–45 days', dot:'future' },
+  ];
+
+  document.getElementById('refund-timeline').innerHTML = steps.map(s => `
+    <div class="refund-step">
+      <div class="refund-step-dot ${s.dot}"></div>
+      <div class="refund-step-label">${s.label}</div>
+      <div class="refund-step-date">${s.date}</div>
+    </div>`).join('');
+
+  const dueEl = document.getElementById('refund-due-alert');
+  if(isBeforeDeadline) {
+    dueEl.innerHTML = `⏰ <strong>${daysToDeadline} days until Jul 31 deadline.</strong> File now to get your ₹${Math.round(tdsBalance).toLocaleString('en-IN')} refund by ~September 2026. Late filing after Jul 31 incurs ₹5,000 penalty (Sec 234F) and delays refund.`;
+  } else {
+    dueEl.innerHTML = `⚠️ Deadline passed. You can still file a belated return before Dec 31 with a ₹5,000 penalty. File ASAP to claim your refund — the longer you wait, the longer the IT Dept holds your money.`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE 5: Employer TDS Deposit Alert
+// ══════════════════════════════════════════════════════════════════════
+function buildEmployerTDSAlert() {
+  const alert = document.getElementById('tds-employer-alert');
+  if(!alert || !_i) return;
+
+  // Get TDS values from extraction
+  const tdsF16  = window._f16 ? (window._f16.tds_deducted_form16 || 0) : 0;
+  const tds26as = window._as26 ? (window._as26.total_tds_26as || 0) : 0;
+
+  // Only show if both documents were uploaded and there's a meaningful mismatch
+  if(tdsF16 <= 0 || tds26as <= 0) {
+    alert.style.display = 'none';
+    return;
+  }
+
+  const diff = tdsF16 - tds26as; // positive = F16 says more was deducted than 26AS shows
+  const pct  = Math.abs(diff) / tdsF16 * 100;
+
+  if(diff > 1000) {
+    // F16 shows more TDS than 26AS — employer deducted but didn't deposit
+    alert.style.display = 'block';
+    document.getElementById('tds-employer-alert-body').innerHTML =
+      `Your Form 16 says your employer deducted <strong>₹${Math.round(tdsF16).toLocaleString('en-IN')}</strong> as TDS from your salary. But Form 26AS — which is the government's official record — only shows <strong>₹${Math.round(tds26as).toLocaleString('en-IN')}</strong>. This <strong>₹${Math.round(diff).toLocaleString('en-IN')} gap (${Math.round(pct)}%)</strong> means your employer deducted TDS from your salary but may NOT have deposited it with the government. You will only get credit for what's in 26AS — the missing amount could trigger an IT notice.`;
+    try{if(typeof gtag==='function') gtag('event','employer_tds_mismatch_shown',{event_category:'alert',value:Math.round(diff)});}catch(e){}
+  } else if(diff < -1000) {
+    // 26AS shows MORE than F16 — extra TDS credit (good for user, but worth noting)
+    alert.style.display = 'none'; // Don't alarm user for a good surprise
+  } else {
+    alert.style.display = 'none';
+  }
 }
 // ── Tooltip: click/touch toggle (works on mobile) ──────────────────────────
 (function(){
