@@ -47,7 +47,9 @@ function calcHRA(b,da,hr,rp,metro){
 function gv(id){return parseFloat(document.getElementById(id).value)||0;}
 function gs(id){return document.getElementById(id).value;}
 
-let _o,_n,_i;
+window._o=null; window._n=null; window._i=null;
+// local aliases updated after each calculation
+let _o,_n,_i; // local aliases — synced to window after each calc
 
 function compOld(i){
   const{gross,basic,da,hra_received,rent_paid,is_metro,prof_tax,has_lta,lta_received,lta_claimed,has_cea,cea,hostel_allowance,sec80c,nps,employer_nps,sec80d_self,sec80d_parents,home_loan_interest,home_loan_principal,sec80e,sec80tta,sec80g,sec80u,epf_employee,has_gratuity,gratuity,other_exempt,has_vrs,vrs_amount,has_retrench,retrench_amount,retrench_years,has_leave_enc,leave_enc_amount,interest_income,rental_income,stcg,ltcg,freelance,crypto,savings_interest,gaming_income,sec89_relief,age}=i;
@@ -123,7 +125,7 @@ function compNew(i){
 
 function calculate(){
   try{
-  _i={
+  window._i={
     gross:gv('gross'),basic:gv('basic'),da:gv('da'),
     hra_received:gv('hra_received'),rent_paid:gv('rent_paid'),
     is_metro:gs('city')==='metro',prof_tax:gv('prof_tax'),
@@ -148,12 +150,13 @@ function calculate(){
     age:parseInt(document.getElementById('age').value)||0,
     gross_salary:gv('gross'),
   };
-  runValidationWarnings(_i);
-  if(_i.gross===0){showStep(2);return;}
-  _o=compOld(_i);_n=compNew(_i);
-  const win=_o.tax<=_n.tax?'old':'new',sav=Math.abs(_o.tax-_n.tax),best=Math.min(_o.tax,_n.tax);
+  runValidationWarnings(window._i);
+  if(window._i.gross===0){showStep(2);return;}
+  window._o=compOld(window._i);window._n=compNew(window._i);
+  window._o=window._o; window._n=window._n; window._i=window._i;
+  const win=window._o.tax<=window._n.tax?'old':'new',sav=Math.abs(window._o.tax-window._n.tax),best=Math.min(window._o.tax,window._n.tax);
   const name=document.getElementById('name').value||'Your';
-  const tdsBalance=_i.tds_deducted-best;
+  const tdsBalance=window._i.tds_deducted-best;
 
   document.getElementById('rh-name').textContent=name+"'s Tax Report";
   document.getElementById('rh-regime').textContent=win==='new'?'New Regime ✓':'Old Regime ✓';
@@ -161,13 +164,13 @@ function calculate(){
   document.getElementById('res-hdr').style.background=win==='new'
     ?'linear-gradient(135deg,#1a472a,#0f2d1a)':'linear-gradient(135deg,#7a5010,#4a2f08)';
   document.getElementById('st-tax').textContent=fmt(best);
-  const _stb=cessBreakdown(Math.round(best/1.04),_i.gross);
+  const _stb=cessBreakdown(Math.round(best/1.04),window._i.gross);
   const stSub=document.getElementById('st-tax-sub');
   if(stSub) stSub.textContent=_stb.surcharge>0?'incl. '+(_stb.sRate*100).toFixed(0)+'% surcharge + 4% cess':'incl. 4% cess';
   // Effective rate = Tax / Gross income (what % of total income goes to tax)
   // Marginal rate = top slab rate (what you pay on the next ₹1 earned)
-  const effRate = pct(best, _i.gross);
-  const taxableInc = win==='new' ? _n.taxable : _o.taxable;
+  const effRate = pct(best, window._i.gross);
+  const taxableInc = win==='new' ? window._n.taxable : window._o.taxable;
   // Determine marginal rate from taxable income (new regime slabs)
   const marginalRate = win==='new'
     ? (taxableInc>2400000?30:taxableInc>2000000?25:taxableInc>1600000?20:taxableInc>1200000?15:taxableInc>800000?10:taxableInc>400000?5:0)
@@ -180,7 +183,7 @@ function calculate(){
   // Surcharge callout
   const surWarn = document.getElementById('surcharge-warn');
   if(surWarn){
-    const bd=cessBreakdown(Math.round(best/1.04),_i.gross);
+    const bd=cessBreakdown(Math.round(best/1.04),window._i.gross);
     if(bd.surcharge>0){
       const pct=Math.round(bd.sRate*100);
       surWarn.style.display='block';
@@ -197,20 +200,20 @@ function calculate(){
   const rebateBanner = document.getElementById('rebate-banner');
   if(rebateBanner){
     // New regime: full rebate if taxable <= 12L
-    if(_n.taxable<=1200000 && win==='new'){
+    if(window._n.taxable<=1200000 && win==='new'){
       rebateBanner.style.display='block';
       rebateBanner.innerHTML='🎉 <strong>Section 87A Rebate Applied!</strong> Your taxable income is ₹'+
-        (_n.taxable/100000).toFixed(2)+'L — under the ₹12L threshold. '+
+        (window._n.taxable/100000).toFixed(2)+'L — under the ₹12L threshold. '+
         '<strong>Zero tax under the New Regime</strong> before cess. Your final tax is only the 4% cess on any special income (LTCG/STCG/Crypto).';
     // Marginal relief band
-    } else if(_n.taxable<=1275000 && win==='new'){
-      const saved=Math.round((_n.taxable*0.1)-(_n.taxable-1200000));
+    } else if(window._n.taxable<=1275000 && win==='new'){
+      const saved=Math.round((window._n.taxable*0.1)-(window._n.taxable-1200000));
       rebateBanner.style.display='block';
       rebateBanner.innerHTML='💡 <strong>Marginal Relief Applied (Sec 87A):</strong> Your income is just above ₹12L. '+
-        'Instead of paying full slab tax, your tax is capped at ₹'+(_n.taxable-1200000).toLocaleString('en-IN')+
+        'Instead of paying full slab tax, your tax is capped at ₹'+(window._n.taxable-1200000).toLocaleString('en-IN')+
         ' (the amount exceeding ₹12L). You saved ~'+fmt(Math.max(0,saved))+'.';
     // Old regime 87A: if taxable <= 5L
-    } else if(_o.taxable<=500000 && win==='old'){
+    } else if(window._o.taxable<=500000 && win==='old'){
       rebateBanner.style.display='block';
       rebateBanner.innerHTML='🎉 <strong>Section 87A Rebate Applied (Old Regime)!</strong> Your taxable income is under ₹5L. '+
         'Tax rebate of up to ₹12,500 applied — effectively zero income tax.';
@@ -228,7 +231,7 @@ function calculate(){
       belatedWarn.innerHTML='🚨 <strong>Belated Return Warning:</strong> The ITR filing deadline (July 31, 2025) has passed. '+
         'As per Income Tax rules, you <strong>cannot opt for the Old Regime in a Belated Return</strong>. '+
         'Your tax will be computed under the New Regime only. '+
-        '<strong>Tax due under New Regime: '+fmt(_n.tax)+'</strong>';
+        '<strong>Tax due under New Regime: '+fmt(window._n.tax)+'</strong>';
     } else if(today>filingDeadline){
       belatedWarn.style.display='block';
       belatedWarn.innerHTML='⚠️ <strong>Filing after July 31:</strong> You are filing a Belated Return (Sec 139(4)). '+
@@ -239,20 +242,20 @@ function calculate(){
   }
 
   // Multiple employer warning + duplicate standard deduction check
-  if(_i.changed_jobs==='yes'){
-    const emp1=_i.salary_emp1||0, emp2=_i.salary_emp2||0;
-    const tdsEmp=(_i.tds_emp1||0)+(_i.tds_emp2||0);
+  if(window._i.changed_jobs==='yes'){
+    const emp1=window._i.salary_emp1||0, emp2=window._i.salary_emp2||0;
+    const tdsEmp=(window._i.tds_emp1||0)+(window._i.tds_emp2||0);
     const errP=document.getElementById('error-panel');
 
     // Check 1: Consolidated salary mismatch
-    if(emp1+emp2>0 && Math.abs((emp1+emp2)-_i.gross)>10000 && errP){
+    if(emp1+emp2>0 && Math.abs((emp1+emp2)-window._i.gross)>10000 && errP){
       errP.innerHTML=`<div class="error-panel warn mb14">
         <div class="ep-heading">⚠️ Multiple Employer — Salary Mismatch</div>
         <div class="err-desc">
           Employer 1: ${fmt(emp1)}<br>
           Employer 2: ${fmt(emp2)}<br>
           <strong>Consolidated: ${fmt(emp1+emp2)}</strong><br>
-          Your Gross Salary entry: ${fmt(_i.gross)} — difference of ${fmt(Math.abs((emp1+emp2)-_i.gross))}.
+          Your Gross Salary entry: ${fmt(window._i.gross)} — difference of ${fmt(Math.abs((emp1+emp2)-window._i.gross))}.
         </div>
         <div class="err-action amber">→ Update Gross Salary in Step 2 to ${fmt(emp1+emp2)} (total of both)</div>
       </div>`+errP.innerHTML;
@@ -276,12 +279,12 @@ function calculate(){
     }
 
     // Check 3: TDS under-deduction warning (very common in job change)
-    if(tdsEmp>0 && Math.abs(tdsEmp-_i.tds_deducted)>5000 && errP){
+    if(tdsEmp>0 && Math.abs(tdsEmp-window._i.tds_deducted)>5000 && errP){
       errP.innerHTML=`<div class="error-panel warn mb14">
         <div class="ep-heading">⚠️ TDS Under-Deduction — Job Change</div>
         <div class="err-desc">
-          TDS by Employer 1: ${fmt(_i.tds_emp1||0)} + Employer 2: ${fmt(_i.tds_emp2||0)} = ${fmt(tdsEmp)}<br>
-          But total TDS entered above: ${fmt(_i.tds_deducted)}. Difference: ${fmt(Math.abs(tdsEmp-_i.tds_deducted))}<br>
+          TDS by Employer 1: ${fmt(window._i.tds_emp1||0)} + Employer 2: ${fmt(window._i.tds_emp2||0)} = ${fmt(tdsEmp)}<br>
+          But total TDS entered above: ${fmt(window._i.tds_deducted)}. Difference: ${fmt(Math.abs(tdsEmp-window._i.tds_deducted))}<br>
           Each employer only taxes their portion — combined salary pushes you into a higher slab.
         </div>
         <div class="err-action amber">→ You likely have additional tax due. Pay Self-Assessment Tax via Challan 280 before filing.</div>
@@ -293,8 +296,8 @@ function calculate(){
 
   const oc=document.getElementById('old-card'),nc=document.getElementById('new-card');
   oc.classList.toggle('winner',win==='old');nc.classList.toggle('winner',win==='new');
-  oc.innerHTML=(win==='old'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">Old Regime</div><div class="rc-tax">'+fmt(_o.tax)+'</div><div class="rc-eff">Effective: '+pct(_o.tax,_i.gross)+'</div>';
-  nc.innerHTML=(win==='new'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">New Regime</div><div class="rc-tax">'+fmt(_n.tax)+'</div><div class="rc-eff">Effective: '+pct(_n.tax,_i.gross)+'</div>';
+  oc.innerHTML=(win==='old'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">Old Regime</div><div class="rc-tax">'+fmt(window._o.tax)+'</div><div class="rc-eff">Effective: '+pct(window._o.tax,window._i.gross)+'</div>';
+  nc.innerHTML=(win==='new'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">New Regime</div><div class="rc-tax">'+fmt(window._n.tax)+'</div><div class="rc-eff">Effective: '+pct(window._n.tax,window._i.gross)+'</div>';
 
   buildErrorPanel();
   buildRecon();
@@ -320,7 +323,7 @@ function calculate(){
   const dedTitle=document.getElementById('accord-ded-title');
   if(dedTitle)dedTitle.textContent=win==='new'?'📊 Old Regime Deductions (for reference)':'📊 Deduction Breakdown & Utilization';
   // Fix 7: Record audit event
-  _auditTrail.push({time:new Date(),event:'Tax report generated',detail:`${win==='new'?'New':'Old'} Regime · Tax ${fmt(Math.min(_o.tax,_n.tax),true)} · ${_i.tds_deducted>0?(Math.min(_o.tax,_n.tax)-_i.tds_deducted>=0?'Due '+fmt(Math.abs(Math.min(_o.tax,_n.tax)-_i.tds_deducted),true):'Refund '+fmt(Math.abs(Math.min(_o.tax,_n.tax)-_i.tds_deducted),true)):''}`,icon:'🧾'});
+  window._auditTrail.push({time:new Date(),event:'Tax report generated',detail:`${win==='new'?'New':'Old'} Regime · Tax ${fmt(Math.min(window._o.tax,window._n.tax),true)} · ${window._i.tds_deducted>0?(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted>=0?'Due '+fmt(Math.abs(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted),true):'Refund '+fmt(Math.abs(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted),true)):''}`,icon:'🧾'});
   buildAuditTrail();
   // Apply simple mode by default — user can switch to advanced
   setTimeout(() => setMode(currentMode), 50);
@@ -331,12 +334,12 @@ function calculate(){
   // ── GA funnel tracking ────────────────────────────────────────────────────
   // These events persist in GA even when server restarts
   try {
-    const win2=_o.tax<_n.tax?'old':'new';
-    const bestTax2=Math.min(_o.tax,_n.tax);
-    const tds2=_i.tds_deducted||0;
+    const win2=window._o.tax<window._n.tax?'old':'new';
+    const bestTax2=Math.min(window._o.tax,window._n.tax);
+    const tds2=window._i.tds_deducted||0;
     const bal2=tds2-bestTax2;
     // Salary bracket (anonymised — ranges only, no exact number)
-    const gross=_i.gross||0;
+    const gross=window._i.gross||0;
     const bracket = gross<300000?'<3L':gross<500000?'3-5L':gross<700000?'5-7L':gross<1000000?'7-10L':gross<1500000?'10-15L':'15L+';
     if(typeof gtag==='function'){
       gtag('event','tax_calculated',{
@@ -344,8 +347,8 @@ function calculate(){
         regime_winner: win2,
         refund_or_due: bal2>=0?'refund':'due',
         salary_bracket: bracket,
-        has_errors: (_errors&&_errors.length>0)?'yes':'no',
-        extraction_used: (_i.tds_deducted_form16>0)?'yes':'no'
+        has_errors: (window._errors&&window._errors.length>0)?'yes':'no',
+        extraction_used: (window._i.tds_deducted_form16>0)?'yes':'no'
       });
     }
   } catch(e){}
