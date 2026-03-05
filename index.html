@@ -2609,20 +2609,20 @@ function exportITRJson(){
     ]
   };
 
-  const blob = new Blob([JSON.stringify(itr1, null, 2)], {type: 'application/json'});
+  const jsonStr = JSON.stringify(itr1, null, 2);
+  const blob = new Blob([jsonStr], {type: 'application/octet-stream'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.download = `TaxSmart_ITR1_FY2025-26_${new Date().toISOString().split('T')[0]}.json`;
+  a.style.display = 'none';
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 300);
 
   // Show confirmation
-  const btn = event.target;
-  const orig = btn.textContent;
-  btn.textContent = '✓ Downloaded!';
-  btn.style.background = '#1a472a';
-  setTimeout(()=>{btn.textContent=orig;btn.style.background='#2d6a4f';}, 2500);
+  const btn = event?.target || document.querySelector('[onclick*="exportITRJson"]');
+  if(btn){ const orig=btn.textContent; btn.textContent='✓ Downloaded!'; btn.style.background='#1a472a'; setTimeout(()=>{btn.textContent=orig;btn.style.background='#2d6a4f';},2500); }
 }
 
 // ── Keep-alive ping (prevents Render cold start) ────────────────────────────
@@ -3387,7 +3387,8 @@ ${errorHTML}
   const blob=new Blob([html],{type:'text/html'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');
   a.href=url;a.download=`TaxSmart_${name.replace(/\s+/g,'_')}_FY2025-26.html`;
-  a.click();URL.revokeObjectURL(url);
+  a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},300);
 }
 // ═══════════════════════════════════════════════════════════════
 // INVESTMENT SIMULATOR
@@ -4433,7 +4434,8 @@ function downloadNoticeDraft(){
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'TaxSmart_IT_Notice_Response_Draft.txt';
-  a.click();
+  a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(()=>document.body.removeChild(a),300);
 }
 
 function buildAuditTrail(){
@@ -4999,8 +5001,8 @@ body{background:#f7f5f0;display:flex;align-items:center;justify-content:center;m
   const a = document.createElement('a');
   a.href = url;
   a.download = `TaxSmart_Card_${(_taxCardData.name||'').replace(/\s+/g,'_')}_FY2025-26.html`;
-  a.click();
-  URL.revokeObjectURL(url);
+  a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},300);
   try { if(typeof gtag==='function') gtag('event','tax_card_downloaded',{event_category:'sharing'}); } catch(e){}
 }
 
@@ -5624,7 +5626,7 @@ function downloadHRReport() {
   const blob = new Blob([csv], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href = url; a.download = 'TaxSmart_Team_Report_FY2025-26.csv'; a.click();
+  a.href = url; a.download = 'TaxSmart_Team_Report_FY2025-26.csv'; a.style.display='none'; document.body.appendChild(a); a.click(); setTimeout(()=>document.body.removeChild(a),300);
   URL.revokeObjectURL(url);
   try { if(typeof gtag==='function') gtag('event','hr_csv_downloaded',{event_category:'b2b'}); } catch(e){}
 }
@@ -5639,7 +5641,7 @@ function downloadHRTemplate() {
   const blob = new Blob([csv], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href = url; a.download = 'TaxSmart_Employee_Template.csv'; a.click();
+  a.href = url; a.download = 'TaxSmart_Employee_Template.csv'; a.style.display='none'; document.body.appendChild(a); a.click(); setTimeout(()=>document.body.removeChild(a),300);
   URL.revokeObjectURL(url);
 }
 
