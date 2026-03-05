@@ -630,6 +630,47 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
 .penalty-row:last-child{border-bottom:none;font-weight:700;font-size:14px;}
 .penalty-row span:last-child{font-family:'JetBrains Mono',monospace;color:var(--red);}
 .penalty-row.ok span:last-child{color:var(--accent);}
+
+/* ── Extraction Confirmation Screen ── */
+.confirm-screen{display:none;background:var(--white);border-radius:18px;border:1.5px solid var(--border);padding:24px;margin-top:16px;}
+.confirm-screen.show{display:block;}
+.confirm-title{font-family:'Crimson Pro',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.confirm-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.confirm-fields{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.confirm-field{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);}
+.confirm-field.warn{border-color:#f9a825;background:#fff8e1;}
+.confirm-field.err{border-color:var(--red);background:#fdf0ee;}
+.confirm-field.ok{border-color:var(--accent);background:var(--al);}
+.confirm-field-icon{font-size:16px;flex-shrink:0;}
+.confirm-field-label{font-size:12px;color:var(--muted);font-weight:600;min-width:140px;}
+.confirm-field-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--ink);flex:1;}
+.confirm-field-conf{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:auto;}
+.conf-high{background:var(--al);color:var(--accent);}
+.conf-med{background:#fff8e1;color:#b45309;}
+.conf-low{background:#fdf0ee;color:var(--red);}
+.confirm-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.confirm-proceed-btn{flex:2;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.confirm-proceed-btn:hover{background:#153921;transform:translateY(-1px);}
+.confirm-edit-btn{flex:1;padding:13px;background:transparent;border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink2);}
+.confirm-partial-banner{background:#fff8e1;border:1.5px solid #f9a825;border-radius:10px;padding:12px 16px;font-size:13px;color:#7a4f08;margin-bottom:14px;line-height:1.5;display:flex;gap:10px;align-items:flex-start;}
+
+/* ── Validation Warning Toasts ── */
+.val-warn{display:flex;align-items:flex-start;gap:10px;background:#fdf3e3;border:1.5px solid #c17f24;border-radius:10px;padding:10px 14px;font-size:12.5px;color:#7a4f08;margin-top:8px;line-height:1.5;animation:fadeIn .3s ease;}
+.val-err{background:#fdf0ee;border-color:var(--red);color:#7a1010;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Onboarding tooltip ── */
+.onboard-banner{background:linear-gradient(135deg,#f0f7ff,#e8f0ff);border:1.5px solid #c0d4f5;border-radius:14px;padding:16px 20px;margin-bottom:20px;}
+.onboard-title{font-size:13px;font-weight:700;color:#1a3a72;margin-bottom:10px;}
+.onboard-docs{display:flex;flex-direction:column;gap:8px;}
+.onboard-doc{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--ink2);line-height:1.5;}
+.onboard-doc-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.onboard-doc strong{color:var(--ink);display:block;margin-bottom:1px;}
+.onboard-dismiss{margin-top:12px;font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:'Sora',sans-serif;padding:0;}
+
+/* ── ToS page link in footer ── */
+.tos-link{color:var(--accent);font-weight:600;text-decoration:none;}
+.tos-link:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -665,6 +706,26 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
   <div class="card-desc">AI reads your Form 16, 26AS &amp; AIS — detects mismatches the IT Dept sees, finds unclaimed deductions, and calculates your exact refund. Free, no login, 30 seconds.</div>
 
 
+
+  <!-- Onboarding Education Banner -->
+  <div class="onboard-banner" id="onboard-banner">
+    <div class="onboard-title">📚 First time here? Here's what each document is:</div>
+    <div class="onboard-docs">
+      <div class="onboard-doc">
+        <span class="onboard-doc-icon">📄</span>
+        <div><strong>Form 16</strong> Your employer sends this every June. It shows your salary, deductions, and how much TDS they deducted. Check your email or ask HR.</div>
+      </div>
+      <div class="onboard-doc">
+        <span class="onboard-doc-icon">📊</span>
+        <div><strong>Form 26AS</strong> The government's record of all tax deducted on your behalf. Download from <a href="https://incometax.gov.in" target="_blank" style="color:var(--accent);font-weight:600;">incometax.gov.in</a> → e-File → View Form 26AS.</div>
+      </div>
+      <div class="onboard-doc">
+        <span class="onboard-doc-icon">📑</span>
+        <div><strong>AIS (Annual Information Statement)</strong> Shows ALL your income — salary, interest, dividends, capital gains. Same portal → AIS tab. More complete than 26AS.</div>
+      </div>
+    </div>
+    <button class="onboard-dismiss" onclick="dismissOnboard()">Got it, hide this →</button>
+  </div>
   <!-- Social proof + mismatch detection hook -->
   <div style="background:linear-gradient(135deg,#0f2d1a,#1a472a);border-radius:14px;padding:16px 20px;margin-bottom:20px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
@@ -716,7 +777,7 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
       </div>
     </div>
     <div style="margin-top:10px;padding-top:10px;border-top:1px solid #e2ddd6;font-size:11px;color:#8c8880;">
-      Secure cloud infrastructure with encrypted processing · Deleted automatically after extraction · <a href="privacy.html" target="_blank" style="color:#2d6a4f;font-weight:600;">Full privacy policy →</a>
+      Secure cloud infrastructure with encrypted processing · Deleted automatically after extraction · <a href="privacy.html" target="_blank" style="color:#2d6a4f;font-weight:600;">Privacy policy →</a> · <a href="tos.html" target="_blank" style="color:#2d6a4f;font-weight:600;">Terms of service →</a>
     </div>
   </div>
 
@@ -775,6 +836,19 @@ input[type=text]:focus{border-color:var(--accent);background:var(--white);box-sh
       <div><div class="ep-label">Cross-checking for errors</div><div class="ep-sub" id="ep-cross-sub">Mismatches, missing PAN, undeclared income</div></div>
     </div>
   </div><!-- /extract-progress -->
+
+  <!-- Extraction Confirmation Screen -->
+  <div class="confirm-screen" id="confirm-screen">
+    <div class="confirm-title">✅ Extraction complete — please verify</div>
+    <div class="confirm-sub">AI extracted these values from your documents. Review before proceeding — amber fields need your attention.</div>
+    <div id="confirm-partial-banner"></div>
+    <div class="confirm-fields" id="confirm-fields"></div>
+    <div class="confirm-actions">
+      <button class="confirm-proceed-btn" onclick="confirmAndProceed()">Looks good — Continue to Calculator →</button>
+      <button class="confirm-edit-btn" onclick="skipToStep1()">Edit manually instead</button>
+    </div>
+  </div>
+
 
   <!-- Payslip Intelligence Section -->
   <div style="margin-top:20px;padding-top:20px;border-top:1.5px solid var(--border);">
@@ -2031,12 +2105,7 @@ async function runExtraction(){
     window._extractionConfidence={pct:confidencePct,filled:filledFields.length,total:totalExpectedFields.length,manual:manualCount};
 
     setTimeout(()=>{
-      autoFillForm(_extractedData);
-      cur=1;showStep(1);
-      if(Object.keys(f16Data).length>2){
-        ['autofill-banner-1','autofill-banner-2','autofill-banner-3','autofill-banner-5']
-          .forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});
-      }
+      showConfirmationScreen(_extractedData, f16Data, as26Data, aisData);
       if(Object.keys(as26Data).length>2||Object.keys(aisData).length>2){
         const b=document.getElementById('autofill-banner-6');if(b)b.style.display='flex';
       }
@@ -2073,6 +2142,19 @@ async function runExtraction(){
 
     ['f16','26as','ais'].forEach(k=>{if(_files[k])setEpState(k,'err','Could not read — please fill manually');});
     setEpState('cross','err',userMsg);
+
+    // Partial autofill fallback — fill whatever was extracted before failure
+    if(_extractedData && Object.keys(_extractedData).length > 0){
+      autoFillForm(_extractedData);
+      const partialCount = Object.keys(_extractedData).filter(k=>_extractedData[k]>0).length;
+      if(partialCount > 0){
+        const pb = document.createElement('div');
+        pb.className='confirm-partial-banner';
+        pb.style.marginTop='12px';
+        pb.innerHTML=`⚠️ <div><strong>Partial extraction saved ${partialCount} fields.</strong> We filled what we could — highlighted fields below were auto-filled. Please verify and complete the red/empty fields manually.</div>`;
+        document.getElementById('extract-progress').appendChild(pb);
+      }
+    }
 
     const warnBox=getWm();
     if(warnBox){
@@ -2522,6 +2604,7 @@ function calculate(){
     age:parseInt(document.getElementById('age').value)||0,
     gross_salary:gv('gross'),
   };
+  runValidationWarnings(_i);
   if(_i.gross===0){showStep(2);return;}
   _o=compOld(_i);_n=compNew(_i);
   const win=_o.tax<=_n.tax?'old':'new',sav=Math.abs(_o.tax-_n.tax),best=Math.min(_o.tax,_n.tax);
@@ -5628,6 +5711,188 @@ function renderTaxCalendar() {
       </div>
     </div>`;
   }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE: Onboarding Education
+// ══════════════════════════════════════════════════════════════════════
+function dismissOnboard(){
+  const b=document.getElementById('onboard-banner');
+  if(b){b.style.transition='all .3s';b.style.opacity='0';b.style.maxHeight='0';b.style.padding='0';b.style.margin='0';setTimeout(()=>b.style.display='none',300);}
+  try{localStorage.setItem('ts_onboard_dismissed','1');}catch(e){}
+}
+(function initOnboard(){
+  try{if(localStorage.getItem('ts_onboard_dismissed')==='1'){const b=document.getElementById('onboard-banner');if(b)b.style.display='none';}}catch(e){}
+})();
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE: Extraction Confirmation Screen
+// ══════════════════════════════════════════════════════════════════════
+let _pendingExtractedData = null;
+
+function showConfirmationScreen(data, f16Data, as26Data, aisData) {
+  _pendingExtractedData = data;
+
+  const screen = document.getElementById('confirm-screen');
+  screen.classList.add('show');
+
+  // Scroll to it
+  setTimeout(()=>screen.scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
+
+  // Partial banner if some docs failed
+  const failed = [];
+  if(_files.f16 && Object.keys(f16Data).length <= 2) failed.push('Form 16');
+  if(_files['26as'] && Object.keys(as26Data).length <= 2) failed.push('Form 26AS');
+  if(_files.ais && Object.keys(aisData).length <= 2) failed.push('AIS');
+
+  const partialBanner = document.getElementById('confirm-partial-banner');
+  if(failed.length > 0) {
+    partialBanner.innerHTML = `<div class="confirm-partial-banner">⚠️ <div><strong>Partial extraction:</strong> We couldn't fully read your ${failed.join(', ')}. Fields from these documents are shown in red — please fill them manually. All other values were extracted successfully.</div></div>`;
+  } else {
+    partialBanner.innerHTML = '';
+  }
+
+  // Build field list
+  const fields = [
+    { key:'gross_salary',        label:'Gross Salary',          icon:'💰', src:'Form 16' },
+    { key:'basic_salary',        label:'Basic Salary',          icon:'📋', src:'Form 16' },
+    { key:'hra_received',        label:'HRA Received',          icon:'🏠', src:'Form 16' },
+    { key:'tds_deducted_form16', label:'TDS (Form 16)',         icon:'🏦', src:'Form 16' },
+    { key:'total_tds_26as',      label:'TDS (Form 26AS)',       icon:'🏦', src:'26AS' },
+    { key:'sec80c',              label:'80C Deductions',        icon:'📈', src:'Form 16' },
+    { key:'sec80d_self',         label:'80D Health Insurance',  icon:'❤️', src:'Form 16' },
+    { key:'interest_income_ais', label:'Interest Income',       icon:'💵', src:'AIS' },
+    { key:'ltcg_ais',            label:'LTCG',                  icon:'📊', src:'AIS' },
+    { key:'stcg_ais',            label:'STCG',                  icon:'📊', src:'AIS' },
+  ];
+
+  const tds26as = data.total_tds_26as || 0;
+  const tdsAis  = data.tds_total_ais || 0;
+  const tdsF16  = data.tds_deducted_form16 || 0;
+  const bestTds = tds26as > 0 ? tds26as : tdsAis > 0 ? tdsAis : tdsF16;
+
+  // Sanity checks
+  const gross = data.gross_salary || 0;
+  const tds   = bestTds;
+  const c80c  = data.sec80c || 0;
+
+  const fieldsHtml = fields.map(f => {
+    const val = data[f.key];
+    if(!val || val === 0) return ''; // skip empty
+
+    // Confidence based on sanity checks
+    let confClass = 'conf-high', confLabel = '✓ High', cardClass = 'ok';
+
+    // TDS > gross is impossible
+    if(f.key === 'tds_deducted_form16' && gross > 0 && val > gross) {
+      confClass='conf-low'; confLabel='⚠ Check'; cardClass='err';
+    }
+    // 80C > 150000 is impossible (legal max)
+    if(f.key === 'sec80c' && val > 150000) {
+      confClass='conf-low'; confLabel='⚠ Exceeds limit'; cardClass='err';
+    }
+    // Large values flag as medium confidence
+    if(val > 5000000) { confClass='conf-med'; confLabel='~ Verify'; cardClass='warn'; }
+    // TDS mismatch between F16 and 26AS
+    if(f.key === 'tds_deducted_form16' && tds26as > 0 && Math.abs(val - tds26as) > 5000) {
+      confClass='conf-med'; confLabel='~ Mismatch'; cardClass='warn';
+    }
+
+    return `<div class="confirm-field ${cardClass}">
+      <span class="confirm-field-icon">${f.icon}</span>
+      <span class="confirm-field-label">${f.label}</span>
+      <span class="confirm-field-val">₹${Math.round(val).toLocaleString('en-IN')}</span>
+      <span class="confirm-field-conf ${confClass}">${confLabel}</span>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  document.getElementById('confirm-fields').innerHTML = fieldsHtml ||
+    '<div style="color:var(--muted);font-size:13px;text-align:center;padding:12px;">No values extracted — please fill manually.</div>';
+}
+
+function confirmAndProceed() {
+  if(_pendingExtractedData) {
+    autoFillForm(_pendingExtractedData);
+  }
+  document.getElementById('confirm-screen').classList.remove('show');
+  cur=1; showStep(1);
+  ['autofill-banner-1','autofill-banner-2','autofill-banner-3','autofill-banner-5']
+    .forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});
+  try{if(typeof gtag==='function') gtag('event','extraction_confirmed',{event_category:'funnel'});}catch(e){}
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// FEATURE: AI Validation Layer — sanity checks with visible warnings
+// ══════════════════════════════════════════════════════════════════════
+const _validationRules = [
+  {
+    id: 'tds_vs_gross',
+    check: (i) => i.tds_deducted > 0 && i.gross > 0 && i.tds_deducted > i.gross,
+    level: 'err',
+    msg: (i) => `TDS of ₹${Math.round(i.tds_deducted).toLocaleString('en-IN')} cannot exceed gross salary of ₹${Math.round(i.gross).toLocaleString('en-IN')}. Please re-check your TDS figure.`
+  },
+  {
+    id: 'c80c_limit',
+    check: (i) => i.sec80c > 150000,
+    level: 'warn',
+    msg: (i) => `80C deductions of ₹${Math.round(i.sec80c).toLocaleString('en-IN')} exceed the legal limit of ₹1,50,000. Only ₹1,50,000 will be considered — excess is ignored automatically.`
+  },
+  {
+    id: 'hra_vs_basic',
+    check: (i) => i.hra_received > 0 && i.basic > 0 && i.hra_received > i.gross,
+    level: 'err',
+    msg: (i) => `HRA received (₹${Math.round(i.hra_received).toLocaleString('en-IN')}) seems higher than gross salary. Please verify.`
+  },
+  {
+    id: 'basic_vs_gross',
+    check: (i) => i.basic > 0 && i.gross > 0 && i.basic > i.gross,
+    level: 'err',
+    msg: (i) => `Basic salary (₹${Math.round(i.basic).toLocaleString('en-IN')}) cannot exceed gross salary (₹${Math.round(i.gross).toLocaleString('en-IN')}). Please re-check.`
+  },
+  {
+    id: 'epf_vs_basic',
+    check: (i) => i.epf_employee > 0 && i.basic > 0 && i.epf_employee > i.basic * 0.12 * 1.2,
+    level: 'warn',
+    msg: (i) => `EPF contribution of ₹${Math.round(i.epf_employee).toLocaleString('en-IN')} seems high relative to basic salary. Standard EPF is 12% of basic.`
+  },
+  {
+    id: 'gross_zero',
+    check: (i) => !i.gross || i.gross === 0,
+    level: 'err',
+    msg: () => `Gross salary cannot be zero. Please enter your annual gross salary to calculate tax.`
+  },
+];
+
+function runValidationWarnings(inputData) {
+  // Remove old warnings
+  document.querySelectorAll('.val-warn,.val-err').forEach(el => el.remove());
+
+  _validationRules.forEach(rule => {
+    if(rule.check(inputData)) {
+      const msg = rule.msg(inputData);
+      const cls = rule.level === 'err' ? 'val-err' : 'val-warn';
+      const icon = rule.level === 'err' ? '🔴' : '⚠️';
+      const warn = document.createElement('div');
+      warn.className = `val-warn ${cls}`;
+      warn.dataset.ruleId = rule.id;
+      warn.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+
+      // Insert after the relevant input field if possible
+      const fieldMap = {
+        tds_vs_gross: 'tds_deducted_d',
+        c80c_limit: 'sec80c_d',
+        hra_vs_basic: 'hra_received_d',
+        basic_vs_gross: 'basic_d',
+        epf_vs_basic: 'epf_employee_d',
+        gross_zero: 'gross_d',
+      };
+      const targetId = fieldMap[rule.id];
+      const targetEl = targetId ? document.getElementById(targetId) : null;
+      if(targetEl && targetEl.parentNode) {
+        targetEl.parentNode.insertBefore(warn, targetEl.nextSibling);
+      }
+    }
+  });
 }
 // ── Tooltip: click/touch toggle (works on mobile) ──────────────────────────
 (function(){
