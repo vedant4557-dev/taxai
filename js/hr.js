@@ -164,16 +164,16 @@ function renderHRDashboard() {
       <div class="hr-progress-bar"><div class="hr-progress-fill" style="width:100%"></div></div>
     </div>
     <div class="hr-summary-card">
-      <span class="hr-summary-val">${fmt(Math.round(totalGross / _hrResults.length))}</span>
+      <span class="hr-summary-val">${window.fmt(Math.round(totalGross / _hrResults.length))}</span>
       <span class="hr-summary-lbl">Avg Gross Salary</span>
     </div>
     <div class="hr-summary-card">
-      <span class="hr-summary-val">${fmt(totalTax, true)}</span>
+      <span class="hr-summary-val">${window.fmt(totalTax, true)}</span>
       <span class="hr-summary-lbl">Total Tax Liability</span>
     </div>
     <div class="hr-summary-card">
       <span class="hr-summary-val" style="color:${totalTds >= totalTax ? 'var(--accent)' : 'var(--red)'}">
-        ${totalTds >= totalTax ? '+' : ''}${fmt(totalTds - totalTax, true)}
+        ${totalTds >= totalTax ? '+' : ''}${window.fmt(totalTds - totalTax, true)}
       </span>
       <span class="hr-summary-lbl">Net TDS Balance (team)</span>
     </div>
@@ -194,13 +194,13 @@ function renderHRDashboard() {
   document.getElementById('hr-emp-tbody').innerHTML = _hrResults.map((emp, i) => {
     const balColor = emp.balance >= 0 ? 'var(--accent)' : 'var(--red)';
     const balText  = emp.balance >= 0
-      ? '↑ ' + fmt(emp.balance, true)
-      : '↓ ' + fmt(Math.abs(emp.balance), true);
+      ? '↑ ' + window.fmt(emp.balance, true)
+      : '↓ ' + window.fmt(Math.abs(emp.balance), true);
     return `<tr>
-      <td style="font-weight:600;">${escHtml(emp.name)}</td>
-      <td>${fmt(emp.gross)}</td>
+      <td style="font-weight:600;">${window.escHtml(emp.name)}</td>
+      <td>${window.fmt(emp.gross)}</td>
       <td><span class="hr-status-badge ${emp.regime === 'New' ? 'done' : 'pending'}">${emp.regime}</span></td>
-      <td style="font-family:'JetBrains Mono',monospace;">${fmt(emp.tax, true)}</td>
+      <td style="font-family:'JetBrains Mono',monospace;">${window.fmt(emp.tax, true)}</td>
       <td style="font-family:'JetBrains Mono',monospace;color:${balColor};">${balText}</td>
       <td><span class="hr-status-badge done">✓ Done</span></td>
       <td><button onclick="viewEmployeeReport(${i})" style="background:none;border:none;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;padding:0;">View →</button></td>
@@ -216,11 +216,11 @@ function viewEmployeeReport(idx) {
   Object.entries(fields).forEach(([field, val]) => {
     const d = document.getElementById(field + '_d');
     const h = document.getElementById(field);
-    if (d && h) { d.value = toIN(val); h.value = val; }
+    if (d && h) { d.value = window.toIN(val); h.value = val; }
   });
   closeHRPortal();
   // Trigger calculation
-  setTimeout(() => validateAndCalculate(), 200);
+  setTimeout(() => window.validateAndCalculate(), 200);
 }
 
 function downloadHRReport() {
@@ -322,7 +322,7 @@ function copyHRWATemplate() {
 
 // Init payslip zones on page load
 document.addEventListener('DOMContentLoaded', () => {
-  renderPayslipZones();
+  window.renderPayslipZones();
 });
 
 
