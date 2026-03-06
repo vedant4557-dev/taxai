@@ -37,14 +37,14 @@ function renderTaxCalendar() {
     heroChips.innerHTML   = '<span class="taxcal-chip amber">⚠ No data yet</span>';
   } else if (!needsAdvTax) {
     heroTitle.textContent = 'No advance tax required';
-    heroSub.textContent   = `Your TDS of ${fmt(tds,true)} covers your full liability of ${fmt(bestTax,true)}. You are fully compliant — no advance tax instalments needed.`;
-    heroChips.innerHTML   = `<span class="taxcal-chip green">✓ TDS covers all tax</span><span class="taxcal-chip blue">Liability: ${fmt(bestTax)}</span>`;
+    heroSub.textContent   = `Your TDS of ${window.fmt(tds,true)} covers your full liability of ${window.fmt(bestTax,true)}. You are fully compliant — no advance tax instalments needed.`;
+    heroChips.innerHTML   = `<span class="taxcal-chip green">✓ TDS covers all tax</span><span class="taxcal-chip blue">Liability: ${window.fmt(bestTax)}</span>`;
   } else {
     heroTitle.textContent = `₹${Math.round(advTaxLiability/1000)}K advance tax due this year`;
-    heroSub.textContent   = `Your estimated tax liability is ${fmt(bestTax,true)}, TDS covers ${fmt(tds,true)}. You need to pay ${fmt(advTaxLiability,true)} as advance tax across 4 installments to avoid Sec 234B/C interest.`;
+    heroSub.textContent   = `Your estimated tax liability is ${window.fmt(bestTax,true)}, TDS covers ${window.fmt(tds,true)}. You need to pay ${window.fmt(advTaxLiability,true)} as advance tax across 4 installments to avoid Sec 234B/C interest.`;
     heroChips.innerHTML   = `
       <span class="taxcal-chip red">₹${Math.round(advTaxLiability/1000)}K due</span>
-      <span class="taxcal-chip blue">Other income: ${fmt(otherInc)}</span>
+      <span class="taxcal-chip blue">Other income: ${window.fmt(otherInc)}</span>
       <span class="taxcal-chip amber">Avoid 1% p.m. interest</span>`;
   }
 
@@ -84,10 +84,10 @@ function renderTaxCalendar() {
     <div class="adv-tax-card ${cardClass}">
       <div class="adv-tax-card-installment">${inst.label}</div>
       <div class="adv-tax-card-date">📅 ${inst.date}</div>
-      <span class="adv-tax-card-amount">${needsAdvTax ? fmt(instAmounts[i],true) : '₹0'}</span>
+      <span class="adv-tax-card-amount">${needsAdvTax ? window.fmt(instAmounts[i],true) : '₹0'}</span>
       <div class="adv-tax-card-pct">${inst.pct}% of annual liability (cumulative)</div>
       <div><span class="adv-tax-card-status ${statusClass}">${statusText}</span></div>
-      ${!needsAdvTax ? '' : `<div class="adv-tax-card-days">${isPast ? 'Challan 280 on incometax.gov.in' : `Cumulative due: ${fmt(cumAmounts[i],true)}`}</div>`}
+      ${!needsAdvTax ? '' : `<div class="adv-tax-card-days">${isPast ? 'Challan 280 on incometax.gov.in' : `Cumulative due: ${window.fmt(cumAmounts[i],true)}`}</div>`}
     </div>`;
   }).join('');
 
@@ -106,10 +106,10 @@ function renderTaxCalendar() {
     const total     = sec234B + sec234C;
 
     penaltyEl.innerHTML = `
-      <div class="penalty-row"><span>Advance tax shortfall (estimated)</span><span>${fmt(advTaxLiability,true)}</span></div>
-      <div class="penalty-row"><span>Sec 234B — 1% p.m. for non-payment</span><span>~${fmt(sec234B,true)}</span></div>
-      <div class="penalty-row"><span>Sec 234C — 1% p.m. for deferment</span><span>~${fmt(sec234C,true)}</span></div>
-      <div class="penalty-row"><span style="color:var(--red)">Total interest if you don't pay</span><span>~${fmt(total,true)}</span></div>
+      <div class="penalty-row"><span>Advance tax shortfall (estimated)</span><span>${window.fmt(advTaxLiability,true)}</span></div>
+      <div class="penalty-row"><span>Sec 234B — 1% p.m. for non-payment</span><span>~${window.fmt(sec234B,true)}</span></div>
+      <div class="penalty-row"><span>Sec 234C — 1% p.m. for deferment</span><span>~${window.fmt(sec234C,true)}</span></div>
+      <div class="penalty-row"><span style="color:var(--red)">Total interest if you don't pay</span><span>~${window.fmt(total,true)}</span></div>
       <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;">Pay via Challan 280 (ITNS 280) on incometax.gov.in → e-Pay Tax → Income Tax (0021) → Advance Tax (100)</div>`;
   }
 
@@ -117,14 +117,14 @@ function renderTaxCalendar() {
   const events = [
     { date:'Apr 1, 2025',  dateObj: new Date(2025,3,1),  title:'FY 2025–26 Begins',                    desc:'New financial year starts. Review salary structure, declare investments to employer (Form 12BB), choose Old vs New regime for TDS.',                                         tags:['adv'],    type:'done' },
     { date:'Apr 15, 2025', dateObj: new Date(2025,3,15), title:'Form 12BB Submission',                  desc:'Submit investment declaration to employer. This determines your TDS for the year. Include HRA, 80C, 80D, home loan details.',                                              tags:['tds'],    type:'done' },
-    { date:'Jun 15, 2025', dateObj: new Date(2025,5,15), title:'Advance Tax — 1st Installment (15%)',   desc:`Pay 15% of estimated annual tax liability as advance tax. ${needsAdvTax ? 'Your estimated installment: ' + fmt(instAmounts[0],true) + '.' : 'Not required — TDS covers your liability.'}`,  tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,5,15) < today ? 'done':'upcoming' },
+    { date:'Jun 15, 2025', dateObj: new Date(2025,5,15), title:'Advance Tax — 1st Installment (15%)',   desc:`Pay 15% of estimated annual tax liability as advance tax. ${needsAdvTax ? 'Your estimated installment: ' + window.fmt(instAmounts[0],true) + '.' : 'Not required — TDS covers your liability.'}`,  tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,5,15) < today ? 'done':'upcoming' },
     { date:'Jul 31, 2025', dateObj: new Date(2025,6,31), title:'ITR Filing Deadline (Salaried)',         desc:'Last date to file Income Tax Return for FY 2024–25 (AY 2025–26) without penalty. Missing this triggers ₹5,000 penalty (Sec 234F) and 1% monthly interest on dues.',      tags:['penalty','refund'], type: new Date(2025,6,31) < today ? 'done':'upcoming' },
-    { date:'Sep 15, 2025', dateObj: new Date(2025,8,15), title:'Advance Tax — 2nd Installment (45%)',   desc:`Cumulative 45% of estimated liability due. ${needsAdvTax ? 'Cumulative amount: ' + fmt(cumAmounts[1],true) + '. Shortfall attracts 1% p.m. Sec 234C interest.' : 'Not required.'}`, tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,8,15) < today ? 'done':'upcoming' },
+    { date:'Sep 15, 2025', dateObj: new Date(2025,8,15), title:'Advance Tax — 2nd Installment (45%)',   desc:`Cumulative 45% of estimated liability due. ${needsAdvTax ? 'Cumulative amount: ' + window.fmt(cumAmounts[1],true) + '. Shortfall attracts 1% p.m. Sec 234C interest.' : 'Not required.'}`, tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,8,15) < today ? 'done':'upcoming' },
     { date:'Oct 15, 2025', dateObj: new Date(2025,9,15), title:'Belated/Revised ITR Deadline',          desc:'Last date to file belated ITR (missed Jul 31) or revise an already-filed return for FY 2024–25. Penalty ₹5,000 applies. After this, no revisions possible.',            tags:['penalty'], type: new Date(2025,9,15) < today ? 'done':'upcoming' },
     { date:'Nov 30, 2025', dateObj: new Date(2025,10,30),title:'Review & Optimise Before Year-End',     desc:'3 months left to maximise tax savings. Top up 80C (₹1.5L limit), NPS Tier 1 (extra ₹50K under 80CCD(1B)), health insurance (80D). Last chance for major investments.',  tags:['refund'],  type: new Date(2025,10,30) < today ? 'done':'upcoming' },
-    { date:'Dec 15, 2025', dateObj: new Date(2025,11,15), title:'Advance Tax — 3rd Installment (75%)',  desc:`Cumulative 75% due. ${needsAdvTax ? 'Cumulative: ' + fmt(cumAmounts[2],true) + '. If you missed earlier installments, pay full arrears now to limit interest.' : 'Not required.'}`,  tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,11,15) < today ? 'done':'upcoming' },
+    { date:'Dec 15, 2025', dateObj: new Date(2025,11,15), title:'Advance Tax — 3rd Installment (75%)',  desc:`Cumulative 75% due. ${needsAdvTax ? 'Cumulative: ' + window.fmt(cumAmounts[2],true) + '. If you missed earlier installments, pay full arrears now to limit interest.' : 'Not required.'}`,  tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2025,11,15) < today ? 'done':'upcoming' },
     { date:'Jan 15, 2026', dateObj: new Date(2026,0,15), title:'Submit Proof of Investments to Employer', desc:'Submit actual investment proofs (not just declarations) to HR/payroll. If you delay, employer deducts TDS on full salary in Feb–Mar which spikes your take-home dip.',    tags:['tds'],    type: new Date(2026,0,15) < today ? 'done':'upcoming' },
-    { date:'Mar 15, 2026', dateObj: new Date(2026,2,15), title:'Advance Tax — 4th Installment (100%)',  desc:`Final installment — 100% of liability due. ${needsAdvTax ? 'Remaining balance: ' + fmt(instAmounts[3],true) + '. Any shortfall now attracts both 234B and 234C.' : 'Not required for you.'}`, tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2026,2,15) < today ? 'done':'upcoming' },
+    { date:'Mar 15, 2026', dateObj: new Date(2026,2,15), title:'Advance Tax — 4th Installment (100%)',  desc:`Final installment — 100% of liability due. ${needsAdvTax ? 'Remaining balance: ' + window.fmt(instAmounts[3],true) + '. Any shortfall now attracts both 234B and 234C.' : 'Not required for you.'}`, tags:needsAdvTax?['adv','penalty']:['adv'],  type: new Date(2026,2,15) < today ? 'done':'upcoming' },
     { date:'Mar 28, 2026', dateObj: new Date(2026,2,28), title:'Last Day for 80C Investments (FY 2025–26)', desc:'Final deadline to make tax-saving investments that count for this financial year — ELSS, PPF top-up, 5-year FD, NSC, etc. After Mar 31, it counts for next year.', tags:['refund'],  type: new Date(2026,2,28) < today ? 'done':'upcoming' },
     { date:'Mar 31, 2026', dateObj: new Date(2026,2,31), title:'FY 2025–26 Ends',                       desc:'Financial year closes. All income, expenses, and investments after this date belong to FY 2026–27. Ensure all deductible payments are made before midnight.',          tags:['refund'],  type: new Date(2026,2,31) < today ? 'done':'upcoming' },
     { date:'Jun 15, 2026', dateObj: new Date(2026,5,15), title:'Form 16 Deadline for Employers',        desc:'Employers must issue Form 16 (Part A + B) by June 15. If you haven\'t received it by then, you can file with salary slips and 26AS.',                                   tags:['tds'],    type:'upcoming' },
