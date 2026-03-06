@@ -83,8 +83,8 @@ function buildErrorPanel(){
         <div class="error-item ${bal>=0?'info':'warn'}">
           <div class="err-icon">${bal>=0?'🎉':'📋'}</div>
           <div>
-            <div class="err-title">${bal>=0?'Refund: '+fmt(bal):'Balance Tax Due: '+fmt(Math.abs(bal))}</div>
-            <div class="err-desc">TDS deducted: ${fmt(tds)} · Tax payable: ${fmt(best)} · ${bal>=0?'Claim this refund when you file your ITR. It gets deposited directly to your bank account.':'Pay this as Self-Assessment Tax before filing your ITR to avoid interest under Section 234B/C.'}</div>
+            <div class="err-title">${bal>=0?'Refund: '+window.fmt(bal):'Balance Tax Due: '+window.fmt(Math.abs(bal))}</div>
+            <div class="err-desc">TDS deducted: ${window.fmt(tds)} · Tax payable: ${window.fmt(best)} · ${bal>=0?'Claim this refund when you file your ITR. It gets deposited directly to your bank account.':'Pay this as Self-Assessment Tax before filing your ITR to avoid interest under Section 234B/C.'}</div>
             <div class="err-action ${bal>=0?'blue':'amber'}">${bal>=0?'→ File ITR before July 31 to claim refund':'→ Pay via Challan 280 at incometax.gov.in before filing'}</div>
           </div>
         </div>
@@ -120,11 +120,11 @@ function buildErrorPanel(){
   const tds=window._i.tds_deducted,best=Math.min(window._o.tax,window._n.tax),bal=tds-best;
   if(tds>0){
     container.innerHTML+=`<div class="error-panel ${bal>=0?'ok':'warn'} mb14">
-      <div class="ep-header"><div class="ep-dot ${bal>=0?'green':'amber'}"></div><div class="ep-heading">${bal>=0?'Refund: '+fmt(bal)+' due on filing':'Balance Tax Due: '+fmt(Math.abs(bal))}</div></div>
+      <div class="ep-header"><div class="ep-dot ${bal>=0?'green':'amber'}"></div><div class="ep-heading">${bal>=0?'Refund: '+window.fmt(bal)+' due on filing':'Balance Tax Due: '+window.fmt(Math.abs(bal))}</div></div>
       <div class="error-item ${bal>=0?'info':'warn'}">
         <div class="err-icon">${bal>=0?'🎉':'📋'}</div>
         <div><div class="err-title">TDS Reconciliation</div>
-        <div class="err-desc">TDS deducted: ${fmt(tds)} · Tax payable: ${fmt(best)} · Balance: ${fmt(Math.abs(bal))} ${bal>=0?'refund':'due'}</div>
+        <div class="err-desc">TDS deducted: ${window.fmt(tds)} · Tax payable: ${window.fmt(best)} · Balance: ${window.fmt(Math.abs(bal))} ${bal>=0?'refund':'due'}</div>
         <div class="err-action ${bal>=0?'blue':'amber'}">${bal>=0?'→ File ITR before July 31 to claim refund':'→ Pay Self-Assessment Tax before filing'}</div>
         </div>
       </div>
