@@ -150,8 +150,8 @@ function calculate(){
     age:parseInt(document.getElementById('age').value)||0,
     gross_salary:gv('gross'),
   };
-  runValidationWarnings(window._i);
-  if(window._i.gross===0){showStep(2);return;}
+  window.runValidationWarnings(window._i);
+  if(window._i.gross===0){window.showStep(2);return;}
   window._o=compOld(window._i);window._n=compNew(window._i);
   window._o=window._o; window._n=window._n; window._i=window._i;
   const win=window._o.tax<=window._n.tax?'old':'new',sav=Math.abs(window._o.tax-window._n.tax),best=Math.min(window._o.tax,window._n.tax);
@@ -160,16 +160,16 @@ function calculate(){
 
   document.getElementById('rh-name').textContent=name+"'s Tax Report";
   document.getElementById('rh-regime').textContent=win==='new'?'New Regime ✓':'Old Regime ✓';
-  document.getElementById('rh-saving').textContent=sav>0?'Saves '+fmt(sav)+' vs other regime':'Both regimes equal';
+  document.getElementById('rh-saving').textContent=sav>0?'Saves '+window.fmt(sav)+' vs other regime':'Both regimes equal';
   document.getElementById('res-hdr').style.background=win==='new'
     ?'linear-gradient(135deg,#1a472a,#0f2d1a)':'linear-gradient(135deg,#7a5010,#4a2f08)';
-  document.getElementById('st-tax').textContent=fmt(best);
+  document.getElementById('st-tax').textContent=window.fmt(best);
   const _stb=cessBreakdown(Math.round(best/1.04),window._i.gross);
   const stSub=document.getElementById('st-tax-sub');
   if(stSub) stSub.textContent=_stb.surcharge>0?'incl. '+(_stb.sRate*100).toFixed(0)+'% surcharge + 4% cess':'incl. 4% cess';
   // Effective rate = Tax / Gross income (what % of total income goes to tax)
   // Marginal rate = top slab rate (what you pay on the next ₹1 earned)
-  const effRate = pct(best, window._i.gross);
+  const effRate = window.pct(best, window._i.gross);
   const taxableInc = win==='new' ? window._n.taxable : window._o.taxable;
   // Determine marginal rate from taxable income (new regime slabs)
   const marginalRate = win==='new'
@@ -177,7 +177,7 @@ function calculate(){
     : (taxableInc>1000000?30:taxableInc>500000?20:taxableInc>250000?5:0);
   document.getElementById('st-eff').textContent = effRate;
   document.getElementById('st-marginal').textContent = marginalRate + '%';
-  document.getElementById('st-tds').textContent=fmt(Math.abs(tdsBalance));
+  document.getElementById('st-tds').textContent=window.fmt(Math.abs(tdsBalance));
   document.getElementById('st-tds-sub').textContent=tdsBalance>=0?'refund due →':'balance due ↑';
 
   // Surcharge callout
@@ -189,8 +189,8 @@ function calculate(){
       surWarn.style.display='block';
       surWarn.innerHTML='💡 <strong>Surcharge applies ('+pct+'%):</strong> Because your income exceeds '+
         (pct===10?'₹50L':pct===15?'₹1Cr':pct===25?'₹2Cr':'₹5Cr')+
-        ', a '+pct+'% surcharge of <strong>'+fmt(bd.surcharge)+'</strong> is added to your base tax, '+
-        'plus 4% Health & Education Cess of <strong>'+fmt(bd.cessAmt)+'</strong>. '+
+        ', a '+pct+'% surcharge of <strong>'+window.fmt(bd.surcharge)+'</strong> is added to your base tax, '+
+        'plus 4% Health & Education Cess of <strong>'+window.fmt(bd.cessAmt)+'</strong>. '+
         'This is shown as a separate line in your tax breakdown below.';
     } else {
       surWarn.style.display='none';
@@ -211,7 +211,7 @@ function calculate(){
       rebateBanner.style.display='block';
       rebateBanner.innerHTML='💡 <strong>Marginal Relief Applied (Sec 87A):</strong> Your income is just above ₹12L. '+
         'Instead of paying full slab tax, your tax is capped at ₹'+(window._n.taxable-1200000).toLocaleString('en-IN')+
-        ' (the amount exceeding ₹12L). You saved ~'+fmt(Math.max(0,saved))+'.';
+        ' (the amount exceeding ₹12L). You saved ~'+window.fmt(Math.max(0,saved))+'.';
     // Old regime 87A: if taxable <= 5L
     } else if(window._o.taxable<=500000 && win==='old'){
       rebateBanner.style.display='block';
@@ -231,7 +231,7 @@ function calculate(){
       belatedWarn.innerHTML='🚨 <strong>Belated Return Warning:</strong> The ITR filing deadline (July 31, 2025) has passed. '+
         'As per Income Tax rules, you <strong>cannot opt for the Old Regime in a Belated Return</strong>. '+
         'Your tax will be computed under the New Regime only. '+
-        '<strong>Tax due under New Regime: '+fmt(window._n.tax)+'</strong>';
+        '<strong>Tax due under New Regime: '+window.fmt(window._n.tax)+'</strong>';
     } else if(today>filingDeadline){
       belatedWarn.style.display='block';
       belatedWarn.innerHTML='⚠️ <strong>Filing after July 31:</strong> You are filing a Belated Return (Sec 139(4)). '+
@@ -252,12 +252,12 @@ function calculate(){
       errP.innerHTML=`<div class="error-panel warn mb14">
         <div class="ep-heading">⚠️ Multiple Employer — Salary Mismatch</div>
         <div class="err-desc">
-          Employer 1: ${fmt(emp1)}<br>
-          Employer 2: ${fmt(emp2)}<br>
-          <strong>Consolidated: ${fmt(emp1+emp2)}</strong><br>
-          Your Gross Salary entry: ${fmt(window._i.gross)} — difference of ${fmt(Math.abs((emp1+emp2)-window._i.gross))}.
+          Employer 1: ${window.fmt(emp1)}<br>
+          Employer 2: ${window.fmt(emp2)}<br>
+          <strong>Consolidated: ${window.fmt(emp1+emp2)}</strong><br>
+          Your Gross Salary entry: ${window.fmt(window._i.gross)} — difference of ${window.fmt(Math.abs((emp1+emp2)-window._i.gross))}.
         </div>
-        <div class="err-action amber">→ Update Gross Salary in Step 2 to ${fmt(emp1+emp2)} (total of both)</div>
+        <div class="err-action amber">→ Update Gross Salary in Step 2 to ${window.fmt(emp1+emp2)} (total of both)</div>
       </div>`+errP.innerHTML;
     }
 
@@ -283,8 +283,8 @@ function calculate(){
       errP.innerHTML=`<div class="error-panel warn mb14">
         <div class="ep-heading">⚠️ TDS Under-Deduction — Job Change</div>
         <div class="err-desc">
-          TDS by Employer 1: ${fmt(window._i.tds_emp1||0)} + Employer 2: ${fmt(window._i.tds_emp2||0)} = ${fmt(tdsEmp)}<br>
-          But total TDS entered above: ${fmt(window._i.tds_deducted)}. Difference: ${fmt(Math.abs(tdsEmp-window._i.tds_deducted))}<br>
+          TDS by Employer 1: ${window.fmt(window._i.tds_emp1||0)} + Employer 2: ${window.fmt(window._i.tds_emp2||0)} = ${window.fmt(tdsEmp)}<br>
+          But total TDS entered above: ${window.fmt(window._i.tds_deducted)}. Difference: ${window.fmt(Math.abs(tdsEmp-window._i.tds_deducted))}<br>
           Each employer only taxes their portion — combined salary pushes you into a higher slab.
         </div>
         <div class="err-action amber">→ You likely have additional tax due. Pay Self-Assessment Tax via Challan 280 before filing.</div>
@@ -292,44 +292,44 @@ function calculate(){
     }
   }
 
-  // 234B/C now handled by buildInterestPanel() called below
+  // 234B/C now handled by window.buildInterestPanel() called below
 
   const oc=document.getElementById('old-card'),nc=document.getElementById('new-card');
   oc.classList.toggle('winner',win==='old');nc.classList.toggle('winner',win==='new');
-  oc.innerHTML=(win==='old'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">Old Regime</div><div class="rc-tax">'+fmt(window._o.tax)+'</div><div class="rc-eff">Effective: '+pct(window._o.tax,window._i.gross)+'</div>';
-  nc.innerHTML=(win==='new'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">New Regime</div><div class="rc-tax">'+fmt(window._n.tax)+'</div><div class="rc-eff">Effective: '+pct(window._n.tax,window._i.gross)+'</div>';
+  oc.innerHTML=(win==='old'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">Old Regime</div><div class="rc-tax">'+window.fmt(window._o.tax)+'</div><div class="rc-eff">Effective: '+window.pct(window._o.tax,window._i.gross)+'</div>';
+  nc.innerHTML=(win==='new'?'<div class="rc-badge">✓ Recommended</div>':'')+'<div class="rc-lbl">New Regime</div><div class="rc-tax">'+window.fmt(window._n.tax)+'</div><div class="rc-eff">Effective: '+window.pct(window._n.tax,window._i.gross)+'</div>';
 
-  buildErrorPanel();
-  buildRecon();
-  buildUtil();
-  buildComp();
-  buildSlabViz();
-  buildDeds();
-  buildTips(win);
-  buildInsight(win,sav,name,tdsBalance);
-  buildITRPanel();
-  buildScheduleAL();
-  buildRiskScore();
-  buildInterestPanel();
-  buildScheduleCG();
-  buildHeroResult();
-  buildWhatsNext();
-  buildRefundPrediction(tdsBalance);
-  buildEmployerTDSAlert();
-  initOptimiser();
+  window.buildErrorPanel();
+  window.buildRecon();
+  window.buildUtil();
+  window.buildComp();
+  window.buildSlabViz();
+  window.buildDeds();
+  window.buildTips(win);
+  window.buildInsight(win,sav,name,tdsBalance);
+  window.buildITRPanel();
+  window.buildScheduleAL();
+  window.buildRiskScore();
+  window.buildInterestPanel();
+  window.buildScheduleCG();
+  window.buildHeroResult();
+  window.buildWhatsNext();
+  window.buildRefundPrediction(tdsBalance);
+  window.buildEmployerTDSAlert();
+  window.initOptimiser();
   // Fix 3: show context note on deductions accordion when new regime wins
   const dedNote=document.getElementById('ded-regime-note');
   if(dedNote)dedNote.style.display=win==='new'?'block':'none';
   const dedTitle=document.getElementById('accord-ded-title');
   if(dedTitle)dedTitle.textContent=win==='new'?'📊 Old Regime Deductions (for reference)':'📊 Deduction Breakdown & Utilization';
   // Fix 7: Record audit event
-  window._auditTrail.push({time:new Date(),event:'Tax report generated',detail:`${win==='new'?'New':'Old'} Regime · Tax ${fmt(Math.min(window._o.tax,window._n.tax),true)} · ${window._i.tds_deducted>0?(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted>=0?'Due '+fmt(Math.abs(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted),true):'Refund '+fmt(Math.abs(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted),true)):''}`,icon:'🧾'});
-  buildAuditTrail();
+  window._auditTrail.push({time:new Date(),event:'Tax report generated',detail:`${win==='new'?'New':'Old'} Regime · Tax ${window.fmt(Math.min(window._o.tax,window._n.tax),true)} · ${window._i.tds_deducted>0?(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted>=0?'Due '+window.fmt(Math.abs(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted),true):'Refund '+window.fmt(Math.abs(Math.min(window._o.tax,window._n.tax)-window._i.tds_deducted),true)):''}`,icon:'🧾'});
+  window.buildAuditTrail();
   // Apply simple mode by default — user can switch to advanced
-  setTimeout(() => setMode(currentMode), 50);
+  setTimeout(() => window.setMode(currentMode), 50);
 
   // ── Update sticky bar with results ────────────────────────────────────────
-  updateStickyBar();
+  window.updateStickyBar();
 
   // ── GA funnel tracking ────────────────────────────────────────────────────
   // These events persist in GA even when server restarts
@@ -367,3 +367,7 @@ function calculate(){
 // ── Window exports (required for HTML onclick= attributes with ES modules) ──
 if(typeof compOld!=="undefined") window.compOld=compOld;
 if(typeof compNew!=="undefined") window.compNew=compNew;
+
+if(typeof gv!=="undefined") window.gv=gv;
+if(typeof cessBreakdown!=="undefined") window.cessBreakdown=cessBreakdown;
+if(typeof calculate!=="undefined") window.calculate=calculate;
