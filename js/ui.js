@@ -28,14 +28,14 @@ function updateStickyBar(){
 
   document.getElementById('sticky-regime-label').textContent = `✓ ${win} Regime recommended`;
   document.getElementById('sticky-numbers').textContent =
-    `Tax: ${fmt(best)} · ${bal>=0?'Refund: '+fmt(bal):'Due: '+fmt(Math.abs(bal))}`;
+    `Tax: ${window.fmt(best)} · ${bal>=0?'Refund: '+window.fmt(bal):'Due: '+window.fmt(Math.abs(bal))}`;
 
   const primaryBtn = document.getElementById('sticky-primary-btn');
   if(bal > 1000){
-    primaryBtn.textContent = `📄 Claim ₹${fmt(bal)} Refund`;
+    primaryBtn.textContent = `📄 Claim ₹${window.fmt(bal)} Refund`;
     primaryBtn.style.background = '#2d6a4f';
   } else if(bal < -1000){
-    primaryBtn.textContent = `💳 Pay ₹${fmt(Math.abs(bal))}`;
+    primaryBtn.textContent = `💳 Pay ₹${window.fmt(Math.abs(bal))}`;
     primaryBtn.style.background = '#c0392b';
   } else {
     primaryBtn.textContent = '📄 File ITR-1';
@@ -171,7 +171,7 @@ function emailCABrief(){
 function shareWithSelf(){
   if(!window._o||!window._i) return;
   const name = document.getElementById('name')?.value||'';
-  const { subject, body } = buildEmailReportText(name);
+  const { subject, body } = window.buildEmailReportText(name);
   window.open('mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body));
   try{ if(typeof gtag==='function') gtag('event','email_to_self',{event_category:'retention'}); }catch(e){}
 }
@@ -186,18 +186,18 @@ function shareWhatsApp() {
   const name = document.getElementById('name')?.value || '';
 
   const balLine = bal >= 0
-    ? `✅ Refund coming: ${fmt(bal)}`
-    : `⚠️ Balance due: ${fmt(Math.abs(bal))}`;
+    ? `✅ Refund coming: ${window.fmt(bal)}`
+    : `⚠️ Balance due: ${window.fmt(Math.abs(bal))}`;
 
   const msg =
 `🧾 *TaxSmart Report — FY 2025–26*${name ? ' · ' + name : ''}
 
-💰 Tax Payable: *${fmt(best)}*
-🏆 Best Regime: *${win} Regime* (saves ${fmt(sav)})
+💰 Tax Payable: *${window.fmt(best)}*
+🏆 Best Regime: *${win} Regime* (saves ${window.fmt(sav)})
 ${balLine}
 
-📊 Old Regime: ${fmt(window._o.tax)}
-📊 New Regime: ${fmt(window._n.tax)}
+📊 Old Regime: ${window.fmt(window._o.tax)}
+📊 New Regime: ${window.fmt(window._n.tax)}
 
 _Calculated using TaxSmart — Free Indian Tax Calculator_
 🔗 https://vedant4557-dev.github.io/taxai/`;
@@ -289,3 +289,6 @@ if(typeof openRetentionModal!=="undefined") window.openRetentionModal=openRetent
 if(typeof closeRetentionModal!=="undefined") window.closeRetentionModal=closeRetentionModal;
 if(typeof submitRetention!=="undefined") window.submitRetention=submitRetention;
 // window.sendEmailReport — not found in ui.js, check definition
+
+if(typeof updateStickyBar!=="undefined") window.updateStickyBar=updateStickyBar;
+if(typeof detectEdgeCases!=="undefined") window.detectEdgeCases=detectEdgeCases;
