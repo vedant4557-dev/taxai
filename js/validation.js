@@ -5,8 +5,8 @@
 
 function validateAndCalculate() {
   // ── collect raw values ──
-  const gross  = gv('gross');
-  const basic  = gv('basic');
+  const gross  = window.gv('gross');
+  const basic  = window.gv('basic');
   const age    = document.getElementById('age').value.trim();
   const ageNum = parseInt(age);
 
@@ -19,7 +19,7 @@ function validateAndCalculate() {
 
   // Hard block 2: basic > gross
   if (gross > 0 && basic > 0 && basic > gross) {
-    hardErrors.push('Basic salary (₹' + toIN(basic) + ') cannot be more than Gross salary (₹' + toIN(gross) + '). Please fix Step 2.');
+    hardErrors.push('Basic salary (₹' + window.toIN(basic) + ') cannot be more than Gross salary (₹' + window.toIN(gross) + '). Please fix Step 2.');
   }
 
   // Hard block 3: age is not a number
@@ -28,26 +28,26 @@ function validateAndCalculate() {
   }
 
   // Hard block 4: HRA > basic (impossible in real payroll)
-  const hra_rcvd = gv('hra_received');
+  const hra_rcvd = window.gv('hra_received');
   if (basic > 0 && hra_rcvd > gross) {
-    hardErrors.push('HRA received (₹' + toIN(hra_rcvd) + ') cannot exceed Gross salary. Please check Step 2.');
+    hardErrors.push('HRA received (₹' + window.toIN(hra_rcvd) + ') cannot exceed Gross salary. Please check Step 2.');
   }
 
   // Soft warnings (shown as visible notices, don't block calculation)
   const softWarns = [];
-  const sec80c_raw = gv('sec80c');
-  const nps_raw = gv('nps');
-  const sec80d_self_raw = gv('sec80d_self');
-  const sec80d_par_raw = gv('sec80d_parents');
-  const hl_int_raw = gv('home_loan_interest');
-  const enps_raw = gv('employer_nps');
+  const sec80c_raw = window.gv('sec80c');
+  const nps_raw = window.gv('nps');
+  const sec80d_self_raw = window.gv('sec80d_self');
+  const sec80d_par_raw = window.gv('sec80d_parents');
+  const hl_int_raw = window.gv('home_loan_interest');
+  const enps_raw = window.gv('employer_nps');
 
-  if (sec80c_raw > 150000) softWarns.push('80C: ₹' + toIN(sec80c_raw) + ' entered — capped at ₹1,50,000 in calculation');
-  if (nps_raw > 50000) softWarns.push('NPS 80CCD(1B): ₹' + toIN(nps_raw) + ' entered — capped at ₹50,000');
-  if (sec80d_self_raw > 50000) softWarns.push('80D (self): ₹' + toIN(sec80d_self_raw) + ' entered — max ₹25,000 (₹50,000 for seniors)');
-  if (sec80d_par_raw > 50000) softWarns.push('80D (parents): ₹' + toIN(sec80d_par_raw) + ' entered — max ₹50,000');
-  if (hl_int_raw > 200000) softWarns.push('Home loan interest: ₹' + toIN(hl_int_raw) + ' entered — capped at ₹2,00,000 for self-occupied');
-  if (basic > 0 && enps_raw > basic * 0.10) softWarns.push('Employer NPS: ₹' + toIN(enps_raw) + ' entered — capped at 10% of Basic (₹' + toIN(Math.round(basic*0.10)) + ')');
+  if (sec80c_raw > 150000) softWarns.push('80C: ₹' + window.toIN(sec80c_raw) + ' entered — capped at ₹1,50,000 in calculation');
+  if (nps_raw > 50000) softWarns.push('NPS 80CCD(1B): ₹' + window.toIN(nps_raw) + ' entered — capped at ₹50,000');
+  if (sec80d_self_raw > 50000) softWarns.push('80D (self): ₹' + window.toIN(sec80d_self_raw) + ' entered — max ₹25,000 (₹50,000 for seniors)');
+  if (sec80d_par_raw > 50000) softWarns.push('80D (parents): ₹' + window.toIN(sec80d_par_raw) + ' entered — max ₹50,000');
+  if (hl_int_raw > 200000) softWarns.push('Home loan interest: ₹' + window.toIN(hl_int_raw) + ' entered — capped at ₹2,00,000 for self-occupied');
+  if (basic > 0 && enps_raw > basic * 0.10) softWarns.push('Employer NPS: ₹' + window.toIN(enps_raw) + ' entered — capped at 10% of Basic (₹' + window.toIN(Math.round(basic*0.10)) + ')');
 
   // Show soft warnings as a non-blocking notice
   let swBox = document.getElementById('soft-warn-box');
@@ -84,7 +84,7 @@ function validateAndCalculate() {
   // ── Soft auto-fixes (silent, no friction) ──
   // These are just clamped during compOld/compNew anyway, but let's also
   // silently clamp the hidden inputs so displayed values stay consistent
-  const profTax = gv('prof_tax');
+  const profTax = window.gv('prof_tax');
   if (profTax > 2500) {
     document.getElementById('prof_tax').value = 2500;
   }
@@ -94,7 +94,7 @@ function validateAndCalculate() {
   if (box) box.remove();
 
   // All good — run the real calculate
-  calculate();
+  window.calculate();
 }
 
 // ── Tax Risk Score ───────────────────────────────────────────────────────────
@@ -112,10 +112,10 @@ function buildRiskScore(){
     const diff=Math.abs(f16tds-as26tds);
     if(diff>5000){
       score+=3;
-      flags.push({level:'red',icon:'🔴',text:`TDS mismatch: Form 16 shows ${fmt(f16tds)}, 26AS shows ${fmt(as26tds)} (diff: ${fmt(diff)}). IT Dept computers auto-detect this.`});
+      flags.push({level:'red',icon:'🔴',text:`TDS mismatch: Form 16 shows ${window.fmt(f16tds)}, 26AS shows ${window.fmt(as26tds)} (diff: ${window.fmt(diff)}). IT Dept computers auto-detect this.`});
     } else if(diff>1000){
       score+=1;
-      flags.push({level:'amber',icon:'🟡',text:`Minor TDS difference of ${fmt(diff)} between Form 16 and 26AS. Usually fine but worth checking.`});
+      flags.push({level:'amber',icon:'🟡',text:`Minor TDS difference of ${window.fmt(diff)} between Form 16 and 26AS. Usually fine but worth checking.`});
     }
   }
 
@@ -124,36 +124,36 @@ function buildRiskScore(){
   const declaredInt=window._i.interest_income||0;
   if(aisInt>0&&declaredInt<aisInt*0.7){
     score+=3;
-    flags.push({level:'red',icon:'🔴',text:`AIS shows interest income of ${fmt(aisInt)} but you've declared only ${fmt(declaredInt)}. IT Dept gets AIS from all banks — undeclared interest is a common scrutiny trigger.`});
+    flags.push({level:'red',icon:'🔴',text:`AIS shows interest income of ${window.fmt(aisInt)} but you've declared only ${window.fmt(declaredInt)}. IT Dept gets AIS from all banks — undeclared interest is a common scrutiny trigger.`});
   }
 
   // ── Flag 3: Large 80G donations vs income
   const donations=window._i.sec80g||0;
   if(donations>0&&donations>window._i.gross*0.3){
     score+=2;
-    flags.push({level:'red',icon:'🔴',text:`80G donations of ${fmt(donations)} are ${Math.round(donations/window._i.gross*100)}% of your gross income. Unusually large donation claims frequently trigger scrutiny.`});
+    flags.push({level:'red',icon:'🔴',text:`80G donations of ${window.fmt(donations)} are ${Math.round(donations/window._i.gross*100)}% of your gross income. Unusually large donation claims frequently trigger scrutiny.`});
   } else if(donations>100000){
     score+=1;
-    flags.push({level:'amber',icon:'🟡',text:`80G donations of ${fmt(donations)} — keep donation receipts and Form 10BE ready in case of notice.`});
+    flags.push({level:'amber',icon:'🟡',text:`80G donations of ${window.fmt(donations)} — keep donation receipts and Form 10BE ready in case of notice.`});
   }
 
   // ── Flag 4: HRA claimed but no rent paid
   const hraClaimed=window._o.deds&&window._o.deds.hra||0;
   if(hraClaimed>0&&(window._i.rent_paid||0)<1000){
     score+=2;
-    flags.push({level:'red',icon:'🔴',text:`HRA exemption claimed (${fmt(hraClaimed)}) but rent paid appears to be ₹0. Landlord PAN required for rent >₹1L/year. False HRA claims are heavily scrutinised.`});
+    flags.push({level:'red',icon:'🔴',text:`HRA exemption claimed (${window.fmt(hraClaimed)}) but rent paid appears to be ₹0. Landlord PAN required for rent >₹1L/year. False HRA claims are heavily scrutinised.`});
   }
 
   // ── Flag 5: High TDS but low declared salary (potential income suppression)
   if(as26tds>0&&window._i.gross>0&&as26tds>window._i.gross*0.35){
     score+=2;
-    flags.push({level:'amber',icon:'🟡',text:`TDS (${fmt(as26tds)}) is very high relative to declared salary (${fmt(window._i.gross)}). Ensure all income sources are included.`});
+    flags.push({level:'amber',icon:'🟡',text:`TDS (${window.fmt(as26tds)}) is very high relative to declared salary (${window.fmt(window._i.gross)}). Ensure all income sources are included.`});
   }
 
   // ── Flag 6: Crypto income declared (high scrutiny sector)
   if((window._i.crypto||0)>50000){
     score+=1;
-    flags.push({level:'amber',icon:'🟡',text:`Crypto/VDA income of ${fmt(window._i.crypto)} declared. IT Dept receives data from exchanges — ensure you've declared ALL VDA transactions, not just profitable ones.`});
+    flags.push({level:'amber',icon:'🟡',text:`Crypto/VDA income of ${window.fmt(window._i.crypto)} declared. IT Dept receives data from exchanges — ensure you've declared ALL VDA transactions, not just profitable ones.`});
   }
 
   // ── Flag 7: Job change — under-deducted TDS
@@ -162,14 +162,14 @@ function buildRiskScore(){
     const totalTax=Math.min(window._o.tax,window._n.tax);
     if(tdsEmp>0&&tdsEmp<totalTax*0.7){
       score+=2;
-      flags.push({level:'amber',icon:'🟡',text:`Job change detected with combined TDS of ${fmt(tdsEmp)} against total tax of ${fmt(totalTax)}. Large balance due increases scrutiny probability.`});
+      flags.push({level:'amber',icon:'🟡',text:`Job change detected with combined TDS of ${window.fmt(tdsEmp)} against total tax of ${window.fmt(totalTax)}. Large balance due increases scrutiny probability.`});
     }
   }
 
   // ── Flag 8: Online gaming income (new high-scrutiny category)
   if((window._i.gaming_income||0)>10000){
     score+=1;
-    flags.push({level:'amber',icon:'🟡',text:`Online gaming/lottery income of ${fmt(window._i.gaming_income)} declared. IT Dept gets platform data under Sec 285BA — match your declared amount against your gaming app's tax statement.`});
+    flags.push({level:'amber',icon:'🟡',text:`Online gaming/lottery income of ${window.fmt(window._i.gaming_income)} declared. IT Dept gets platform data under Sec 285BA — match your declared amount against your gaming app's tax statement.`});
   }
 
   // ── Positive signals (reduce perception of risk)
@@ -242,9 +242,9 @@ function buildScheduleCG(){
   const ltcgTax=Math.round(ltcgTaxable*0.125*1.04);
   const stcgTax=Math.round(stcg*0.20*1.04);
   const totalCgTax=ltcgTax+stcgTax;
-  const ltcgRow=ltcg>0?`<tr><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);font-size:12px;">LTCG &mdash; Equity/MF (held 1yr+)<br><span style="font-size:10px;color:var(--muted);">Section 112A</span></td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">`+fmt(ltcg,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);">`+fmt(ltcgExempt,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;">`+fmt(ltcgTaxable,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-size:12px;">12.5%</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink);">`+fmt(ltcgTax,true)+`</td></tr>`:'';
-  const stcgRow=stcg>0?`<tr><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);font-size:12px;">STCG &mdash; Equity/MF (held &lt;1yr)<br><span style="font-size:10px;color:var(--muted);">Section 111A</span></td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">`+fmt(stcg,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">&#8212;</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;">`+fmt(stcg,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-size:12px;">20%</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink);">`+fmt(stcgTax,true)+`</td></tr>`:'';
-  panel.innerHTML=`<div style="background:var(--bluel);border-radius:12px;padding:16px 18px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Auto-generated from your AIS data</div><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr><th style="text-align:left;padding:6px 0;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Type</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Gains</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Exempt</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Taxable</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Rate</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Tax (incl. cess)</th></tr></thead><tbody>`+ltcgRow+stcgRow+`<tr><td style="padding:9px 0;font-size:12px;font-weight:700;">Total Capital Gains Tax</td><td style="padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;">`+fmt(ltcg+stcg,true)+`</td><td style="padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);">`+fmt(ltcgExempt,true)+`</td><td style="padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;">`+fmt(ltcgTaxable+stcg,true)+`</td><td></td><td style="padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;color:var(--red);">`+fmt(totalCgTax,true)+`</td></tr></tbody></table></div><div style="font-size:12px;color:var(--ink2);line-height:1.7;">`+(ltcg>0?'<strong>LTCG tip:</strong> First &#8377;1,25,000 of gains is tax-free each year. Consider tax harvesting (sell and rebuy) to use the full exemption. ':'')+' '+`⚠️ You need to file <strong>ITR-2</strong> (not ITR-1) due to capital gains. Verify these figures against your broker's capital gains statement.</div>`;
+  const ltcgRow=ltcg>0?`<tr><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);font-size:12px;">LTCG &mdash; Equity/MF (held 1yr+)<br><span style="font-size:10px;color:var(--muted);">Section 112A</span></td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">`+window.fmt(ltcg,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);">`+window.fmt(ltcgExempt,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;">`+window.fmt(ltcgTaxable,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-size:12px;">12.5%</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink);">`+window.fmt(ltcgTax,true)+`</td></tr>`:'';
+  const stcgRow=stcg>0?`<tr><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);font-size:12px;">STCG &mdash; Equity/MF (held &lt;1yr)<br><span style="font-size:10px;color:var(--muted);">Section 111A</span></td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">`+window.fmt(stcg,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">&#8212;</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;">`+window.fmt(stcg,true)+`</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-size:12px;">20%</td><td style="padding:9px 0;border-bottom:1px solid rgba(226,221,214,.5);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink);">`+window.fmt(stcgTax,true)+`</td></tr>`:'';
+  panel.innerHTML=`<div style="background:var(--bluel);border-radius:12px;padding:16px 18px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Auto-generated from your AIS data</div><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr><th style="text-align:left;padding:6px 0;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Type</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Gains</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Exempt</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Taxable</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Rate</th><th style="text-align:right;padding:6px 0;font-size:10px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);">Tax (incl. cess)</th></tr></thead><tbody>`+ltcgRow+stcgRow+`<tr><td style="padding:9px 0;font-size:12px;font-weight:700;">Total Capital Gains Tax</td><td style="padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;">`+window.fmt(ltcg+stcg,true)+`</td><td style="padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);">`+window.fmt(ltcgExempt,true)+`</td><td style="padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;">`+window.fmt(ltcgTaxable+stcg,true)+`</td><td></td><td style="padding:9px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;color:var(--red);">`+window.fmt(totalCgTax,true)+`</td></tr></tbody></table></div><div style="font-size:12px;color:var(--ink2);line-height:1.7;">`+(ltcg>0?'<strong>LTCG tip:</strong> First &#8377;1,25,000 of gains is tax-free each year. Consider tax harvesting (sell and rebuy) to use the full exemption. ':'')+' '+`⚠️ You need to file <strong>ITR-2</strong> (not ITR-1) due to capital gains. Verify these figures against your broker's capital gains statement.</div>`;
 }
 
 function buildScheduleAL(){
@@ -370,25 +370,25 @@ function buildInterestPanel() {
   panel.innerHTML = `
     <div class="interest-panel">
       <div class="int-title">⚠️ Section 234B/234C — Advance Tax Interest</div>
-      <div class="int-sub">You have a balance due of ${fmt(balDue)}. Estimated interest penalty if you pay only at filing time (July 31).</div>
+      <div class="int-sub">You have a balance due of ${window.fmt(balDue)}. Estimated interest penalty if you pay only at filing time (July 31).</div>
       <div class="int-grid">
         <div class="int-box">
           <div class="int-box-label">Sec 234B Interest</div>
-          <div class="int-box-val">${fmt(interest234B)}</div>
+          <div class="int-box-val">${window.fmt(interest234B)}</div>
           <div class="int-box-note">~1%/month × 4 months<br>(Apr–Jul on unpaid tax)</div>
         </div>
         <div class="int-box">
           <div class="int-box-label">Sec 234C Interest</div>
-          <div class="int-box-val">${fmt(interest234C)}</div>
+          <div class="int-box-val">${window.fmt(interest234C)}</div>
           <div class="int-box-note">~1%/month × 3 months<br>(missed installments)</div>
         </div>
       </div>
       <div class="int-steps">
-        <strong>Total tax due:</strong> ${fmt(best)}<br>
-        <strong>TDS already deducted:</strong> ${fmt(tds)}<br>
-        <strong>Balance to pay:</strong> ${fmt(balDue)}<br>
-        <strong>Estimated interest penalty:</strong> ${fmt(totalInterest)}<br>
-        <strong style="color:var(--a2)">Total payable by July 31:</strong> <strong style="color:var(--a2)">${fmt(totalPayable)}</strong>
+        <strong>Total tax due:</strong> ${window.fmt(best)}<br>
+        <strong>TDS already deducted:</strong> ${window.fmt(tds)}<br>
+        <strong>Balance to pay:</strong> ${window.fmt(balDue)}<br>
+        <strong>Estimated interest penalty:</strong> ${window.fmt(totalInterest)}<br>
+        <strong style="color:var(--a2)">Total payable by July 31:</strong> <strong style="color:var(--a2)">${window.fmt(totalPayable)}</strong>
       </div>
       <div style="margin-top:12px;font-size:12px;color:var(--muted);">
         Pay now as Self-Assessment Tax to stop interest from accumulating. →
@@ -403,3 +403,9 @@ function buildInterestPanel() {
 // ── Window exports (required for HTML onclick= attributes with ES modules) ──
 if(typeof validateAndCalculate!=="undefined") window.validateAndCalculate=validateAndCalculate;
 // window.runValidationWarnings — not found in validation.js, check definition
+
+if(typeof buildITRPanel!=="undefined") window.buildITRPanel=buildITRPanel;
+if(typeof buildRiskScore!=="undefined") window.buildRiskScore=buildRiskScore;
+if(typeof buildInterestPanel!=="undefined") window.buildInterestPanel=buildInterestPanel;
+if(typeof buildScheduleCG!=="undefined") window.buildScheduleCG=buildScheduleCG;
+if(typeof buildScheduleAL!=="undefined") window.buildScheduleAL=buildScheduleAL;
