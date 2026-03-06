@@ -96,11 +96,11 @@ function showConfirmationScreen(data, f16Data, as26Data, aisData) {
 
 function confirmAndProceed() {
   if(_pendingExtractedData) {
-    autoFillForm(_pendingExtractedData);
+    window.autoFillForm(_pendingExtractedData);
     setTimeout(()=>applyFieldConfidence(_pendingExtractedData, window._f16||{}, window._as26||{}, window._ais||{}), 200);
   }
   document.getElementById('confirm-screen').classList.remove('show');
-  window.cur=1; showStep(1);
+  window.cur=1; window.showStep(1);
   ['autofill-banner-1','autofill-banner-2','autofill-banner-3','autofill-banner-5']
     .forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});
   try{if(typeof gtag==='function') gtag('event','extraction_confirmed',{event_category:'funnel'});}catch(e){}
@@ -298,16 +298,16 @@ function updateOptimiser() {
 
   // What-if calculation with modified inputs
   const modInputs = {..._i, sec80c: new80c, nps: newNps, sec80d_self: new80d};
-  const modOld = compOld(modInputs);
-  const modNew = compNew(modInputs);
+  const modOld = window.compOld(modInputs);
+  const modNew = window.compNew(modInputs);
   const modBest = Math.min(modOld.tax, modNew.tax);
 
   // Per-slider savings (marginal)
   function sliderSaving(fieldKey, newVal) {
     const base = {..._i};
     const mod  = {..._i, [fieldKey]: newVal};
-    const baseBest = Math.min(compOld(base).tax, compNew(base).tax);
-    const modBest2 = Math.min(compOld(mod).tax, compNew(mod).tax);
+    const baseBest = Math.min(window.compOld(base).tax, window.compNew(base).tax);
+    const modBest2 = Math.min(window.compOld(mod).tax, window.compNew(mod).tax);
     return Math.max(0, Math.round(baseBest - modBest2));
   }
 
@@ -611,3 +611,7 @@ if(typeof buildEmployerTDSAlert!=="undefined") window.buildEmployerTDSAlert=buil
 if(typeof initOptimiser!=="undefined") window.initOptimiser=initOptimiser;
 
 window.sendEmailReport = sendEmailReport;
+
+if(typeof showConfirmationScreen!=="undefined") window.showConfirmationScreen=showConfirmationScreen;
+if(typeof buildEmailReportText!=="undefined") window.buildEmailReportText=buildEmailReportText;
+if(typeof openRetentionModal!=="undefined") window.openRetentionModal=openRetentionModal;
