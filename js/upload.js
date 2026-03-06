@@ -16,7 +16,7 @@ function handleFile(input,key){
     return;
   }
   // Document format detection — async, non-blocking
-  validateDocumentBeforeUpload(file, key).then(ok => {
+  window.validateDocumentBeforeUpload(file, key).then(ok => {
     if(!ok){ input.value=''; return; }
     window._files[key]=file;
     const zone=document.getElementById('zone-'+key);
