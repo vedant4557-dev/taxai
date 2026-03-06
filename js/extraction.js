@@ -168,7 +168,7 @@ async function runExtraction(){
     window._extractionConfidence={pct:confidencePct,filled:filledFields.length,total:totalExpectedFields.length,manual:manualCount};
 
     setTimeout(()=>{
-      showConfirmationScreen(window._extractedData, f16Data, as26Data, aisData);
+      window.showConfirmationScreen(window._extractedData, f16Data, as26Data, aisData);
       if(Object.keys(as26Data).length>2||Object.keys(aisData).length>2){
         const b=document.getElementById('autofill-banner-6');if(b)b.style.display='flex';
       }
@@ -226,7 +226,7 @@ async function runExtraction(){
       warnBox.style.borderColor='#c17f24';
       warnBox.style.color='#7a4f08';
       warnBox.innerHTML=`⚠️ <span><strong>${userMsg}</strong> ${hint}<br><br>
-        <button onclick="showStep(1);document.getElementById('warmup-msg').style.display='none'" style="margin-top:4px;padding:8px 18px;background:var(--a2);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">
+        <button onclick="window.showStep(1);document.getElementById('warmup-msg').style.display='none'" style="margin-top:4px;padding:8px 18px;background:var(--a2);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">
           Fill manually instead →
         </button>
       </span>`;
@@ -244,7 +244,7 @@ function runErrorChecks(f16,as26,ais){
       errors.push({
         type:'crit',icon:'⚠️',
         title:'TDS Mismatch: Form 16 vs 26AS',
-        desc:`Form 16 shows TDS of ${fmt(f16.tds_deducted_form16,true)}, but Form 26AS shows ${fmt(as26.total_tds_26as,true)}. Difference of ${fmt(diff,true)}. This means your employer may NOT have deposited your TDS with the government.`,
+        desc:`Form 16 shows TDS of ${window.fmt(f16.tds_deducted_form16,true)}, but Form 26AS shows ${window.fmt(as26.total_tds_26as,true)}. Difference of ${window.fmt(diff,true)}. This means your employer may NOT have deposited your TDS with the government.`,
         action:'Immediately contact your employer HR/payroll team and ask them to reconcile and deposit the TDS. You cannot claim credit for TDS not reflected in 26AS.',
         severity:'red'
       });
@@ -257,7 +257,7 @@ function runErrorChecks(f16,as26,ais){
       errors.push({
         type:'warn',icon:'🔶',
         title:'Salary Mismatch: Form 16 vs AIS',
-        desc:`Form 16 shows gross salary of ${fmt(f16.gross_salary,true)}, but AIS shows ${fmt(ais.salary_ais,true)}. Difference of ${fmt(diff,true)}. The Income Tax Department has flagged a discrepancy.`,
+        desc:`Form 16 shows gross salary of ${window.fmt(f16.gross_salary,true)}, but AIS shows ${window.fmt(ais.salary_ais,true)}. Difference of ${window.fmt(diff,true)}. The Income Tax Department has flagged a discrepancy.`,
         action:'Cross-check with your employer. AIS may include perquisites or arrears not in Form 16. Ensure you declare the correct income in your ITR.',
         severity:'amber'
       });
@@ -284,7 +284,7 @@ function runErrorChecks(f16,as26,ais){
       errors.push({
         type:'warn',icon:'💰',
         title:'Interest Income Discrepancy',
-        desc:`AIS shows ₹${fmt(aisInt)} interest income, but 26AS shows ${fmt(asInt)}. The higher AIS figure is what the Income Tax Department sees. Undeclared interest income is a common reason for tax notices.`,
+        desc:`AIS shows ₹${window.fmt(aisInt)} interest income, but 26AS shows ${window.fmt(asInt)}. The higher AIS figure is what the Income Tax Department sees. Undeclared interest income is a common reason for tax notices.`,
         action:'Use the higher of the two figures in your tax return to avoid a notice from the department.',
         severity:'amber'
       });
@@ -295,7 +295,7 @@ function runErrorChecks(f16,as26,ais){
     errors.push({
       type:'info',icon:'📈',
       title:'Capital Gains Found in AIS',
-      desc:`AIS shows capital gains of ${fmt((ais.ltcg_ais||0)+(ais.stcg_ais||0))} (LTCG: ${fmt(ais.ltcg_ais||0)}, STCG: ${fmt(ais.stcg_ais||0)}). These have been auto-filled. Verify against your broker's capital gains statement.`,
+      desc:`AIS shows capital gains of ${window.fmt((ais.ltcg_ais||0)+(ais.stcg_ais||0))} (LTCG: ${window.fmt(ais.ltcg_ais||0)}, STCG: ${window.fmt(ais.stcg_ais||0)}). These have been auto-filled. Verify against your broker's capital gains statement.`,
       action:'Cross-check with your broker\'s P&L report or capital gains statement. Report only the net gains after indexation (for debt) or as shown for equity.',
       severity:'blue'
     });
@@ -305,7 +305,7 @@ function runErrorChecks(f16,as26,ais){
     errors.push({
       type:'info',icon:'🏢',
       title:'Dividend Income Detected in AIS',
-      desc:`AIS shows dividend income of ${fmt(ais.dividend_ais)}. Dividends from Indian companies are fully taxable at slab rate from FY 2020-21 onwards. This needs to be declared in your ITR.`,
+      desc:`AIS shows dividend income of ${window.fmt(ais.dividend_ais)}. Dividends from Indian companies are fully taxable at slab rate from FY 2020-21 onwards. This needs to be declared in your ITR.`,
       action:'Report this under "Income from Other Sources" in your ITR. Check if TDS was deducted (10% above ₹5,000).',
       severity:'blue'
     });
@@ -334,11 +334,11 @@ function autoFillForm(data){
     const dispEl=document.getElementById('tds_deducted_d');
     const hidEl=document.getElementById('tds_deducted');
     if(dispEl&&hidEl){
-      dispEl.value=toIN(bestTds);
+      dispEl.value=window.toIN(bestTds);
       hidEl.value=bestTds;
       dispEl.classList.add('autofilled');
       const wEl=document.getElementById('tds_deducted_w');
-      if(wEl)wEl.textContent='= ₹'+toWords(bestTds);
+      if(wEl)wEl.textContent='= ₹'+window.toWords(bestTds);
       const badge=document.getElementById('af-tds_deducted');
       if(badge)badge.style.display='inline-flex';
     }
@@ -350,11 +350,11 @@ function autoFillForm(data){
       const dispEl=document.getElementById(tgt+'_d');
       const hidEl=document.getElementById(tgt);
       if(dispEl&&hidEl){
-        dispEl.value=toIN(val);
+        dispEl.value=window.toIN(val);
         hidEl.value=val;
         dispEl.classList.add('autofilled');
         const wEl=document.getElementById(tgt+'_w');
-        if(wEl)wEl.textContent='= ₹'+toWords(val);
+        if(wEl)wEl.textContent='= ₹'+window.toWords(val);
         const badge=document.getElementById('af-'+tgt);
         if(badge)badge.style.display='inline-flex';
       }
