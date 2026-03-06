@@ -615,3 +615,5 @@ window.sendEmailReport = sendEmailReport;
 if(typeof showConfirmationScreen!=="undefined") window.showConfirmationScreen=showConfirmationScreen;
 if(typeof buildEmailReportText!=="undefined") window.buildEmailReportText=buildEmailReportText;
 if(typeof openRetentionModal!=="undefined") window.openRetentionModal=openRetentionModal;
+if(typeof runValidationWarnings!=="undefined") window.runValidationWarnings=runValidationWarnings;
+if(typeof validateDocumentBeforeUpload!=="undefined") window.validateDocumentBeforeUpload=validateDocumentBeforeUpload;
