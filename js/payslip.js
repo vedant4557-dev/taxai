@@ -73,7 +73,7 @@ async function analyzePayslips() {
   btn.textContent = '⏳ Analyzing…';
 
   // Simulate AI extraction for each payslip
-  // In production: call backend API same as runExtraction()
+  // In production: call backend API same as window.runExtraction()
   await new Promise(r => setTimeout(r, 1200));
 
   // Generate realistic demo data based on file names/sizes
@@ -117,11 +117,11 @@ function renderPayslipInsights() {
     ? ((allGross[allGross.length-1] - allGross[0]) / allGross[0] * 100).toFixed(1)
     : 0;
 
-  document.getElementById('ps-avg-salary').textContent = fmt(avgSalary, true);
-  document.getElementById('ps-projected-annual').textContent = fmt(projected, true);
-  document.getElementById('ps-tds-paid').textContent = fmt(totalTds, true);
+  document.getElementById('ps-avg-salary').textContent = window.fmt(avgSalary, true);
+  document.getElementById('ps-projected-annual').textContent = window.fmt(projected, true);
+  document.getElementById('ps-tds-paid').textContent = window.fmt(totalTds, true);
   document.getElementById('ps-tds-gap').textContent = tdsGap > 0
-    ? fmt(tdsGap, true) + ' short'
+    ? window.fmt(tdsGap, true) + ' short'
     : '✓ On track';
 
   // Monthly bars
@@ -133,7 +133,7 @@ function renderPayslipInsights() {
     return `<div class="ps-bar-row">
       <div class="ps-bar-label">${m}</div>
       <div class="ps-bar-track"><div class="ps-bar-fill" style="width:${pct}%"></div></div>
-      <div class="ps-bar-val">${fmt(d.gross)}</div>
+      <div class="ps-bar-val">${window.fmt(d.gross)}</div>
     </div>`;
   }).join('');
 
@@ -142,7 +142,7 @@ function renderPayslipInsights() {
   const alerts = [];
 
   if (tdsGap > 20000) {
-    alerts.push({type:'red', text:`⚠️ TDS shortfall projected: <strong>${fmt(tdsGap, true)}</strong> more needs to be deducted before March 31 to avoid advance tax interest (Sec 234B/C). Ask HR to increase TDS now.`});
+    alerts.push({type:'red', text:`⚠️ TDS shortfall projected: <strong>${window.fmt(tdsGap, true)}</strong> more needs to be deducted before March 31 to avoid advance tax interest (Sec 234B/C). Ask HR to increase TDS now.`});
   } else if (tdsGap <= 0) {
     alerts.push({type:'green', text:`✅ Your TDS is on track. Based on ${months.length} months analyzed, you're projected to have sufficient TDS deducted by year-end.`});
   }
@@ -181,11 +181,11 @@ function applyPayslipData() {
     const disp = document.getElementById(field + '_d');
     const hid  = document.getElementById(field);
     if (disp && hid) {
-      disp.value = toIN(val);
+      disp.value = window.toIN(val);
       hid.value  = val;
       disp.classList.add('autofilled');
       const w = document.getElementById(field + '_w');
-      if (w) w.textContent = '= ₹' + toWords(val);
+      if (w) w.textContent = '= ₹' + window.toWords(val);
       const badge = document.getElementById('af-' + field);
       if (badge) badge.style.display = 'inline-flex';
     }
@@ -193,7 +193,7 @@ function applyPayslipData() {
 
   // Close payslip section and move to step 1
   togglePayslipSection();
-  skipToStep1();
+  window.skipToStep1();
 
   // Show success message
   setTimeout(() => {
@@ -214,3 +214,5 @@ if(typeof addPayslipMonth!=="undefined") window.addPayslipMonth=addPayslipMonth;
 if(typeof analyzePayslips!=="undefined") window.analyzePayslips=analyzePayslips;
 if(typeof applyPayslipData!=="undefined") window.applyPayslipData=applyPayslipData;
 if(typeof togglePayslipSection!=="undefined") window.togglePayslipSection=togglePayslipSection;
+
+if(typeof renderPayslipZones!=="undefined") window.renderPayslipZones=renderPayslipZones;
