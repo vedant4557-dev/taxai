@@ -145,7 +145,7 @@ function saveITRNotify() {
   }
   document.getElementById('itr-notify-section').innerHTML =
     `<div style="background:var(--al);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--accent);font-weight:600;margin-top:14px;">
-      ✅ We'll notify ${escHtml(email)} when your refund status changes.
+      ✅ We'll notify ${window.escHtml(email)} when your refund status changes.
     </div>`;
   try { if(typeof gtag==='function') gtag('event','itr_notify_saved',{event_category:'retention'}); } catch(e){}
 }
