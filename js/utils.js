@@ -36,3 +36,5 @@ if(typeof fmt!=="undefined") window.fmt=fmt;
 if(typeof fa!=="undefined") window.fa=fa;
 // window.capWarn — not found in utils.js, check definition
 // window.capWarnPct — not found in utils.js, check definition
+
+if(typeof pct!=="undefined") window.pct=pct;
