@@ -15,9 +15,9 @@ function buildUtil(){
       <div class="pot-ico">${b.ico}</div>
       <div class="pot-lbl">${b.lbl}</div>
       <div class="pot-bar">
-        <div class="pot-bar-lbl"><span>${fmt(b.used)}</span><span>${p.toFixed(0)}% of ${fmt(b.max)}</span></div>
+        <div class="pot-bar-lbl"><span>${window.fmt(b.used)}</span><span>${p.toFixed(0)}% of ${window.fmt(b.max)}</span></div>
         <div class="pot-track"><div class="pot-used" style="width:${p}%"></div></div>
-        ${unused>1000&&b.lbl!=='HRA Exemption'?`<div style="font-size:10px;color:var(--a2);margin-top:2px;">↑ ${fmt(unused)} more available</div>`:''}
+        ${unused>1000&&b.lbl!=='HRA Exemption'?`<div style="font-size:10px;color:var(--a2);margin-top:2px;">↑ ${window.fmt(unused)} more available</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -26,8 +26,8 @@ function buildUtil(){
 function buildComp(){
   const d=window._o.deds;
   // Surcharge breakdown for both regimes
-  const _o_sur=cessBreakdown(Math.round(window._o.tax/1.04),window._i.gross);
-  const _n_sur=cessBreakdown(Math.round(window._n.tax/1.04),window._i.gross);
+  const _o_sur=window.cessBreakdown(Math.round(window._o.tax/1.04),window._i.gross);
+  const _n_sur=window.cessBreakdown(Math.round(window._n.tax/1.04),window._i.gross);
   // Factor = 1 + sRate + 0.04*(1+sRate) used to back-calc base tax
   const _o_fac=(1+_o_sur.sRate)*1.04;
   const _n_fac=(1+_n_sur.sRate)*1.04;
@@ -74,8 +74,8 @@ function buildComp(){
     '<thead><tr><th>Particulars</th><th style="text-align:right">Old Regime</th><th style="text-align:right">New Regime</th></tr></thead><tbody>'+
     rows.map(r=>`<tr>
       <td style="color:${r[3]?'var(--ink)':'var(--ink2)'};font-weight:${r[3]?700:400}">${r[0]}</td>
-      <td style="color:${r[3]?'var(--accent)':'var(--ink2)'};font-weight:${r[3]?600:400}">${r[3]&&r[1]<0?'<span style="color:var(--accent)">'+fmt(Math.abs(r[1]))+' refund</span>':fmt(r[1])}</td>
-      <td style="color:${r[3]?'var(--accent)':'var(--ink2)'};font-weight:${r[3]?600:400}">${r[3]&&r[2]<0?'<span style="color:var(--accent)">'+fmt(Math.abs(r[2]))+' refund</span>':fmt(r[2])}</td>
+      <td style="color:${r[3]?'var(--accent)':'var(--ink2)'};font-weight:${r[3]?600:400}">${r[3]&&r[1]<0?'<span style="color:var(--accent)">'+window.fmt(Math.abs(r[1]))+' refund</span>':window.fmt(r[1])}</td>
+      <td style="color:${r[3]?'var(--accent)':'var(--ink2)'};font-weight:${r[3]?600:400}">${r[3]&&r[2]<0?'<span style="color:var(--accent)">'+window.fmt(Math.abs(r[2]))+' refund</span>':window.fmt(r[2])}</td>
     </tr>`).join('')+'</tbody>';
 }
 
@@ -83,10 +83,10 @@ function buildSlabViz(){
   const make=({bd,taxable})=>{
     const mx=Math.max(...bd.map(b=>b.tax),1);
     return bd.map(b=>`<div class="slab-item">
-      <div class="slab-head"><span class="slab-nm">${b.lbl}</span><span class="slab-amt">${fmt(b.tax)}</span></div>
+      <div class="slab-head"><span class="slab-nm">${b.lbl}</span><span class="slab-amt">${window.fmt(b.tax)}</span></div>
       <div class="slab-tr"><div class="slab-fl" style="width:${Math.min(100,b.tax/mx*100)}%"></div></div>
-      <div class="slab-rt">${(b.rate*100).toFixed(0)}% on ${fmt(b.band)}</div>
-    </div>`).join('')+`<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;font-size:11px;color:var(--muted)">Taxable: <strong style="color:var(--accent)">${fmt(taxable)}</strong></div>`;
+      <div class="slab-rt">${(b.rate*100).toFixed(0)}% on ${window.fmt(b.band)}</div>
+    </div>`).join('')+`<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;font-size:11px;color:var(--muted)">Taxable: <strong style="color:var(--accent)">${window.fmt(taxable)}</strong></div>`;
   };
   document.getElementById('slab-sec').innerHTML=
     `<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">Old Regime</div>${make(window._o)}</div>`+
@@ -116,21 +116,21 @@ function buildDeds(){
   document.getElementById('ded-list').innerHTML=rows.map(r=>`
     <div class="ded-row">
       <div><div class="ded-name">${r.n}</div><div class="ded-sec">${r.s}</div><div class="ded-exp">${r.e}</div></div>
-      <div class="ded-val">+${fmt(r.v)}</div>
+      <div class="ded-val">+${window.fmt(r.v)}</div>
     </div>`).join('')+
     `<div style="display:flex;justify-content:space-between;background:var(--al);border-radius:10px;padding:14px;margin-top:8px;">
       <div style="font-weight:700;font-size:14px;">Total</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);">+${fmt(tot)}</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);">+${window.fmt(tot)}</div>
     </div>`;
 }
 
 function buildTips(win){
   const d=window._o.deds,tips=[];
   const u80c=Math.max(0,150000-d.c80c);
-  if(u80c>5000)tips.push({ico:'💰',t:`Invest ${fmt(u80c)} more in 80C`,d:`You have unused 80C capacity. Best: ELSS (3-year lock-in, market returns) or PPF (safe, guaranteed, tax-free maturity).`,c:`Save ~${fmt(u80c*.20)} more in old regime`});
-  if(d.cnps<50000&&window._i.nps<50000){const g=50000-window._i.nps;tips.push({ico:'🏦',t:`Add ${fmt(g)} more to NPS`,d:`Section 80CCD(1B) gives ₹50K EXTRA deduction separate from 80C. Open NPS Tier 1 on your bank app.`,c:`Potential saving: ~${fmt(g*.20)}`});}
+  if(u80c>5000)tips.push({ico:'💰',t:`Invest ${window.fmt(u80c)} more in 80C`,d:`You have unused 80C capacity. Best: ELSS (3-year lock-in, market returns) or PPF (safe, guaranteed, tax-free maturity).`,c:`Save ~${window.fmt(u80c*.20)} more in old regime`});
+  if(d.cnps<50000&&window._i.nps<50000){const g=50000-window._i.nps;tips.push({ico:'🏦',t:`Add ${window.fmt(g)} more to NPS`,d:`Section 80CCD(1B) gives ₹50K EXTRA deduction separate from 80C. Open NPS Tier 1 on your bank app.`,c:`Potential saving: ~${window.fmt(g*.20)}`});}
   if(window._i.employer_nps===0)tips.push({ico:'💼',t:'Ask HR about Employer NPS (80CCD 2)',d:`Employer NPS up to 10% of Basic is deductible in BOTH regimes. Ask HR to restructure your CTC.`,c:'Works in New Regime too! ✅'});
-  if(d.c80d<50000)tips.push({ico:'🏥',t:'Get health insurance for you and parents',d:`₹25K self + ₹25K parents = ₹50K total deduction. A family floater costs ₹12–20K/year.`,c:`Save up to ${fmt((50000-d.c80d)*.20)} in tax`});
+  if(d.c80d<50000)tips.push({ico:'🏥',t:'Get health insurance for you and parents',d:`₹25K self + ₹25K parents = ₹50K total deduction. A family floater costs ₹12–20K/year.`,c:`Save up to ${window.fmt((50000-d.c80d)*.20)} in tax`});
   if(win==='new')tips.push({ico:'📊',t:'What would flip you to Old Regime?',d:`Currently better in New Regime. Try maxing 80C (₹1.5L) + NPS (₹50K) + 80D (₹50K) and recalculate.`,c:'Recalculate after maxing deductions'});
   tips.push({ico:'📅',t:'Tell HR your regime choice in April',d:`Employer TDS is based on declared regime. New Regime is default. Declare Old if better — avoids surprises at year end.`,c:'Deadline: April of FY start'});
   tips.push({ico:'📈',t:'Use ₹1.25L LTCG exemption every year',d:`Profit from equity MFs/stocks held 1+ year is tax-free up to ₹1.25L. Sell and rebuy to reset cost price (tax harvesting).`,c:'First ₹1.25L gains = zero tax'});
@@ -139,14 +139,14 @@ function buildTips(win){
 
 function buildInsight(win,sav,name,tdsBalance){
   const d=window._o.deds,regime=win==='new'?'New Regime':'Old Regime';
-  const eff=pct(Math.min(window._o.tax,window._n.tax),window._i.gross);
+  const eff=window.pct(Math.min(window._o.tax,window._n.tax),window._i.gross);
   const tot=d.c80c+d.cnps+d.c80d+d.c24b;
-  let t=`Based on a gross income of <span class="hl">${fmt(window._i.gross)}</span>, the <span class="hl">${regime}</span> saves <span class="hl">${fmt(sav)}</span> this year. Your effective tax rate is <span class="hl">${eff}</span>.`;
-  if(win==='new'){t+=` Your deductions of <span class="hl">${fmt(tot)}</span> aren't sufficient to make old regime better.`;}
-  else{t+=` Your strong deductions including HRA <span class="hl">${fmt(d.hra)}</span> make Old Regime the winner.`;}
+  let t=`Based on a gross income of <span class="hl">${window.fmt(window._i.gross)}</span>, the <span class="hl">${regime}</span> saves <span class="hl">${window.fmt(sav)}</span> this year. Your effective tax rate is <span class="hl">${eff}</span>.`;
+  if(win==='new'){t+=` Your deductions of <span class="hl">${window.fmt(tot)}</span> aren't sufficient to make old regime better.`;}
+  else{t+=` Your strong deductions including HRA <span class="hl">${window.fmt(d.hra)}</span> make Old Regime the winner.`;}
   if(window._i.tds_deducted>0){
-    if(tdsBalance>=0)t+=` You have a <span class="hl">refund of ${fmt(tdsBalance)}</span> — file your ITR before July 31 to claim it.`;
-    else t+=` You have <span class="hl">balance tax of ${fmt(Math.abs(tdsBalance))}</span> to pay before filing your ITR.`;
+    if(tdsBalance>=0)t+=` You have a <span class="hl">refund of ${window.fmt(tdsBalance)}</span> — file your ITR before July 31 to claim it.`;
+    else t+=` You have <span class="hl">balance tax of ${window.fmt(Math.abs(tdsBalance))}</span> to pay before filing your ITR.`;
   }
   if(window._errors.length>0)t+=` ⚠️ We found <span class="hl">${window._errors.length} issue(s)</span> in your documents — review the error panel above.`;
   // Fix 6: Show confidence indicator if extraction was used
@@ -224,27 +224,27 @@ td:last-child,td:nth-child(2){text-align:right;font-family:'JetBrains Mono',mono
 <div class="hdr">
   <div class="sub">TaxSmart India · FY 2025–26 · ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</div>
   <h1>${name}'s Tax Report</h1>
-  <div class="verdict">✓ ${win} Regime — Saves ${fmt(sav)}</div>
+  <div class="verdict">✓ ${win} Regime — Saves ${window.fmt(sav)}</div>
   <div class="stats">
-    <div class="stat"><div class="sl">Tax Payable</div><div class="sv">${fmt(best)}</div></div>
-    <div class="stat"><div class="sl">Effective Rate</div><div class="sv">${pct(best,window._i.gross)}</div></div>
-    <div class="stat"><div class="sl">${bal>=0?'Refund':'Tax Due'}</div><div class="sv">${fmt(Math.abs(bal))}</div></div>
+    <div class="stat"><div class="sl">Tax Payable</div><div class="sv">${window.fmt(best)}</div></div>
+    <div class="stat"><div class="sl">Effective Rate</div><div class="sv">${window.pct(best,window._i.gross)}</div></div>
+    <div class="stat"><div class="sl">${bal>=0?'Refund':'Tax Due'}</div><div class="sv">${window.fmt(Math.abs(bal))}</div></div>
   </div>
 </div>
 ${errorHTML}
 <div class="grid">
-  <div class="box ${win==='Old'?'w':''}"><label>Old Regime</label><div class="tx">${fmt(window._o.tax)}</div><div style="font-size:11px;color:#8c8880;margin-top:3px">Effective: ${pct(window._o.tax,window._i.gross)}</div>${win==='Old'?'<div style="font-size:10px;font-weight:800;margin-top:7px;color:#7a5010">✓ RECOMMENDED</div>':''}</div>
-  <div class="box ${win==='New'?'w':''}"><label>New Regime</label><div class="tx">${fmt(window._n.tax)}</div><div style="font-size:11px;color:#8c8880;margin-top:3px">Effective: ${pct(window._n.tax,window._i.gross)}</div>${win==='New'?'<div style="font-size:10px;font-weight:800;margin-top:7px;color:#1a472a">✓ RECOMMENDED</div>':''}</div>
+  <div class="box ${win==='Old'?'w':''}"><label>Old Regime</label><div class="tx">${window.fmt(window._o.tax)}</div><div style="font-size:11px;color:#8c8880;margin-top:3px">Effective: ${window.pct(window._o.tax,window._i.gross)}</div>${win==='Old'?'<div style="font-size:10px;font-weight:800;margin-top:7px;color:#7a5010">✓ RECOMMENDED</div>':''}</div>
+  <div class="box ${win==='New'?'w':''}"><label>New Regime</label><div class="tx">${window.fmt(window._n.tax)}</div><div style="font-size:11px;color:#8c8880;margin-top:3px">Effective: ${window.pct(window._n.tax,window._i.gross)}</div>${win==='New'?'<div style="font-size:10px;font-weight:800;margin-top:7px;color:#1a472a">✓ RECOMMENDED</div>':''}</div>
 </div>
 <h2>Income & Tax Summary</h2>
 <table><thead><tr><th>Particulars</th><th>Old Regime</th><th>New Regime</th></tr></thead><tbody>
-<tr><td>Gross Income</td><td>${fmt(window._i.gross)}</td><td>${fmt(window._i.gross)}</td></tr>
-<tr><td>Total Exemptions</td><td>${fmt(d.exempts)}</td><td>${fmt(75000)}</td></tr>
-<tr><td>Chapter VI-A</td><td>${fmt(d.totalDed)}</td><td>₹0</td></tr>
-<tr><td><strong>Taxable Income</strong></td><td><strong>${fmt(window._o.taxable)}</strong></td><td><strong>${fmt(window._n.taxable)}</strong></td></tr>
-<tr><td><strong>Final Tax</strong></td><td><strong>${fmt(window._o.tax)}</strong></td><td><strong>${fmt(window._n.tax)}</strong></td></tr>
-<tr><td>TDS Deducted</td><td>${fmt(tds)}</td><td>${fmt(tds)}</td></tr>
-<tr><td><strong>${bal>=0?'Refund Due':'Balance Due'}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${fmt(Math.abs(window._o.tax-tds))}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${fmt(Math.abs(window._n.tax-tds))}</strong></td></tr>
+<tr><td>Gross Income</td><td>${window.fmt(window._i.gross)}</td><td>${window.fmt(window._i.gross)}</td></tr>
+<tr><td>Total Exemptions</td><td>${window.fmt(d.exempts)}</td><td>${window.fmt(75000)}</td></tr>
+<tr><td>Chapter VI-A</td><td>${window.fmt(d.totalDed)}</td><td>₹0</td></tr>
+<tr><td><strong>Taxable Income</strong></td><td><strong>${window.fmt(window._o.taxable)}</strong></td><td><strong>${window.fmt(window._n.taxable)}</strong></td></tr>
+<tr><td><strong>Final Tax</strong></td><td><strong>${window.fmt(window._o.tax)}</strong></td><td><strong>${window.fmt(window._n.tax)}</strong></td></tr>
+<tr><td>TDS Deducted</td><td>${window.fmt(tds)}</td><td>${window.fmt(tds)}</td></tr>
+<tr><td><strong>${bal>=0?'Refund Due':'Balance Due'}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${window.fmt(Math.abs(window._o.tax-tds))}</strong></td><td><strong style="color:${bal>=0?'#1a472a':'#c0392b'}">${window.fmt(Math.abs(window._n.tax-tds))}</strong></td></tr>
 </tbody></table>
 <div class="footer">TaxSmart India · For planning purposes only · Consult a CA for actual filing<br>Based on Income Tax Act & Union Budget 2025 · Documents processed via Gemini API, never stored on our servers · DPDP Act 2023 compliant · No PAN or financial data retained</div>
 
