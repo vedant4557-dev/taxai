@@ -31,7 +31,7 @@ function renderTaxCard() {
   const accentColor = isNew ? '#c8f04a' : '#f0c84a';
   const regimeLabel = isNew ? 'New Regime' : 'Old Regime';
   const balLabel = d.bal >= 0 ? '↑ Refund' : '↓ Tax Due';
-  const balVal = d.bal >= 0 ? fmt(d.bal, true) : fmt(Math.abs(d.bal), true);
+  const balVal = d.bal >= 0 ? window.fmt(d.bal, true) : window.fmt(Math.abs(d.bal), true);
 
   const card = document.getElementById('tax-card-render');
   card.innerHTML = `
@@ -42,7 +42,7 @@ function renderTaxCard() {
       <div class="tc-regime-badge">✓ ${regimeLabel}</div>
       <div class="tc-stats">
         <div>
-          <span class="tc-stat-val ${isNew ? 'new-regime-color' : 'old-regime-color'}">${fmt(d.best, true)}</span>
+          <span class="tc-stat-val ${isNew ? 'new-regime-color' : 'old-regime-color'}">${window.fmt(d.best, true)}</span>
           <span class="tc-stat-lbl">Tax Paid</span>
         </div>
         <div>
@@ -56,7 +56,7 @@ function renderTaxCard() {
       </div>
       <div class="tc-divider"></div>
       ${d.sav > 500 ? `<div class="tc-saving ${isNew ? '' : 'old-regime-saving'}">
-        Chose ${regimeLabel} — saved <span>${fmt(d.sav, true)}</span> vs the alternative ✓
+        Chose ${regimeLabel} — saved <span>${window.fmt(d.sav, true)}</span> vs the alternative ✓
       </div>` : `<div class="tc-saving">Both regimes gave similar results for my income profile.</div>`}
       <div class="tc-watermark">taxsmart.vedant4557-dev.github.io · free · no CA needed</div>
     </div>
@@ -73,15 +73,15 @@ function buildTaxCardShareText() {
   // Lead with the savings hook — this is what gets shared
   if (d.sav > 5000) {
     const balLine = d.bal >= 0
-      ? `Getting a refund of ${fmt(d.bal, true)} 💰`
-      : `Balance tax due: ${fmt(Math.abs(d.bal), true)}`;
-    return `I saved ${fmt(d.sav, true)} in tax by switching to ${regime} 🎉
+      ? `Getting a refund of ${window.fmt(d.bal, true)} 💰`
+      : `Balance tax due: ${window.fmt(Math.abs(d.bal), true)}`;
+    return `I saved ${window.fmt(d.sav, true)} in tax by switching to ${regime} 🎉
 
 This free AI tool found it in 30 seconds — just uploaded my Form 16.
 
-• Gross income: ${fmt(d.gross, true)}
-• Total tax: ${fmt(d.best, true)} (effective ${d.effRate.toFixed(1)}%)
-• ${regime} saves ${fmt(d.sav, true)} vs ${otherRegime}
+• Gross income: ${window.fmt(d.gross, true)}
+• Total tax: ${window.fmt(d.best, true)} (effective ${d.effRate.toFixed(1)}%)
+• ${regime} saves ${window.fmt(d.sav, true)} vs ${otherRegime}
 • ${balLine}
 
 Check yours free → vedant4557-dev.github.io/taxai/
@@ -89,11 +89,11 @@ Check yours free → vedant4557-dev.github.io/taxai/
   } else {
     // No big savings — lead with refund or risk angle
     const balLine = d.bal >= 0
-      ? `Getting a refund of ${fmt(d.bal, true)}`
-      : `Need to pay ${fmt(Math.abs(d.bal), true)} more`;
+      ? `Getting a refund of ${window.fmt(d.bal, true)}`
+      : `Need to pay ${window.fmt(Math.abs(d.bal), true)} more`;
     return `Just ran my FY 2025–26 tax check — took 30 seconds 🧾
 
-• Gross: ${fmt(d.gross, true)} | Tax: ${fmt(d.best, true)}
+• Gross: ${window.fmt(d.gross, true)} | Tax: ${window.fmt(d.best, true)}
 • Best regime: ${regime} | Rate: ${d.effRate.toFixed(1)}%
 • ${balLine}
 
@@ -125,9 +125,9 @@ function downloadTaxCard() {
     : 'linear-gradient(135deg,#7a5010 0%,#4a2f08 60%,#3a2006 100%)';
   const regime = isNew ? 'New Regime' : 'Old Regime';
   const balLabel = d.bal >= 0 ? '↑ Refund' : '↓ Tax Due';
-  const balVal = d.bal >= 0 ? fmt(d.bal, true) : fmt(Math.abs(d.bal), true);
+  const balVal = d.bal >= 0 ? window.fmt(d.bal, true) : window.fmt(Math.abs(d.bal), true);
   const savLine = d.sav > 500
-    ? `Chose ${regime} — saved ${fmt(d.sav, true)} vs the alternative ✓`
+    ? `Chose ${regime} — saved ${window.fmt(d.sav, true)} vs the alternative ✓`
     : 'Both regimes gave similar results.';
 
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
@@ -156,12 +156,12 @@ body{background:#f7f5f0;display:flex;align-items:center;justify-content:center;m
   <div class="fy">Tax Year 2025–26 · Income Tax Act 1961</div>
   <div class="badge">✓ ${regime}</div>
   <div class="stats">
-    <div><span class="sv">${fmt(d.best, true)}</span><span class="sl">Tax Paid</span></div>
+    <div><span class="sv">${window.fmt(d.best, true)}</span><span class="sl">Tax Paid</span></div>
     <div><span class="sv">${d.effRate.toFixed(1)}%</span><span class="sl">Effective Rate</span></div>
     <div><span class="sv" style="font-size:16px;">${balLabel}<br>${balVal}</span><span class="sl">TDS Balance</span></div>
   </div>
   <div class="divider"></div>
-  <div class="saving">${savLine.replace(fmt(d.sav, true), `<span>${fmt(d.sav, true)}</span>`)}</div>
+  <div class="saving">${savLine.replace(window.fmt(d.sav, true), `<span>${window.fmt(d.sav, true)}</span>`)}</div>
   <div class="wm">taxsmart · free · no ca needed</div>
 </div>
 <\x73cript>window.onload=()=>{setTimeout(()=>window.print(),400)}<\/script>
@@ -186,7 +186,7 @@ function shareTaxCardWhatsApp() {
 function shareTaxCardLinkedIn() {
   const url = 'https://vedant4557-dev.github.io/taxai/';
   const d = _taxCardData;
-  const text = `Just calculated my FY 2025-26 taxes using TaxSmart — ${fmt(d.best,true)} total tax, ${d.effRate.toFixed(1)}% effective rate. Used the ${d.win==='new'?'New':'Old'} Regime${d.sav>500?' and saved '+fmt(d.sav,true)+' vs the alternative':''}.\n\nFree tool, no CA needed, 5 minutes: ${url}`;
+  const text = `Just calculated my FY 2025-26 taxes using TaxSmart — ${window.fmt(d.best,true)} total tax, ${d.effRate.toFixed(1)}% effective rate. Used the ${d.win==='new'?'New':'Old'} Regime${d.sav>500?' and saved '+window.fmt(d.sav,true)+' vs the alternative':''}.\n\nFree tool, no CA needed, 5 minutes: ${url}`;
   window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`, '_blank');
   try { if(typeof gtag==='function') gtag('event','tax_card_linkedin',{event_category:'sharing'}); } catch(e){}
 }
@@ -204,3 +204,5 @@ if(typeof downloadTaxCard!=="undefined") window.downloadTaxCard=downloadTaxCard;
 if(typeof copyTaxCardText!=="undefined") window.copyTaxCardText=copyTaxCardText;
 if(typeof shareTaxCardWhatsApp!=="undefined") window.shareTaxCardWhatsApp=shareTaxCardWhatsApp;
 if(typeof shareTaxCardLinkedIn!=="undefined") window.shareTaxCardLinkedIn=shareTaxCardLinkedIn;
+
+if(typeof escHtml!=="undefined") window.escHtml=escHtml;
